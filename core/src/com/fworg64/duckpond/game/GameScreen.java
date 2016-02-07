@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import javafx.stage.Screen;
@@ -30,6 +31,10 @@ public class GameScreen extends ScreenAdapter
 
     public Duck fred;
 
+    public boolean beingswiped; //swiperfile?
+    public Vector2 swipestart;
+    public Vector2 swipeend;
+
 
     GameScreen(DuckPondGame game)
     {
@@ -47,15 +52,42 @@ public class GameScreen extends ScreenAdapter
         ducktex = new TextureRegion(actors,96,96);
 
         fred = new Duck();
+        beingswiped = false;
+        swipestart = new Vector2();
+        swipeend = new Vector2();
 
     }
 
     public void update(float delta)
     {
         clock+=delta; //keep track of time
-        game.debug = String.format("%.5f", delta);
+        game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString()
+                     + '\n' + fred.accl.toString() + '\n'+ fred.vel.toString() + '\n'+ fred.pos.toString();
+
+        if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
+        {
+            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+
+            //register swipe, check if it was on a duck
+            beingswiped = true;
+            swipestart.set(touchpoint.x, touchpoint.y);
+        }
+        else if (Gdx.input.isTouched() && beingswiped ==true) //swipe in progess
+        {
+            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+            swipeend.set(touchpoint.x, touchpoint.y);
+        }
+        else if (Gdx.input.isTouched() == false && beingswiped ==true)//swipe is over
+        {
+            beingswiped = false;
+            if (fred.pos.contains(swipestart)) //fred was swiped!!
+            {
+                fred.flick(swipeend.sub(swipestart).scl(.1f)); //flick fred by the swipe
+            }
+        }
 
         fred.update(delta);
+
 
     }
 
@@ -79,7 +111,7 @@ public class GameScreen extends ScreenAdapter
 
         //debug text
         game.batch.begin();
-        game.font.draw(game.batch, game.debug, 50, 450);
+        game.font.draw(game.batch, game.debug, 20, 460);
         game.batch.end();
     }
 
