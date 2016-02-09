@@ -16,18 +16,11 @@ import javafx.stage.Screen;
  */
 public class GameScreen extends ScreenAdapter
 {
-
     DuckPondGame game;
     OrthographicCamera gcam;
 
     Vector3 touchpoint;
     float clock;
-
-    public static Texture gbkgnd;
-    public static TextureRegion gbkgndRegion;
-
-    public static Texture actors; //asstes plux
-    public static TextureRegion ducktex;
 
     public Duck fred;
 
@@ -44,12 +37,6 @@ public class GameScreen extends ScreenAdapter
 
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
         clock =0;
-
-        gbkgnd = new Texture(Gdx.files.internal("gbkgnd.png")); //assets file
-        gbkgndRegion = new TextureRegion(gbkgnd); //not sure how neceesrayyyry this is if its the whole image
-
-        actors = new Texture(Gdx.files.internal("actors.png")); //have we mentioned assets file yet?
-        ducktex = new TextureRegion(actors,96,96);
 
         fred = new Duck();
         beingswiped = false;
@@ -101,17 +88,17 @@ public class GameScreen extends ScreenAdapter
 
         game.batch.disableBlending();
         game.batch.begin();
-        game.batch.draw(gbkgnd, 0, 0, 320, 480);
+        game.batch.draw(Assets.GameBackground, 0, 0, 320, 480);
         game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(ducktex, fred.pos.getX(), fred.pos.getY());
+        game.batch.draw(Assets.duck, fred.pos.getX(), fred.pos.getY());
         game.batch.end();
 
         //debug text
         game.batch.begin();
-        game.font.draw(game.batch, game.debug, 20, 460);
+        Assets.font.draw(game.batch, game.debug, 20, 460);
         game.batch.end();
     }
 

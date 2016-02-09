@@ -22,12 +22,6 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle playbutt; //more buttons later
     Vector3 touchpoint; //input vector
 
-    public static Texture bkgnd; //put in assests file later
-    public static TextureRegion bkgndRegion;
-
-    public static Texture shit; //this too ass_sets
-    public static TextureRegion play;
-
     String touchpointstr;
     String buttbounds;
 
@@ -43,14 +37,6 @@ public class MainMenuScreen extends ScreenAdapter
 
         touchpointstr ="";
         buttbounds =String.format("%.1f, %.1f", playbutt.getX(), playbutt.getY());
-
-        bkgnd = new Texture(Gdx.files.internal("bkgnd.png")); //put this shit in assets.load
-        bkgndRegion = new TextureRegion(bkgnd, 0, 0, 320, 480);
-
-        shit = new Texture(Gdx.files.internal("shit.png")); //asshole.load plx
-        play = new TextureRegion(shit, 0,0,193,80);
-
-
 
     }
 
@@ -82,19 +68,19 @@ public class MainMenuScreen extends ScreenAdapter
 
         game.batch.disableBlending();
         game.batch.begin();
-        game.batch.draw(bkgnd, 0, 0, 320, 480);
+        game.batch.draw(Assets.MainMenuBackground, 0, 0, 320, 480);
         game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(play, playbutt.getX(), playbutt.getY());
+        game.batch.draw(Assets.StartButt, playbutt.getX(), playbutt.getY());
         game.batch.end();
 
         //debug text
         game.batch.begin();
-        game.font.draw(game.batch, game.debug, 50, 450);
-        game.font.draw(game.batch, buttbounds, 50, 400);
-        game.font.draw(game.batch, touchpointstr, 50, 350);
+        Assets.font.draw(game.batch, game.debug, 50, 450);
+        Assets.font.draw(game.batch, buttbounds, 50, 400);
+        Assets.font.draw(game.batch, touchpointstr, 50, 350);
         game.batch.end();
     }
 
