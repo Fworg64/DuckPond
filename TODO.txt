@@ -1,0 +1,10 @@
+As of 2/9
+
+Need to add lilypad goal
+Make changes for multiple ducks
+_________
+Implement some sort of level stuff
+Add options to the main menu
+
+?????
+Profit!
