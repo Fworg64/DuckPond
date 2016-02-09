@@ -62,7 +62,7 @@ public class GameScreen extends ScreenAdapter
     {
         clock+=delta; //keep track of time
         game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString()
-                     + '\n' + fred.accl.toString() + '\n'+ fred.vel.toString() + '\n'+ fred.pos.toString();
+                     + '\n' + String.format("dt = %f", fred.dtheta) + '\n'+ fred.vel.toString() + '\n'+ fred.pos.toString();
 
         if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
         {
