@@ -3,6 +3,7 @@ package com.fworg64.duckpond.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -11,9 +12,10 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Duck
 {
-    public static final float rotConst = .05f; //constant for adjusting rotation speed
+    public static final float rotConst = .03f; //constant for adjusting rotation speed
 
     Rectangle pos; //make a default obj class with a rect
+    Circle col; //for collisions
 
     float dtheta; //when flicked this is how fast to rotate in rad/s
     Vector2 flickedinto;
@@ -23,9 +25,10 @@ public class Duck
     public Duck()
     {
         pos = new Rectangle(-100,50,96,96); //make this random for default constructor
+        col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
 
         dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation
-        vel = new Vector2(50.0f, 20.0f); //must be floats... measured in whatever/sec
+        vel = new Vector2(70.0f, 40.0f); //must be floats... measured in whatever/sec
         flickedinto = vel.cpy();
         posv = new Vector2(-100,50);
 
@@ -45,6 +48,7 @@ public class Duck
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
         pos.setPosition(posv); //pos + vel*time = new pos
+        col.setPosition(posv);
 
         //stuff to determine frame of animation
 

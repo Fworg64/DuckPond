@@ -78,6 +78,9 @@ public class GameScreen extends ScreenAdapter
         fred.update(delta);
         laura.update();
 
+        //check collisions
+        if (fred.col.overlaps(laura.col)) game.debug = "HALLY SHET";
+
 
     }
 

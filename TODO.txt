@@ -1,11 +1,13 @@
-As of 2/9
+As of 2/10 (*) denotes completed
 
 Need to add lilypad goal (*)
 Add collision detection between pad and duck
 Make changes for multiple ducks
+world class
 _________
 Implement some sort of level stuff
+support different resolutions
 Add options to the main menu
 
-?????
+????? (adds)
 Profit!
