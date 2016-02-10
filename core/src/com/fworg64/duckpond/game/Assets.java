@@ -20,7 +20,7 @@ public class Assets
     public static TextureRegion StartButt;
 
     public static Texture objects;
-    public static TextureRegion duck; //make array once we have some animation frames
+    public static TextureRegion[] duck; //make array once we have some animation frames
     public static TextureRegion lily;
 
 
@@ -39,7 +39,8 @@ public class Assets
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
         objects = new Texture(Gdx.files.internal("actors.png"));
 
-        duck = new TextureRegion(objects, 96,96);
+        duck = new TextureRegion[]{new TextureRegion(objects, 96,96),
+                new TextureRegion(objects,0,96,96,192)};
         lily = new TextureRegion(objects,96,0,192,96);
     }
 }

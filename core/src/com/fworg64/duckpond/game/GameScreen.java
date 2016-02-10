@@ -22,12 +22,15 @@ public class GameScreen extends ScreenAdapter
     Vector3 touchpoint;
     float clock;
 
-    public Duck fred;
-    public Lily laura;
+    public World world;
+    public World.WorldListener listener;
+    public WorldRenderer renderer;
 
     public boolean beingswiped; //swiperfile?
+    public boolean swiperegistered;
     public Vector2 swipestart;
     public Vector2 swipeend;
+    String swipedebug;
 
 
     GameScreen(DuckPondGame game)
@@ -39,19 +42,25 @@ public class GameScreen extends ScreenAdapter
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
         clock =0;
 
-        fred = new Duck();
-        laura = new Lily();
+        listener = new World.WorldListener() {}; //implement later...
+
+        world = new World(listener);
+        world.LoadLevel();
+
+        renderer = new WorldRenderer(game.batch, world);
+
         beingswiped = false;
+        swiperegistered = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
+        swipedebug = "herp";
 
     }
 
     public void update(float delta)
     {
         clock+=delta; //keep track of time
-        game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString()
-                     + '\n' + String.format("dt = %f", fred.dtheta) + '\n'+ fred.vel.toString() + '\n'+ fred.pos.toString();
+        game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString();
 
         if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
         {
@@ -60,26 +69,27 @@ public class GameScreen extends ScreenAdapter
             //register swipe, check if it was on a duck
             beingswiped = true;
             swipestart.set(touchpoint.x, touchpoint.y);
+            swipedebug = "TOCUH";
         }
         else if (Gdx.input.isTouched() && beingswiped ==true) //swipe in progess
         {
             gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
             swipeend.set(touchpoint.x, touchpoint.y);
         }
-        else if (Gdx.input.isTouched() == false && beingswiped ==true)//swipe is over
+        else if ( !Gdx.input.isTouched() && beingswiped ==true)//swipe is over
         {
             beingswiped = false;
-            if (fred.pos.contains(swipestart)) //fred was swiped!!
-            {
-                fred.flick(swipeend.sub(swipestart).scl(.1f)); //flick fred by the swipe
-            }
+            swiperegistered = true;
+            swipedebug = "NO TOCUH";
         }
 
-        fred.update(delta);
-        laura.update();
+        if (swiperegistered)
+        {
+            world.update(delta, swipestart, swipeend);
+            swiperegistered = false;
+        }
+        else world.update(delta,swipestart, swipestart.cpy()); //probably a better way to implement this
 
-        //check collisions
-        if (fred.col.overlaps(laura.col)) game.debug = "HALLY SHET";
 
 
     }
@@ -92,20 +102,12 @@ public class GameScreen extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        game.batch.disableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.GameBackground, 0, 0, 320, 480);
-        game.batch.end();
-
-        game.batch.enableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.lily, laura.pos.getX(), laura.pos.getY());
-        game.batch.draw(Assets.duck, fred.pos.getX(), fred.pos.getY());
-        game.batch.end();
+        renderer.render();
 
         //debug text
         game.batch.begin();
         Assets.font.draw(game.batch, game.debug, 20, 460);
+        Assets.font.draw(game.batch, swipedebug, 20,340);
         game.batch.end();
     }
 
