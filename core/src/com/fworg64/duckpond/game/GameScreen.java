@@ -23,6 +23,7 @@ public class GameScreen extends ScreenAdapter
     float clock;
 
     public Duck fred;
+    public Lily laura;
 
     public boolean beingswiped; //swiperfile?
     public Vector2 swipestart;
@@ -39,6 +40,7 @@ public class GameScreen extends ScreenAdapter
         clock =0;
 
         fred = new Duck();
+        laura = new Lily();
         beingswiped = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
@@ -74,6 +76,10 @@ public class GameScreen extends ScreenAdapter
         }
 
         fred.update(delta);
+        laura.update();
+
+        //check collisions
+        if (fred.col.overlaps(laura.col)) game.debug = "HALLY SHET";
 
 
     }
@@ -93,6 +99,7 @@ public class GameScreen extends ScreenAdapter
 
         game.batch.enableBlending();
         game.batch.begin();
+        game.batch.draw(Assets.lily, laura.pos.getX(), laura.pos.getY());
         game.batch.draw(Assets.duck, fred.pos.getX(), fred.pos.getY());
         game.batch.end();
 
