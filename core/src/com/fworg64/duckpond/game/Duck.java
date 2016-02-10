@@ -27,7 +27,7 @@ public class Duck
     public Duck(float x, float y, float vx, float vy)
     {
         pos = new Rectangle(x,y,96,96); //make this random for default constructor
-        col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
+        col = new Circle(pos.getX() + .3f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
 
         dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation
         vel = new Vector2(vx, vy); //must be floats... measured in whatever/sec
@@ -52,7 +52,7 @@ public class Duck
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
         pos.setPosition(posv); //pos + vel*time = new pos
-        col.setPosition(posv);
+        col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
         //stuff to determine frame of animation
 

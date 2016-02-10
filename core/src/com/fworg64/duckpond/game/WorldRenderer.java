@@ -1,7 +1,9 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Created by fworg on 2/10/2016.
@@ -12,6 +14,8 @@ public class WorldRenderer
     private OrthographicCamera cam;
     private SpriteBatch batch;
 
+    private ShapeRenderer shapeRenderer;
+
     public WorldRenderer (SpriteBatch batch, World world)
     {
         this.cam = new OrthographicCamera(320,480);
@@ -19,6 +23,8 @@ public class WorldRenderer
         this.world = world;
         this.batch = batch;
         cam.update();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(cam.combined);
     }
 
     public void render()
@@ -27,11 +33,11 @@ public class WorldRenderer
 
         renderBackground();
         renderObjects();
+        renderCollisionBox();
         renderDebug();
     }
 
-    private void renderBackground()
-    {
+    private void renderBackground() {
         batch.disableBlending();
         batch.begin();
         batch.draw(Assets.GameBackground, 0, 0, 320, 480);
@@ -45,6 +51,15 @@ public class WorldRenderer
         for (Lily laura: world.pads) batch.draw(Assets.lily, laura.pos.getX(), laura.pos.getY());
         for (Duck fred: world.ducks) batch.draw(Assets.duck[fred.state], fred.pos.getX(), fred.pos.getY());
         batch.end();
+    }
+
+    private void renderCollisionBox()
+    {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(.5f,.2f,.2f,.5f);
+        for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x, laura.col.y, laura.col.radius);
+        for (Duck fred: world.ducks) shapeRenderer.circle(fred.col.x, fred.col.y, fred.col.radius);
+        shapeRenderer.end();
     }
 
     private void renderDebug()
