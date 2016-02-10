@@ -29,6 +29,7 @@ android/build/
 *.iml
 out/
 com_crashlytics_export_strings.xml
+local.properties
 
 ## Eclipse
 .classpath
