@@ -1,6 +1,7 @@
 As of 2/9
 
-Need to add lilypad goal
+Need to add lilypad goal (*)
+Add collision detection between pad and duck
 Make changes for multiple ducks
 _________
 Implement some sort of level stuff
