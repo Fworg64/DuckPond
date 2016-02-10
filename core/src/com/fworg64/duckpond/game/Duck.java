@@ -22,15 +22,19 @@ public class Duck
     Vector2 vel;
     Vector2 posv;
 
-    public Duck()
+    int state; //frame whatever
+
+    public Duck(float x, float y, float vx, float vy)
     {
-        pos = new Rectangle(-100,50,96,96); //make this random for default constructor
+        pos = new Rectangle(x,y,96,96); //make this random for default constructor
         col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
 
         dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation
-        vel = new Vector2(70.0f, 40.0f); //must be floats... measured in whatever/sec
+        vel = new Vector2(vx, vy); //must be floats... measured in whatever/sec
         flickedinto = vel.cpy();
-        posv = new Vector2(-100,50);
+        posv = new Vector2(pos.getX(),pos.getY());
+
+        int state =0;
 
     }
 
@@ -59,6 +63,11 @@ public class Duck
         flickedinto =flick.cpy();
         if (flickedinto.angle(vel) >0) dtheta = -1;
         else dtheta =1;
+    }
+
+    public void pad()
+    {
+        state =1;
     }
 
 }

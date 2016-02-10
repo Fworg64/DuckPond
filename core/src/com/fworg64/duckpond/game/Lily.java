@@ -11,9 +11,9 @@ public class Lily
     Rectangle pos;
     Circle col; //for collisions
 
-    public Lily()
+    public Lily(float x, float y)
     {
-        pos = new Rectangle(160, 360, 96, 96);
+        pos = new Rectangle(x, y, 96, 96);
         col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .5f* pos.getHeight(), .5f* pos.getWidth());
     }
 
