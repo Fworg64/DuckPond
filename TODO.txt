@@ -5,7 +5,7 @@ Add collision detection between pad and duck(*)AFO
 Make changes for multiple ducks(*)AFO
 world class(*)AFO
 _________
-Improve collision detection
+Improve collision detection(*)
 Add animation stuff
 Implement some sort of level stuff
 support different resolutions
