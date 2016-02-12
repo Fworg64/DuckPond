@@ -9,6 +9,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * This is basically the launcer for the game, most of the real loading should
+ * be done here
+ *
+ * maybe a nice splash screen as well
+ */
+
 public class DuckPondGame extends Game {
 	public SpriteBatch batch;
 

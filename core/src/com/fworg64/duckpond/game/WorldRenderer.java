@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
+ * This file handles the nuts and bolts of rendering, things like draw order and whatnot
+ *
  * Created by fworg on 2/10/2016.
  */
 public class WorldRenderer
@@ -33,8 +35,8 @@ public class WorldRenderer
 
         renderBackground();
         renderObjects();
-        renderCollisionBox();
-        renderDebug();
+        renderCollisionBox(); //disable this line for release (duh)
+        renderDebug(); // same here
     }
 
     private void renderBackground() {
