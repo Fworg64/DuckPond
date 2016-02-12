@@ -78,7 +78,16 @@ public class World
     {
         for (Duck d: ducks)
         {
-            for (Lily l: pads) if (l.col.overlaps(d.col)) d.pad();
+            for (Lily l: pads)
+            {
+                if (l.col.overlaps(d.col))
+                {
+                    d.pad();
+                    debug = "DUCK PADDED!!";
+                }
+
+            }
+
         }
     }
 }
