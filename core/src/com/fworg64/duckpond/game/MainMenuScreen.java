@@ -12,6 +12,12 @@ import com.badlogic.gdx.math.Vector3;
 
 
 /**
+ * This class handles the main menu, also it should handle the level selection menu and the options menu
+ * and launch the level editor and from the level selection menu launch the game
+ *
+ * the reason to keep all these menus in one file is so that the ads served on the first menu can be carried
+ * over to level selection and options (technically they will all be the same screen)
+ *
  * Created by fworg on 2/4/2016.
  */
 public class MainMenuScreen extends ScreenAdapter

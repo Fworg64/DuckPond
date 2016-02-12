@@ -12,6 +12,15 @@ import com.badlogic.gdx.math.Vector3;
 import javafx.stage.Screen;
 
 /**
+ * this is the actual gamescreen, no ads should go here
+ * this file handles the GUI/HUD of the gameplay  and recieves input
+ *
+ * it is also responsible for calling World methods and WorldRenderer methods at appropiate times
+ * as well as implementing sound
+ *
+ * while world.java handles game logic
+ * and worldrenderer renders the world
+ *
  * Created by fworg on 2/5/2016.
  */
 public class GameScreen extends ScreenAdapter

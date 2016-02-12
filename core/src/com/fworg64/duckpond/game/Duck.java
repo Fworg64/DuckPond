@@ -8,6 +8,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
+ * These are the objects the player has control over
+ * they should be animated
+ *
  * Created by fworg on 2/5/2016.
  */
 public class Duck

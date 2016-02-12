@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * This object is the "Goal" ducks should be directed here by the player
+ *
  * Created by fworg on 2/10/2016.
  */
 public class Lily

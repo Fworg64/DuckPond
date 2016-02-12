@@ -7,6 +7,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
+ * This is the ASSets files, it handles loading of assets
+ * and is where all assets are accesed from
+ *
+ * this includes textures and sounds
+ *
  * Created by fworg on 2/9/2016.
  */
 public class Assets

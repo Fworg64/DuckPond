@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This file contains all the world logic
+ *
  * Created by fworg on 2/10/2016.
- * World Logic Code goes here
+ *
  */
 public class World
 {
@@ -17,7 +19,7 @@ public class World
         //these are non-logic things such as play sound effects
 
         //choose level might be a good function to do here as well
-        // or nah... but world selection should happen not in this class
+        // or nah... world selection should happen not in this class
     }
 
     public final List<Duck> ducks;
