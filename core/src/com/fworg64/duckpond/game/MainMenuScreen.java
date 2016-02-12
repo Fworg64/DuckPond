@@ -22,10 +22,18 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MainMenuScreen extends ScreenAdapter
 {
+    final static int MENU_X = 30;
+    final static int MENU_Y = 370;
+    final static int MENU_SPACE = 100;
+
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
 
     Rectangle playbutt; //more buttons later
+    Rectangle optionbutt;
+    Rectangle exitbutt;
+    Rectangle leveleditbutt;
+
     Vector3 touchpoint; //input vector
 
     String touchpointstr;
@@ -37,7 +45,10 @@ public class MainMenuScreen extends ScreenAdapter
         gcam = new OrthographicCamera(320, 480);
         gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
 
-        playbutt = new Rectangle(50, 100, 193, 80); //bounds for buttom
+        playbutt = new Rectangle(MENU_X, MENU_Y, 193, 80); //bounds for button
+        leveleditbutt = new Rectangle(MENU_X, MENU_Y - MENU_SPACE, 193,80);
+        optionbutt = new Rectangle(MENU_X, MENU_Y - 2*MENU_SPACE, 193,80);
+        exitbutt = new Rectangle(MENU_X, MENU_Y - 3*MENU_SPACE, 193,80);
 
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
 
@@ -80,6 +91,9 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(Assets.StartButt, playbutt.getX(), playbutt.getY());
+        game.batch.draw(Assets.LevelEditButt, leveleditbutt.getX(), leveleditbutt.getY());
+        game.batch.draw(Assets.OptionsButt, optionbutt.getX(), optionbutt.getY());
+        game.batch.draw(Assets.ExitButt, exitbutt.getX(), exitbutt.getY());
         game.batch.end();
 
         //debug text

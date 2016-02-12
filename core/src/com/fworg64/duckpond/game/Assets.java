@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+import sun.applet.Main;
+
 /**
  * This is the ASSets files, it handles loading of assets
  * and is where all assets are accesed from
@@ -22,8 +24,12 @@ public class Assets
     public static Texture MainMenuBackground;
     public static Texture GameBackground; //no need for a region if bckgnd is whole image
 
-    public static Texture MainMenuObjects;
+    private static Texture MainMenuButtons;
+    private static TextureRegion[][] MainMenuButtonmap;
     public static TextureRegion StartButt;
+    public static TextureRegion OptionsButt;
+    public static TextureRegion LevelEditButt;
+    public static TextureRegion ExitButt;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -46,9 +52,12 @@ public class Assets
         font.setColor(Color.FIREBRICK); //eventually get a real font
 
         MainMenuBackground = new Texture(Gdx.files.internal("bkgnd.png"));
-        MainMenuObjects = new Texture(Gdx.files.internal("shit.png"));
-
-        StartButt = new TextureRegion(MainMenuObjects, 193,80);
+        MainMenuButtons = new Texture(Gdx.files.internal("buttons.png"));
+        MainMenuButtonmap = TextureRegion.split(MainMenuButtons,193,80);
+        StartButt = MainMenuButtonmap[0][0];
+        LevelEditButt = MainMenuButtonmap[1][0];
+        OptionsButt = MainMenuButtonmap[2][0];
+        ExitButt = MainMenuButtonmap[3][0];
 
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
 
