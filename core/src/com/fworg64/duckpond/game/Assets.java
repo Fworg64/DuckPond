@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * This is the ASSets files, it handles loading of assets
@@ -24,9 +25,17 @@ public class Assets
     public static Texture MainMenuObjects;
     public static TextureRegion StartButt;
 
-    public static Texture objects;
-    public static TextureRegion[] duck; //make array once we have some animation frames
-    public static TextureRegion lily;
+    private static Texture duck;
+    private static TextureRegion[][] duckframes;
+    private static TextureRegion[] duckSwim;
+    private static TextureRegion[] duckPad;
+    public static Array<TextureRegion> duckSwimFrames;
+    public static Array<TextureRegion> duckPadFrames;
+
+    private static Texture lily;
+    private static TextureRegion[][] lilyframes;
+    private static TextureRegion[] lilyRot;
+    public static Array<TextureRegion> lilyRotFrames;
 
 
 
@@ -42,10 +51,17 @@ public class Assets
         StartButt = new TextureRegion(MainMenuObjects, 193,80);
 
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
-        objects = new Texture(Gdx.files.internal("actors.png"));
 
-        duck = new TextureRegion[]{new TextureRegion(objects, 96,96),
-                new TextureRegion(objects,0,96,96,192)};
-        lily = new TextureRegion(objects,96,0,192,96);
+        duck = new Texture(Gdx.files.internal("duck.png"));
+        duckframes = TextureRegion.split(duck,96,96);
+        duckSwim = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1]};
+        duckPad =  new TextureRegion[] {duckframes[0][0], duckframes[1][0]};
+        duckSwimFrames = new Array<TextureRegion>(duckSwim);
+        duckPadFrames = new Array<TextureRegion>(duckPad);
+
+        lily = new Texture(Gdx.files.internal("lily.png"));
+        lilyframes = TextureRegion.split(lily,96,96);
+        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
+        lilyRotFrames = new Array<TextureRegion>(lilyRot);
     }
 }

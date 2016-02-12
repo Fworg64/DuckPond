@@ -2,6 +2,7 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,6 +17,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Duck
 {
     public static final float rotConst = .03f; //constant for adjusting rotation speed
+    public enum State {SWIMMING, PAD}; //mainly used for animation
+
+    State state;
 
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
@@ -25,7 +29,9 @@ public class Duck
     Vector2 vel;
     Vector2 posv;
 
-    int state; //frame whatever
+    private Animation swimmingAnim;
+    private Animation padAnim;
+    public Animation currAnim;
 
     public Duck(float x, float y, float vx, float vy)
     {
@@ -37,7 +43,11 @@ public class Duck
         flickedinto = vel.cpy();
         posv = new Vector2(pos.getX(),pos.getY());
 
-        int state =0;
+        state = State.SWIMMING;
+
+        swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
+        padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
+        currAnim = swimmingAnim;
 
     }
 
@@ -57,8 +67,8 @@ public class Duck
         pos.setPosition(posv); //pos + vel*time = new pos
         col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
-        //stuff to determine frame of animation
-
+        //stuff to determine frame animation
+        if (state == State.PAD) currAnim = padAnim;
     }
 
     public void flick (Vector2 flick)
@@ -70,7 +80,7 @@ public class Duck
 
     public void pad()
     {
-        state =1;
+        state = State.PAD;
     }
 
 }

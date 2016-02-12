@@ -111,7 +111,7 @@ public class GameScreen extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        renderer.render();
+        renderer.render(clock);
 
         //debug text
         game.batch.begin();

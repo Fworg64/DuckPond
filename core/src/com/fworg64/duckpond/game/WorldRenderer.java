@@ -1,6 +1,5 @@
 package com.fworg64.duckpond.game;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -18,6 +17,8 @@ public class WorldRenderer
 
     private ShapeRenderer shapeRenderer;
 
+    private float clock;
+
     public WorldRenderer (SpriteBatch batch, World world)
     {
         this.cam = new OrthographicCamera(320,480);
@@ -29,12 +30,12 @@ public class WorldRenderer
         shapeRenderer.setProjectionMatrix(cam.combined);
     }
 
-    public void render()
+    public void render(float clock)
     {
         batch.setProjectionMatrix(cam.combined);
 
         renderBackground();
-        renderObjects();
+        renderObjects(clock);
         renderCollisionBox(); //disable this line for release (duh)
         renderDebug(); // same here
     }
@@ -46,12 +47,12 @@ public class WorldRenderer
         batch.end();
     }
 
-    private void renderObjects()
+    private void renderObjects(float clock)
     {
         batch.enableBlending();
         batch.begin();
-        for (Lily laura: world.pads) batch.draw(Assets.lily, laura.pos.getX(), laura.pos.getY());
-        for (Duck fred: world.ducks) batch.draw(Assets.duck[fred.state], fred.pos.getX(), fred.pos.getY());
+        for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY());
+        for (Duck fred: world.ducks) batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY());
         batch.end();
     }
 
