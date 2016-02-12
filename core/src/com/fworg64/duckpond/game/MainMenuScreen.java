@@ -70,6 +70,10 @@ public class MainMenuScreen extends ScreenAdapter
                 game.setScreen(new GameScreen(game));
                 return;
             }
+            if (exitbutt.contains(touchpoint.x, touchpoint.y))
+            {
+                Gdx.app.exit();
+            }
 
             else game.debug = "WAHT A MISS";
         }
