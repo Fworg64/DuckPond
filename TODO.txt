@@ -8,6 +8,7 @@ _________
 Improve collision detection(*)AFO
 Add animation stuff(*) AFO
 Add sharks(*) AFO
+Implement browser auto resize
 add pause menu to gamescreen
 ______________________
 Implement some sort of level stuff
