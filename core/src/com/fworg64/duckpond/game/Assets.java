@@ -57,8 +57,8 @@ public class Assets
 
     public static void load()
     {
-        font = new BitmapFont();
-        font.setColor(Color.FIREBRICK); //eventually get a real font
+//        font = new BitmapFont();
+//        font.setColor(Color.FIREBRICK); //eventually get a real font
 
         MainMenuBackground = new Texture(Gdx.files.internal("bkgnd.png"));
         MainMenuButtons = new Texture(Gdx.files.internal("buttons.png"));

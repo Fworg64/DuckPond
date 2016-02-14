@@ -37,7 +37,7 @@ public class WorldRenderer
         renderBackground();
         renderObjects(clock);
         renderCollisionBox(); //disable this line for release (duh)
-        renderDebug(); // same here
+        //renderDebug(); // same here
     }
 
     private void renderBackground() {
@@ -67,10 +67,10 @@ public class WorldRenderer
         shapeRenderer.end();
     }
 
-    private void renderDebug()
-    {
-        batch.begin();
-        Assets.font.draw(batch,world.debug,10,70);
-        batch.end();
-    }
+//    private void renderDebug()
+//    {
+//        batch.begin();
+//        Assets.font.draw(batch,world.debug,10,70);
+//        batch.end();
+//    }
 }

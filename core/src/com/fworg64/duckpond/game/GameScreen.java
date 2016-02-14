@@ -113,11 +113,11 @@ public class GameScreen extends ScreenAdapter
 
         renderer.render(clock);
 
-        //debug text
-        game.batch.begin();
-        Assets.font.draw(game.batch, game.debug, 20, 460);
-        Assets.font.draw(game.batch, swipedebug, 20,340);
-        game.batch.end();
+//        //debug text
+//        game.batch.begin();
+//        Assets.font.draw(game.batch, game.debug, 20, 460);
+//        Assets.font.draw(game.batch, swipedebug, 20,340);
+//        game.batch.end();
     }
 
     @Override
