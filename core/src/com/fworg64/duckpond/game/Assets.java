@@ -35,8 +35,17 @@ public class Assets
     private static TextureRegion[][] duckframes;
     private static TextureRegion[] duckSwim;
     private static TextureRegion[] duckPad;
+    private static TextureRegion[] duckEaten;
     public static Array<TextureRegion> duckSwimFrames;
     public static Array<TextureRegion> duckPadFrames;
+    public static Array<TextureRegion> duckEatenFrames;
+
+    private static Texture shark;
+    private static TextureRegion[][] sharkframes;
+    private static TextureRegion[] sharkSwim;
+    private static TextureRegion[] sharkEat;
+    public static Array<TextureRegion> sharkSwimFrames;
+    public static Array<TextureRegion> sharkEatFrames;
 
     private static Texture lily;
     private static TextureRegion[][] lilyframes;
@@ -65,12 +74,22 @@ public class Assets
         duckframes = TextureRegion.split(duck,96,96);
         duckSwim = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1]};
         duckPad =  new TextureRegion[] {duckframes[0][0], duckframes[1][0]};
+        duckEaten = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
         duckSwimFrames = new Array<TextureRegion>(duckSwim);
         duckPadFrames = new Array<TextureRegion>(duckPad);
+        duckEatenFrames = new Array<TextureRegion>(duckEaten);
 
         lily = new Texture(Gdx.files.internal("lily.png"));
         lilyframes = TextureRegion.split(lily,96,96);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
+
+        shark = new Texture(Gdx.files.internal("shark.png"));
+        sharkframes = TextureRegion.split(shark, 96, 96);
+        sharkSwim = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
+        sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
+        sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
+        sharkEatFrames = new Array<TextureRegion>(sharkEat);
+
     }
 }

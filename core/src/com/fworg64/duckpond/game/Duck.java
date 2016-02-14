@@ -17,10 +17,10 @@ import com.badlogic.gdx.math.Vector2;
 public class Duck
 {
     public static final float rotConst = .03f; //constant for adjusting rotation speed
-    public enum State {SWIMMING, PAD}; //mainly used for animation
+    public enum State {SWIMMING, PAD, EATEN, DEAD}; //mainly used for animation
 
     State state;
-
+    public float clock;
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
 
@@ -29,8 +29,10 @@ public class Duck
     Vector2 vel;
     Vector2 posv;
 
+
     private Animation swimmingAnim;
     private Animation padAnim;
+    private Animation eatenAnim;
     public Animation currAnim;
 
     public Duck(float x, float y, float vx, float vy)
@@ -47,13 +49,14 @@ public class Duck
 
         swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
         padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
+        eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
         currAnim = swimmingAnim;
 
     }
 
     public void update(float delta)
     {
-
+        clock +=delta;
 
         if (dtheta !=0)
         {
@@ -69,6 +72,15 @@ public class Duck
 
         //stuff to determine frame animation
         if (state == State.PAD) currAnim = padAnim;
+        if (state == State.EATEN)
+        {
+            currAnim = eatenAnim;
+            if (currAnim.isAnimationFinished(clock))
+            {
+                state = State.DEAD;
+
+            }
+        }
     }
 
     public void flick (Vector2 flick)
@@ -81,6 +93,12 @@ public class Duck
     public void pad()
     {
         state = State.PAD;
+    }
+
+    public void getEaten(Shark shark)
+    {
+        state = State.EATEN;
+        clock =0;
     }
 
 }
