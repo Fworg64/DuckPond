@@ -3,6 +3,7 @@ package com.fworg64.duckpond.game;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class World
 
     public final List<Duck> ducks;
     public final List<Lily> pads;
+    public final List<Shark> sharks;
 
     public final WorldListener listener;
 
@@ -37,6 +39,7 @@ public class World
         this.listener = listener;
         ducks = new ArrayList<Duck>();
         pads = new ArrayList<Lily>();
+        sharks = new ArrayList<Shark>();
         score =0;
         lives =3;
 
@@ -45,25 +48,30 @@ public class World
 
     public void LoadLevel() //eventually accept a string filename to load a level
     {
-        ducks.add(new Duck(-200, 50,70,20));
+        ducks.add(new Duck(-200, 50, 70, 20));
         ducks.add(new Duck(600, 200, -50, 0));
 
         pads.add(new Lily(120, 340));
 
+        sharks.add(new Shark(400, 100, -60, 10));
     }
 
     public void update(float delta, Vector2 swipestart, Vector2 swipeend)
     {
 
         updateDucks(delta, swipestart, swipeend);
+        updateSharks(delta);
         checkPadsAndDucks();
+        checkDucksAndSharks();
     }
 
     private void updateDucks(float delta, Vector2 swipestart, Vector2 swipeend)
     {
-        for (Duck d : ducks)
+        for (Iterator<Duck> iterator = ducks.iterator(); iterator.hasNext();)
         {
+            Duck d = iterator.next();
             d.update(delta);
+            if (d.state == Duck.State.DEAD) {iterator.remove();} //safe way to clean dead ducks
             if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1)
             {
                 swipeend.sub(swipestart);
@@ -71,6 +79,14 @@ public class World
                 debug = "DUCK SWIPED!!\n" + swipestart.toString() + '\n'+ swipeend.toString();
             }
             // if swipe was on the duck and bigger than not much, do the flick
+        }
+    }
+
+    private void updateSharks(float delta)
+    {
+        for (Shark s : sharks)
+        {
+            s.update(delta);
         }
     }
 
@@ -88,6 +104,22 @@ public class World
 
             }
 
+        }
+    }
+
+    private void checkDucksAndSharks()
+    {
+        for (Shark s:sharks)
+        {
+            for (Duck d: ducks)
+            {
+                if (d.col.overlaps(s.col) && d.state != Duck.State.EATEN)
+                {
+                    s.eatDuck(d);
+                    d.getEaten(s);
+                    debug = "DUCK EATEN!!";
+                }
+            }
         }
     }
 }

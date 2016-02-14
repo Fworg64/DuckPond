@@ -53,7 +53,7 @@ public class MainMenuScreen extends ScreenAdapter
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
 
         touchpointstr ="";
-        buttbounds =String.format("%.1f, %.1f", playbutt.getX(), playbutt.getY());
+        //buttbounds =String.format("%.1f, %.1f", playbutt.getX(), playbutt.getY());
 
     }
 
@@ -62,7 +62,7 @@ public class MainMenuScreen extends ScreenAdapter
         if (Gdx.input.justTouched())
         {
             gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //this is kinda odd
-            touchpointstr = String.format("%.1f, %.1f", touchpoint.x, touchpoint.y);
+            //touchpointstr = String.format("%.1f, %.1f", touchpoint.x, touchpoint.y);
 
             if (playbutt.contains(touchpoint.x, touchpoint.y))
             {
@@ -101,11 +101,11 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.end();
 
         //debug text
-        game.batch.begin();
-        Assets.font.draw(game.batch, game.debug, 50, 450);
-        Assets.font.draw(game.batch, buttbounds, 50, 400);
-        Assets.font.draw(game.batch, touchpointstr, 50, 350);
-        game.batch.end();
+//        game.batch.begin();
+//        Assets.font.draw(game.batch, game.debug, 50, 450);
+//        Assets.font.draw(game.batch, buttbounds, 50, 400);
+//        Assets.font.draw(game.batch, touchpointstr, 50, 350);
+//        game.batch.end();
     }
 
     @Override

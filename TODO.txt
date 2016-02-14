@@ -1,4 +1,4 @@
-As of 2/10 (*) denotes completed
+As of 2/14 (*) denotes completed
 
 Need to add lilypad goal (*)AFO
 Add collision detection between pad and duck(*)AFO
@@ -7,7 +7,7 @@ world class(*)AFO
 _________
 Improve collision detection(*)AFO
 Add animation stuff(*) AFO
-Add sharks
+Add sharks(*) AFO
 add pause menu to gamescreen
 ______________________
 Implement some sort of level stuff

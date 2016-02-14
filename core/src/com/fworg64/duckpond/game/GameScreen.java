@@ -69,7 +69,7 @@ public class GameScreen extends ScreenAdapter
     public void update(float delta)
     {
         clock+=delta; //keep track of time
-        game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString();
+        //game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString(); impossible to compile javascript version for html
 
         if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
         {
