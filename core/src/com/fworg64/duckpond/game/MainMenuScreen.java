@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -22,17 +23,29 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MainMenuScreen extends ScreenAdapter
 {
-    final static int MENU_X = 30;
-    final static int MENU_Y = 370;
-    final static int MENU_SPACE = 100;
+    final static int MENU_X = 64; //top left corner of menu buttons
+    final static int MENU_Y = 235;//top left corner of menu buttons
+    final static int MENU_WIDTH = 192; //width of buttons
+    final static int BUTT_HEIGHT = 45; //Height of buttons, must be < space
+    final static int MENU_SPACE = 64;//height of button and gap between the next
+
+    boolean showOptions;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
+    ShapeRenderer shapeRenderer;
 
     Rectangle playbutt; //more buttons later
     Rectangle optionbutt;
     Rectangle exitbutt;
     Rectangle leveleditbutt;
+
+    Rectangle SaveReturn;
+    Rectangle ExitNoSave;
+    Rectangle StdRes;
+    Rectangle HighRes;
+    Rectangle PremiumButt;
+    Rectangle CreditsButt;
 
     Vector3 touchpoint; //input vector
 
@@ -44,11 +57,19 @@ public class MainMenuScreen extends ScreenAdapter
         this.game = game;
         gcam = new OrthographicCamera(320, 480);
         gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam.update();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(gcam.combined);
 
-        playbutt = new Rectangle(MENU_X, MENU_Y, 193, 80); //bounds for button
-        leveleditbutt = new Rectangle(MENU_X, MENU_Y - MENU_SPACE, 193,80);
-        optionbutt = new Rectangle(MENU_X, MENU_Y - 2*MENU_SPACE, 193,80);
-        exitbutt = new Rectangle(MENU_X, MENU_Y - 3*MENU_SPACE, 193,80);
+        playbutt = new Rectangle(MENU_X, MENU_Y, MENU_WIDTH, BUTT_HEIGHT); //bounds for button
+        leveleditbutt = new Rectangle(MENU_X, MENU_Y - MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
+        optionbutt = new Rectangle(MENU_X, MENU_Y - 2*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
+        exitbutt = new Rectangle(MENU_X, MENU_Y - 3*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
+
+        SaveReturn = new Rectangle(43,297,106, 45);
+        ExitNoSave = new Rectangle(171, 297, 106, 45);
+
+        showOptions = false;
 
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
 
@@ -64,15 +85,33 @@ public class MainMenuScreen extends ScreenAdapter
             gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //this is kinda odd
             //touchpointstr = String.format("%.1f, %.1f", touchpoint.x, touchpoint.y);
 
-            if (playbutt.contains(touchpoint.x, touchpoint.y))
+            if (showOptions ==false)
             {
-                game.debug = "play pressed";
-                game.setScreen(new GameScreen(game));
-                return;
+                if (playbutt.contains(touchpoint.x, touchpoint.y))
+                {
+                    game.debug = "play pressed";
+                    game.setScreen(new GameScreen(game));
+                    return;
+                }
+                if (optionbutt.contains(touchpoint.x, touchpoint.y))
+                {
+                    showOptions = true;
+                }
+                if (exitbutt.contains(touchpoint.x, touchpoint.y))
+                {
+                    Gdx.app.exit();
+                }
             }
-            if (exitbutt.contains(touchpoint.x, touchpoint.y))
+            if (showOptions ==true)
             {
-                Gdx.app.exit();
+                if (SaveReturn.contains(touchpoint.x, touchpoint.y))
+                {
+                    showOptions =false;
+                }
+                if (ExitNoSave.contains(touchpoint.x, touchpoint.y))
+                {
+                    showOptions =false;
+                }
             }
 
             else game.debug = "WAHT A MISS";
@@ -87,18 +126,40 @@ public class MainMenuScreen extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        game.batch.disableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.MainMenuBackground, 0, 0, 320, 480);
-        game.batch.end();
+        if (showOptions == false)
+        {
+            game.batch.disableBlending();
+            game.batch.begin();
+            game.batch.draw(Assets.MainMenuBackgroundStd, 0, 0, 320, 480);
+            game.batch.end();
+        }
+        else if (showOptions ==true)
+        {
+            game.batch.disableBlending();
+            game.batch.begin();
+            game.batch.draw(Assets.OptionsMenuStd, 0, 0, 320, 480);
+            game.batch.end();
+        }
 
-        game.batch.enableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.StartButt, playbutt.getX(), playbutt.getY());
-        game.batch.draw(Assets.LevelEditButt, leveleditbutt.getX(), leveleditbutt.getY());
-        game.batch.draw(Assets.OptionsButt, optionbutt.getX(), optionbutt.getY());
-        game.batch.draw(Assets.ExitButt, exitbutt.getX(), exitbutt.getY());
-        game.batch.end();
+
+        if (showOptions ==false)
+        {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+            shapeRenderer.rect(playbutt.getX(), playbutt.getY(), playbutt.getWidth(), playbutt.getHeight());
+            shapeRenderer.rect(leveleditbutt.getX(), leveleditbutt.getY(), leveleditbutt.getWidth(), leveleditbutt.getHeight());
+            shapeRenderer.rect(optionbutt.getX(), optionbutt.getY(), optionbutt.getWidth(), optionbutt.getHeight());
+            shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+            shapeRenderer.end();
+        }
+        else if (showOptions ==true)
+        {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+            shapeRenderer.rect(SaveReturn.getX(), SaveReturn.getY(), SaveReturn.getWidth(), SaveReturn.getHeight());
+            shapeRenderer.rect(ExitNoSave.getX(), ExitNoSave.getY(), ExitNoSave.getWidth(), ExitNoSave.getHeight());
+            shapeRenderer.end();
+        }
 
         //debug text
 //        game.batch.begin();

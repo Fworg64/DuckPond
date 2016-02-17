@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
@@ -21,15 +22,14 @@ public class Assets
 {
     public static BitmapFont font;
 
-    public static Texture MainMenuBackground;
-    public static Texture GameBackground; //no need for a region if bckgnd is whole image
+    public static Texture MainMenuBackgroundHigh;
+    public static Sprite MainMenuBackgroundStd;
 
-    private static Texture MainMenuButtons;
-    private static TextureRegion[][] MainMenuButtonmap;
-    public static TextureRegion StartButt;
-    public static TextureRegion OptionsButt;
-    public static TextureRegion LevelEditButt;
-    public static TextureRegion ExitButt;
+    public static Texture OptionsMenuHigh;
+    public static Sprite OptionsMenuStd;
+
+
+    public static Texture GameBackground; //no need for a region if bckgnd is whole image
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -60,13 +60,13 @@ public class Assets
 //        font = new BitmapFont();
 //        font.setColor(Color.FIREBRICK); //eventually get a real font
 
-        MainMenuBackground = new Texture(Gdx.files.internal("bkgnd.png"));
-        MainMenuButtons = new Texture(Gdx.files.internal("buttons.png"));
-        MainMenuButtonmap = TextureRegion.split(MainMenuButtons,193,80);
-        StartButt = MainMenuButtonmap[0][0];
-        LevelEditButt = MainMenuButtonmap[1][0];
-        OptionsButt = MainMenuButtonmap[2][0];
-        ExitButt = MainMenuButtonmap[3][0];
+        MainMenuBackgroundHigh = new Texture(Gdx.files.internal("MainMenu.png"));
+        MainMenuBackgroundStd = new Sprite(MainMenuBackgroundHigh);
+        MainMenuBackgroundStd.scale(.5f);
+
+        OptionsMenuHigh = new Texture(Gdx.files.internal("OptionsMenu.png"));
+        OptionsMenuStd = new Sprite((OptionsMenuHigh));
+        OptionsMenuStd.scale(.5f);
 
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
 
