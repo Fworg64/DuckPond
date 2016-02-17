@@ -1,4 +1,4 @@
-As of 2/14 (*) denotes completed
+As of 2/17 (*) denotes completed
 
 Need to add lilypad goal (*)AFO
 Add collision detection between pad and duck(*)AFO
@@ -8,13 +8,17 @@ _________
 Improve collision detection(*)AFO
 Add animation stuff(*) AFO
 Add sharks(*) AFO
-Implement browser auto resize
+Implement browser auto resize(*) AFO
+Update Main Menu (*) AFO
+Add Ooptions Menu (*) AFO
+Implement Options
+support different resolutions
+Add status bar to game screen
 add pause menu to gamescreen
 ______________________
 Implement some sort of level stuff
-Add options menu
-support different resolutions
 Add level editor
+design levels
 
 ????? (adds)
 Profit!
