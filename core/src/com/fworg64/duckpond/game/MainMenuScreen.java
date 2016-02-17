@@ -78,7 +78,7 @@ public class MainMenuScreen extends ScreenAdapter
 
     }
 
-    public void update() //FYOTB
+    public int update() //FYOTB
     {
         if (Gdx.input.justTouched())
         {
@@ -91,7 +91,12 @@ public class MainMenuScreen extends ScreenAdapter
                 {
                     game.debug = "play pressed";
                     game.setScreen(new GameScreen(game));
-                    return;
+                    return 2;
+                }
+                if (leveleditbutt.contains(touchpoint.x, touchpoint.y))
+                {
+                    game.setScreen(new LevelScreen(game));
+                    return 1; //why?
                 }
                 if (optionbutt.contains(touchpoint.x, touchpoint.y))
                 {
@@ -116,6 +121,8 @@ public class MainMenuScreen extends ScreenAdapter
 
             else game.debug = "WAHT A MISS";
         }
+
+        return 0;
     }
 
     public void draw() //fyotb
@@ -172,7 +179,18 @@ public class MainMenuScreen extends ScreenAdapter
     @Override
     public void render (float delta)
     {
-        update();
+        switch (update()) //because we can.
+        {
+            case 0:
+                break;
+            case 1:
+                this.dispose();
+                break;
+            case 2:
+                this.dispose();
+                break;
+        }
+
         draw();
     }
 }

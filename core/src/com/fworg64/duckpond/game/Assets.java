@@ -28,6 +28,8 @@ public class Assets
     public static Texture OptionsMenuHigh;
     public static Sprite OptionsMenuStd;
 
+    public static Texture LevelEditBgHigh;
+    public static Sprite LevelEditBgStd;
 
     public static Texture GameBackground; //no need for a region if bckgnd is whole image
 
@@ -67,6 +69,10 @@ public class Assets
         OptionsMenuHigh = new Texture(Gdx.files.internal("OptionsMenu.png"));
         OptionsMenuStd = new Sprite((OptionsMenuHigh));
         OptionsMenuStd.scale(.5f);
+
+        LevelEditBgHigh = new Texture(Gdx.files.internal("LevelEditBackground.png"));
+        LevelEditBgStd = new Sprite((LevelEditBgHigh));
+        LevelEditBgStd.scale(.5f);
 
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
 
