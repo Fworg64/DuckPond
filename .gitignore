@@ -63,6 +63,9 @@ gradle-app.setting
 build/
 core/build/
 
+## Binaries
+desktop/build/
+
 ## OS Specific
 .DS_Store
 
