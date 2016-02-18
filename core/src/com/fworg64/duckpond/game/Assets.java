@@ -22,16 +22,17 @@ public class Assets
 {
     public static BitmapFont font;
 
-    public static Texture MainMenuBackgroundHigh;
-    public static Sprite MainMenuBackgroundStd;
+    public static Texture MainMenuBackgroundRaw;
+    public static Sprite MainMenuBackground;
 
-    public static Texture OptionsMenuHigh;
-    public static Sprite OptionsMenuStd;
+    public static Texture OptionsMenuRaw;
+    public static Sprite OptionsMenu;
 
-    public static Texture LevelEditBgHigh;
-    public static Sprite LevelEditBgStd;
+    public static Texture LevelEditBgRaw;
+    public static Sprite LevelEditBg;
 
-    public static Texture GameBackground; //no need for a region if bckgnd is whole image
+    public static Texture GameBackgroundRaw;
+    public static Sprite GameBackground;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -62,19 +63,21 @@ public class Assets
 //        font = new BitmapFont();
 //        font.setColor(Color.FIREBRICK); //eventually get a real font
 
-        MainMenuBackgroundHigh = new Texture(Gdx.files.internal("MainMenu.png"));
-        MainMenuBackgroundStd = new Sprite(MainMenuBackgroundHigh);
-        MainMenuBackgroundStd.scale(.5f);
+        MainMenuBackgroundRaw = new Texture(Gdx.files.internal("MainMenu.png"));
+        MainMenuBackground = new Sprite(MainMenuBackgroundRaw);
+        if (!Options.highres) MainMenuBackground.scale(.5f);
 
-        OptionsMenuHigh = new Texture(Gdx.files.internal("OptionsMenu.png"));
-        OptionsMenuStd = new Sprite((OptionsMenuHigh));
-        OptionsMenuStd.scale(.5f);
+        OptionsMenuRaw = new Texture(Gdx.files.internal("OptionsMenu.png"));
+        OptionsMenu = new Sprite((OptionsMenuRaw));
+        if (!Options.highres) OptionsMenu.scale(.5f);
 
-        LevelEditBgHigh = new Texture(Gdx.files.internal("LevelEditBackground.png"));
-        LevelEditBgStd = new Sprite((LevelEditBgHigh));
-        LevelEditBgStd.scale(.5f);
+        LevelEditBgRaw = new Texture(Gdx.files.internal("LevelEditBackground.png"));
+        LevelEditBg = new Sprite((LevelEditBgRaw));
+        if (!Options.highres) LevelEditBg.scale(.5f);
 
-        GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
+        GameBackgroundRaw = new Texture(Gdx.files.internal("gbkgnd.png"));
+        GameBackground = new Sprite((GameBackgroundRaw));
+        if (!Options.highres) GameBackground.scale(.5f);
 
         duck = new Texture(Gdx.files.internal("duck.png"));
         duckframes = TextureRegion.split(duck,96,96);

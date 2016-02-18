@@ -24,7 +24,10 @@ public class DuckPondGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		Options.loadDefault();//Assets neads options first
+		Options.setHighres();
 		Assets.load();
+
 
 		debug = "herpp";
 

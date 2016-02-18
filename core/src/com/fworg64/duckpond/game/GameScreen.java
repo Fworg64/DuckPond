@@ -45,8 +45,8 @@ public class GameScreen extends ScreenAdapter
     GameScreen(DuckPondGame game)
     {
         this.game = game;
-        gcam = new OrthographicCamera(320, 480);
-        gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
         touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
         clock =0;
@@ -112,12 +112,6 @@ public class GameScreen extends ScreenAdapter
         game.batch.setProjectionMatrix(gcam.combined);
 
         renderer.render(clock);
-
-//        //debug text
-//        game.batch.begin();
-//        Assets.font.draw(game.batch, game.debug, 20, 460);
-//        Assets.font.draw(game.batch, swipedebug, 20,340);
-//        game.batch.end();
     }
 
     @Override

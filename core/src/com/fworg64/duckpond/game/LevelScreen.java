@@ -13,6 +13,11 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class LevelScreen extends ScreenAdapter
 {
+    public static final int EXIT_X = 0;//bottom left corner of button
+    public static final int EXIT_Y = 0;
+    public static final int EXIT_W = (int)(.25f * Options.screenWidth); //not exact yet
+    public static final int EXIT_H = (int)(.2f * Options.screenHeight);
+
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
 
@@ -25,10 +30,10 @@ public class LevelScreen extends ScreenAdapter
     public LevelScreen(DuckPondGame game)
     {
         this.game = game;
-        gcam = new OrthographicCamera(320, 480);
-        gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-        exitbutt = new Rectangle(0,0,100,100); //this isn't exact yet
+        exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
         touchpoint = new Vector3();
 
@@ -66,7 +71,7 @@ public class LevelScreen extends ScreenAdapter
         game.batch.disableBlending();
         game.batch.begin();
         //draw background image here
-        game.batch.draw(Assets.LevelEditBgStd, 0, 0, 320, 480);
+        game.batch.draw(Assets.LevelEditBg, 0, 0, Options.screenWidth, Options.screenHeight);
         game.batch.end();
 
         game.batch.enableBlending();
