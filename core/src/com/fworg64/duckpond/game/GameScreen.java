@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -21,6 +22,7 @@ import javafx.stage.Screen;
  * while world.java handles game logic
  * and worldrenderer renders the world
  *
+ * Not Resolution Aware
  * Created by fworg on 2/5/2016.
  */
 public class GameScreen extends ScreenAdapter
@@ -28,7 +30,8 @@ public class GameScreen extends ScreenAdapter
     DuckPondGame game;
     OrthographicCamera gcam;
 
-    Vector3 touchpoint;
+    InputListener in;
+    Vector2 touchpoint;
     float clock;
 
     public World world;
@@ -41,14 +44,18 @@ public class GameScreen extends ScreenAdapter
     public Vector2 swipeend;
     String swipedebug;
 
+    private Rectangle resetbutt;
+
 
     GameScreen(DuckPondGame game)
     {
         this.game = game;
-        gcam = new OrthographicCamera(320, 480);
-        gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-        touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
+        in = new InputListener();
+
+        touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
         clock =0;
 
         listener = new World.WorldListener() {}; //implement later...
@@ -58,34 +65,36 @@ public class GameScreen extends ScreenAdapter
 
         renderer = new WorldRenderer(game.batch, world);
 
+
         beingswiped = false;
         swiperegistered = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
         swipedebug = "herp";
 
+        resetbutt = new Rectangle(0, .9f*DuckPondGame.worldH, .1f*DuckPondGame.worldW, DuckPondGame.worldH);
+
     }
 
     public void update(float delta)
     {
         clock+=delta; //keep track of time
-        //game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString(); impossible to compile javascript version for html
 
-        if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
+        if (in.justTouched() && beingswiped ==false) //swipe is starting
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+            touchpoint.set(in.getTouchpoint());
 
-            //register swipe, check if it was on a duck
+            //register swipe
             beingswiped = true;
             swipestart.set(touchpoint.x, touchpoint.y);
             swipedebug = "TOCUH";
         }
-        else if (Gdx.input.isTouched() && beingswiped ==true) //swipe in progess
+        else if (in.isTouched() && beingswiped ==true) //swipe in progess
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+            touchpoint.set(in.getTouchpoint());
             swipeend.set(touchpoint.x, touchpoint.y);
         }
-        else if ( !Gdx.input.isTouched() && beingswiped ==true)//swipe is over
+        else if ( !in.isTouched() && beingswiped ==true)//swipe is over
         {
             beingswiped = false;
             swiperegistered = true;
@@ -96,8 +105,11 @@ public class GameScreen extends ScreenAdapter
         {
             world.update(delta, swipestart, swipeend);
             swiperegistered = false;
+            Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
         }
         else world.update(delta,swipestart, swipestart.cpy()); //probably a better way to implement this
+
+        if (resetbutt.contains(touchpoint)) world.LoadLevel(); //not really a reset, but ya know
 
 
 
@@ -112,12 +124,6 @@ public class GameScreen extends ScreenAdapter
         game.batch.setProjectionMatrix(gcam.combined);
 
         renderer.render(clock);
-
-//        //debug text
-//        game.batch.begin();
-//        Assets.font.draw(game.batch, game.debug, 20, 460);
-//        Assets.font.draw(game.batch, swipedebug, 20,340);
-//        game.batch.end();
     }
 
     @Override
