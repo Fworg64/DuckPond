@@ -3,11 +3,16 @@ package com.fworg64.duckpond.game;
 /**
  * Created by fworg on 2/17/2016.
  */
-public class Options //not on object
+public class Options
 {
     public static boolean highres;
-    public static int screenWidth; //float for multiplication
+    public static int screenWidth;
     public static int screenHeight;
+
+    public Options()
+    {
+        loadDefault();
+    }
 
     public static void loadDefault()
     {
@@ -20,6 +25,6 @@ public class Options //not on object
     {
         highres = true;
         screenWidth = 640;
-        screenHeight = 480;
+        screenHeight = 960;
     }
 }

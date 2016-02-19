@@ -28,7 +28,8 @@ public class GameScreen extends ScreenAdapter
     DuckPondGame game;
     OrthographicCamera gcam;
 
-    Vector3 touchpoint;
+    InputListener in;
+    Vector2 touchpoint;
     float clock;
 
     public World world;
@@ -48,7 +49,9 @@ public class GameScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-        touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
+        in = new InputListener(game.opt);
+
+        touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
         clock =0;
 
         listener = new World.WorldListener() {}; //implement later...
@@ -57,6 +60,7 @@ public class GameScreen extends ScreenAdapter
         world.LoadLevel();
 
         renderer = new WorldRenderer(game.batch, world);
+
 
         beingswiped = false;
         swiperegistered = false;
@@ -69,23 +73,22 @@ public class GameScreen extends ScreenAdapter
     public void update(float delta)
     {
         clock+=delta; //keep track of time
-        //game.debug = String.format("fps =%.5f", 1/delta) + '\n' +swipestart.toString() + '\n'+ swipeend.toString(); impossible to compile javascript version for html
 
-        if (Gdx.input.justTouched() && beingswiped ==false) //swipe is starting
+        if (in.justTouched() && beingswiped ==false) //swipe is starting
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+            touchpoint.set(in.getTouchpoint());
 
-            //register swipe, check if it was on a duck
+            //register swipe
             beingswiped = true;
             swipestart.set(touchpoint.x, touchpoint.y);
             swipedebug = "TOCUH";
         }
-        else if (Gdx.input.isTouched() && beingswiped ==true) //swipe in progess
+        else if (in.isTouched() && beingswiped ==true) //swipe in progess
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); //this is kinda odd
+            touchpoint.set(in.getTouchpoint());
             swipeend.set(touchpoint.x, touchpoint.y);
         }
-        else if ( !Gdx.input.isTouched() && beingswiped ==true)//swipe is over
+        else if ( !in.isTouched() && beingswiped ==true)//swipe is over
         {
             beingswiped = false;
             swiperegistered = true;
@@ -96,6 +99,7 @@ public class GameScreen extends ScreenAdapter
         {
             world.update(delta, swipestart, swipeend);
             swiperegistered = false;
+            Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
         }
         else world.update(delta,swipestart, swipestart.cpy()); //probably a better way to implement this
 

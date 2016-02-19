@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -17,18 +18,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 
 public class DuckPondGame extends Game {
+	public static int worldH = 480;
+	public static int worldW = 320;
+
 	public SpriteBatch batch;
+	public Options opt;
 
 	public String debug; //probably make a debug file too...
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		Options.loadDefault();//Assets neads options first
-		Options.setHighres();
+		opt = new Options();
+		//opt.setHighres();
 		Assets.load();
 
-
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		debug = "herpp";
 
 		setScreen(new MainMenuScreen(this));

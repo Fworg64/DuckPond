@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -20,8 +21,9 @@ public class LevelScreen extends ScreenAdapter
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
+    InputListener in;
 
-    Vector3 touchpoint; //input vector
+    Vector2 touchpoint; //input vector
 
     Rectangle exitbutt;
 
@@ -35,7 +37,8 @@ public class LevelScreen extends ScreenAdapter
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
-        touchpoint = new Vector3();
+        in = new InputListener(game.opt);
+        touchpoint = new Vector2();
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -45,9 +48,9 @@ public class LevelScreen extends ScreenAdapter
     public int update()
     {
         //code that gets run each frame goes here
-        if (Gdx.input.justTouched())  //you just got touched son
+        if (in.justTouched())  //you just got touched son
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //store recent touchpoint in vector for handling
+            touchpoint.set(in.getTouchpoint());
 
             if (exitbutt.contains(touchpoint.x, touchpoint.y))
             {

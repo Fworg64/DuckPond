@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -23,23 +24,26 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MainMenuScreen extends ScreenAdapter
 {
-    final static int MENU_X = (int)(.2f * Options.screenWidth); //bottom left corner of first menu button
-    final static int MENU_Y = (int)(.49f * Options.screenHeight);//bottom left corner of first menu button
-    final static int MENU_WIDTH = (int)(.6f * Options.screenWidth); //width of buttons
-    final static int BUTT_HEIGHT = (int)(.1f * Options.screenHeight); //Height of buttons, must be < space
-    final static int MENU_SPACE = (int)(.133f * Options.screenHeight);//height of button and gap between the next
+    final static int MENU_X = (int)(.2f * DuckPondGame.worldW); //bottom left corner of first menu button
+    final static int MENU_Y = (int)(.49f * DuckPondGame.worldH);//bottom left corner of first menu button
+    final static int MENU_WIDTH = (int)(.6f * DuckPondGame.worldW); //width of buttons
+    final static int BUTT_HEIGHT = (int)(.1f * DuckPondGame.worldH); //Height of buttons, must be < space
+    final static int MENU_SPACE = (int)(.133f * DuckPondGame.worldH);//height of button and gap between the next
 
-    final static int OPTEXIT_X = (int)(.135f * Options.screenWidth); //bottom left corner of saveandexit button for options
-    final static int OPTEXIT_Y = (int)(.62f * Options.screenHeight); //bottom left corner of saveandexit button for options
-    final static int OPTWIDTH = (int)(.33f * Options.screenWidth); // width of options exit buttons
-    final static int OPTHEIGHT = (int)(.094f * Options.screenHeight); //height of exit buttons
-    final static int OPTSPACE = (int)(.4f * Options.screenWidth); //width of button and distance to next on xaxis
+    final static int OPTEXIT_X = (int)(.135f * DuckPondGame.worldW); //bottom left corner of saveandexit button for options
+    final static int OPTEXIT_Y = (int)(.62f * DuckPondGame.worldH); //bottom left corner of saveandexit button for options
+    final static int OPTWIDTH = (int)(.33f * DuckPondGame.worldW); // width of options exit buttons
+    final static int OPTHEIGHT = (int)(.094f * DuckPondGame.worldH); //height of exit buttons
+    final static int OPTSPACE = (int)(.4f * DuckPondGame.worldW); //width of button and distance to next on xaxis
 
     boolean showOptions;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
     ShapeRenderer shapeRenderer;
+
+    InputListener in;
+    Vector2 touchpoint;
 
     Rectangle playbutt; //more buttons later
     Rectangle optionbutt;
@@ -53,7 +57,6 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle PremiumButt;
     Rectangle CreditsButt;
 
-    Vector3 touchpoint; //input vector
 
     public MainMenuScreen (DuckPondGame game) //fuck your one true brace
     {
@@ -74,16 +77,17 @@ public class MainMenuScreen extends ScreenAdapter
 
         showOptions = false;
 
-        touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
-
+        in = new InputListener(game.opt);
+        touchpoint = new Vector2();
 
     }
 
     public int update() //FYOTB
     {
-        if (Gdx.input.justTouched())
+        if (in.justTouched())
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //this is kinda odd
+            touchpoint.set(in.getTouchpoint());
+            Gdx.app.debug("TOCUH", touchpoint.toString());
 
             if (showOptions ==false)
             {
