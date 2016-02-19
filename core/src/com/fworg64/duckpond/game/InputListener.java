@@ -16,8 +16,6 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class InputListener
 {
-    private int screenWpix; //width of the window in logical pixels
-    private int screenHpix; //height
     private float Xscalefactor;
     private float Yscalefactor;
 
@@ -28,12 +26,9 @@ public class InputListener
 
     public InputListener()
     {
-        screenWpix = Gdx.app.getGraphics().getWidth();
-        screenHpix = Gdx.app.getGraphics().getHeight();
-        Xscalefactor = (float)(DuckPondGame.worldW)/((float)screenWpix);
-        Yscalefactor = -(float)(DuckPondGame.worldH)/((float)screenHpix);
+        Xscalefactor = (float)(DuckPondGame.worldW)/((float)Gdx.app.getGraphics().getWidth());
+        Yscalefactor = -(float)(DuckPondGame.worldH)/((float)Gdx.app.getGraphics().getHeight());
         Yoffset = DuckPondGame.worldH;
-        Gdx.app.debug("screenWpix",Float.toString(screenWpix));
         Gdx.app.debug("worldW",Float.toString(DuckPondGame.worldW));
         Gdx.app.debug("worldH",Float.toString(DuckPondGame.worldH));
 
@@ -53,6 +48,8 @@ public class InputListener
 
     public Vector2 getTouchpoint()
     {
+        Xscalefactor = (float)(DuckPondGame.worldW)/((float)Gdx.app.getGraphics().getWidth()); //protect against resizes
+        Yscalefactor = -(float)(DuckPondGame.worldH)/((float)Gdx.app.getGraphics().getHeight());
         //need to transform ydown to yup with different spaces
         rawTouchX =Gdx.input.getX();
         rawTouchY = Gdx.input.getY();
