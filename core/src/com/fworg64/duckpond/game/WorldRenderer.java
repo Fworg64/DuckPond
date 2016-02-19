@@ -53,9 +53,9 @@ public class WorldRenderer
         batch.begin();
         if (!Options.highres)
         {
-            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY());
-            for (Duck fred: world.ducks) batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY());
-            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY());
+            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+            for (Duck fred: world.ducks) batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);
         }
         else
         {

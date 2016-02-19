@@ -22,17 +22,10 @@ public class Assets
 {
     public static BitmapFont font;
 
-    public static Texture MainMenuBackgroundRaw;
-    public static Sprite MainMenuBackground;
-
-    public static Texture OptionsMenuRaw;
-    public static Sprite OptionsMenu;
-
-    public static Texture LevelEditBgRaw;
-    public static Sprite LevelEditBg;
-
-    public static Texture GameBackgroundRaw;
-    public static Sprite GameBackground;
+    public static Texture MainMenuBackground;
+    public static Texture OptionsMenu;
+    public static Texture LevelEditBg;
+    public static Texture GameBackground;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -63,24 +56,13 @@ public class Assets
 //        font = new BitmapFont();
 //        font.setColor(Color.FIREBRICK); //eventually get a real font
 
-        MainMenuBackgroundRaw = new Texture(Gdx.files.internal("MainMenu.png"));
-        MainMenuBackground = new Sprite(MainMenuBackgroundRaw);
-        if (!Options.highres) MainMenuBackground.scale(.5f);
-
-        OptionsMenuRaw = new Texture(Gdx.files.internal("OptionsMenu.png"));
-        OptionsMenu = new Sprite((OptionsMenuRaw));
-        if (!Options.highres) OptionsMenu.scale(.5f);
-
-        LevelEditBgRaw = new Texture(Gdx.files.internal("LevelEditBackground.png"));
-        LevelEditBg = new Sprite((LevelEditBgRaw));
-        if (!Options.highres) LevelEditBg.scale(.5f);
-
-        GameBackgroundRaw = new Texture(Gdx.files.internal("gbkgnd.png"));
-        GameBackground = new Sprite((GameBackgroundRaw));
-        if (!Options.highres) GameBackground.scale(.5f);
+        MainMenuBackground = new Texture(Gdx.files.internal("MainMenu.png"));
+        OptionsMenu = new Texture(Gdx.files.internal("OptionsMenu.png"));
+        LevelEditBg = new Texture(Gdx.files.internal("LevelEditBackground.png"));
+        GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
 
         duck = new Texture(Gdx.files.internal("duck.png"));
-        duckframes = TextureRegion.split(duck,96,96);
+        duckframes = TextureRegion.split(duck, 96,96);
         duckSwim = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1]};
         duckPad =  new TextureRegion[] {duckframes[0][0], duckframes[1][0]};
         duckEaten = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
@@ -89,16 +71,19 @@ public class Assets
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
 
         lily = new Texture(Gdx.files.internal("lily.png"));
-        lilyframes = TextureRegion.split(lily,96,96);
+        lilyframes = TextureRegion.split(lily, 96,96);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
 
         shark = new Texture(Gdx.files.internal("shark.png"));
-        sharkframes = TextureRegion.split(shark, 96, 96);
+        sharkframes = TextureRegion.split(shark, 96,96);
         sharkSwim = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
         sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
         sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
         sharkEatFrames = new Array<TextureRegion>(sharkEat);
+
+        // i think we're suppose to dispose of some textures here...
+        //or maybe that will make the world burn
 
     }
 }

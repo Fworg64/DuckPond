@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -42,6 +43,8 @@ public class GameScreen extends ScreenAdapter
     public Vector2 swipeend;
     String swipedebug;
 
+    private Rectangle resetbutt;
+
 
     GameScreen(DuckPondGame game)
     {
@@ -49,7 +52,7 @@ public class GameScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-        in = new InputListener(game.opt);
+        in = new InputListener();
 
         touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
         clock =0;
@@ -67,6 +70,8 @@ public class GameScreen extends ScreenAdapter
         swipestart = new Vector2();
         swipeend = new Vector2();
         swipedebug = "herp";
+
+        resetbutt = new Rectangle(0, .9f*DuckPondGame.worldH, .1f*DuckPondGame.worldW, DuckPondGame.worldH);
 
     }
 
@@ -102,6 +107,8 @@ public class GameScreen extends ScreenAdapter
             Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
         }
         else world.update(delta,swipestart, swipestart.cpy()); //probably a better way to implement this
+
+        if (resetbutt.contains(touchpoint)) world.LoadLevel(); //not really a reset, but ya know
 
 
 

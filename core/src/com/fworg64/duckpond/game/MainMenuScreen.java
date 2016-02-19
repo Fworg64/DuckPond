@@ -77,7 +77,7 @@ public class MainMenuScreen extends ScreenAdapter
 
         showOptions = false;
 
-        in = new InputListener(game.opt);
+        in = new InputListener();
         touchpoint = new Vector2();
 
     }

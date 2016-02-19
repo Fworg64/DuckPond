@@ -20,17 +20,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class DuckPondGame extends Game {
 	public static int worldH = 480;
 	public static int worldW = 320;
+	public static int spriteW = 48;
+	public static int spriteH = 48;
 
 	public SpriteBatch batch;
-	public Options opt;
 
 	public String debug; //probably make a debug file too...
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		opt = new Options();
-		//opt.setHighres();
+		Options.loadDefault();
+		Options.setHighres();
 		Assets.load();
 
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);

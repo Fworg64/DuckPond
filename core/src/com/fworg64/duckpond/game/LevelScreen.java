@@ -37,7 +37,7 @@ public class LevelScreen extends ScreenAdapter
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
-        in = new InputListener(game.opt);
+        in = new InputListener();
         touchpoint = new Vector2();
 
         gcam.update();

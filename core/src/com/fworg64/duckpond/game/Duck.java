@@ -37,7 +37,7 @@ public class Duck
 
     public Duck(float x, float y, float vx, float vy)
     {
-        pos = new Rectangle(x,y,96,96); //make this random for default constructor
+        pos = new Rectangle(x,y,Options.spriteWidth,Options.spriteHeight); //make this random for default constructor
         col = new Circle(pos.getX() + .3f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
 
         dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation

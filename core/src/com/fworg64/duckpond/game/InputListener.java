@@ -26,7 +26,7 @@ public class InputListener
     private int Yoffset;
     private Vector2 projTouch;// the touchpoint projected to the assumed camera
 
-    public InputListener(Options opt)
+    public InputListener()
     {
         screenWpix = Gdx.app.getGraphics().getWidth();
         screenHpix = Gdx.app.getGraphics().getHeight();
@@ -36,7 +36,6 @@ public class InputListener
         Gdx.app.debug("screenWpix",Float.toString(screenWpix));
         Gdx.app.debug("worldW",Float.toString(DuckPondGame.worldW));
         Gdx.app.debug("worldH",Float.toString(DuckPondGame.worldH));
-        Gdx.app.debug("opt.screenHeight",Float.toString(opt.screenHeight));
 
 
         Gdx.app.debug("Xscalefactor",Float.toString(Xscalefactor));
