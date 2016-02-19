@@ -11,9 +11,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * This is basically the launcer for the game, most of the real loading should
+ * This is basically the launcher for the game, most of the real loading should
  * be done here
  *
+ * Not Resolution Aware, but contains the values for world coordinates
  * maybe a nice splash screen as well
  */
 

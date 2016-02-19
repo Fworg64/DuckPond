@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * This file handles the nuts and bolts of rendering, things like draw order and whatnot
- *
+ * Resolution Aware
  * Created by fworg on 2/10/2016.
  */
 public class WorldRenderer
@@ -37,7 +37,6 @@ public class WorldRenderer
         renderBackground();
         renderObjects(clock);
         renderCollisionBox(); //disable this line for release (duh)
-        //renderDebug(); // same here
     }
 
     private void renderBackground() {
@@ -78,17 +77,10 @@ public class WorldRenderer
         }
         else
         {
-            for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x*2, laura.col.y*2, laura.col.radius);
-            for (Duck fred: world.ducks) shapeRenderer.circle(fred.col.x*2, fred.col.y*2, fred.col.radius);
-            for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x*2, sam.col.y*2, sam.col.radius);
+            for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x*2, laura.col.y*2, 2*laura.col.radius);
+            for (Duck fred: world.ducks) shapeRenderer.circle(fred.col.x*2, fred.col.y*2, 2*fred.col.radius);
+            for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x*2, sam.col.y*2, 2*sam.col.radius);
         }
         shapeRenderer.end();
     }
-
-//    private void renderDebug()
-//    {
-//        batch.begin();
-//        Assets.font.draw(batch,world.debug,10,70);
-//        batch.end();
-//    }
 }

@@ -14,6 +14,8 @@ import sun.applet.Main;
  * This is the ASSets files, it handles loading of assets
  * and is where all assets are accesed from
  *
+ * this shit needs to be higher res
+ *
  * this includes textures and sounds
  *
  * Created by fworg on 2/9/2016.

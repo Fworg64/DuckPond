@@ -22,6 +22,7 @@ import javafx.stage.Screen;
  * while world.java handles game logic
  * and worldrenderer renders the world
  *
+ * Not Resolution Aware
  * Created by fworg on 2/5/2016.
  */
 public class GameScreen extends ScreenAdapter

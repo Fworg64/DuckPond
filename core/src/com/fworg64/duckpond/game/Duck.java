@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
  * These are the objects the player has control over
  * they should be animated
  *
+ * Not Resolution Aware
  * Created by fworg on 2/5/2016.
  */
 public class Duck
@@ -37,11 +38,11 @@ public class Duck
 
     public Duck(float x, float y, float vx, float vy)
     {
-        pos = new Rectangle(x,y,Options.spriteWidth,Options.spriteHeight); //make this random for default constructor
+        pos = new Rectangle(x,y,DuckPondGame.spriteW,DuckPondGame.spriteH); //make this random for default constructor
         col = new Circle(pos.getX() + .3f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
 
         dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation
-        vel = new Vector2(vx, vy); //must be floats... measured in whatever/sec
+        vel = new Vector2(vx, vy); //must be floats... measured in worldunits/sec
         flickedinto = vel.cpy();
         posv = new Vector2(pos.getX(),pos.getY());
 

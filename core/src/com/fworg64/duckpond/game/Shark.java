@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by fworg on 2/12/2016.
+ *
+ * Not Resolution Aware
  */
 public class Shark
 {
@@ -30,7 +32,7 @@ public class Shark
         state = State.SWIMMING;
         clock =0;
 
-        pos = new Rectangle(x, y, Options.spriteWidth,Options.spriteHeight);
+        pos = new Rectangle(x, y, DuckPondGame.spriteW,DuckPondGame.spriteH);
         posv = new Vector2(pos.getX(), pos.getY());
         vel = new Vector2(xv,yv);
         col = new Circle(pos.getX() + .5f* pos.getWidth(),pos.getY() + .5f*pos.getHeight(), .3f* pos.getWidth());

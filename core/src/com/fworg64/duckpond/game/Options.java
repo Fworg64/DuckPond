@@ -2,6 +2,8 @@ package com.fworg64.duckpond.game;
 
 /**
  * Created by fworg on 2/17/2016.
+ *
+ * Resolution Aware (duh)
  */
 public class Options
 {

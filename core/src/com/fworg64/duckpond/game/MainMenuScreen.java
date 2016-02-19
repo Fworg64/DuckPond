@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.Vector3;
  * the reason to keep all these menus in one file is so that the ads served on the first menu can be carried
  * over to level selection and options (technically they will all be the same screen)
  *
+ * Not Resolution Aware
+ *
  * Created by fworg on 2/4/2016.
  */
 public class MainMenuScreen extends ScreenAdapter
@@ -100,7 +102,7 @@ public class MainMenuScreen extends ScreenAdapter
                 if (leveleditbutt.contains(touchpoint.x, touchpoint.y))
                 {
                     game.setScreen(new LevelScreen(game));
-                    return 1; //why?
+                    return 1;
                 }
                 if (optionbutt.contains(touchpoint.x, touchpoint.y))
                 {
@@ -133,7 +135,7 @@ public class MainMenuScreen extends ScreenAdapter
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(1, 0, 0, 1);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
