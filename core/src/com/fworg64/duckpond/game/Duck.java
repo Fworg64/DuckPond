@@ -50,7 +50,8 @@ public class Duck
         ducklings = new ArrayList<Duckling>(3);
         for (int i = 1; i < 4; i++)
         {
-            ducklings.add(new Duckling((int)(pos.getX()-.4*i*vel.x), (int)(pos.getX()-.4*i*vel.y)));
+            ducklings.add(new Duckling((int)(pos.getX() - vel.cpy().clamp(.5f*i*pos.getWidth(), .5f*i*pos.getWidth()).x),
+                    (int)(pos.getY() - vel.cpy().clamp(.5f*i*pos.getHeight(), .5f*i*pos.getHeight()).y), vel));
         }
 
         swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
@@ -90,8 +91,8 @@ public class Duck
 
         for (int i=0;i<ducklings.size();i++)
         {
-            if (i==0) ducklings.get(i).follow(this.posv, vel, delta);
-            else ducklings.get(i).follow(ducklings.get(i-1).posv, ducklings.get(i-1).vel, delta);
+            if (i==0) ducklings.get(i).follow(this.posv, delta);
+            else ducklings.get(i).follow(ducklings.get(i-1).posv, delta);
         }
     }
 

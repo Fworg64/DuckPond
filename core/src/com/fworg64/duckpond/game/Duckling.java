@@ -9,23 +9,25 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Duckling
 {
+    public final static float rotConst = .6f* Duck.rotConst;
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
     Vector2 vel;
     Vector2 posv;
 
-    public Duckling(int x, int y)
+    public Duckling(int x, int y, Vector2 vel)
     {
         pos = new Rectangle(x,y, DuckPondGame.spriteW/2, DuckPondGame.spriteH/2);
         col = new Circle(pos.getCenter(new Vector2()), pos.getWidth()/3);
-        vel = new Vector2();
+        this.vel = new Vector2(vel.x, vel.y);
         posv = new Vector2(pos.getX(), pos.getY());
     }
 
-    public void follow(Vector2 pos2follow, Vector2 vel2follow,float delta)
+    public void follow(Vector2 pos2follow,float delta)
     {
         //update posv and vel and pos and col
-        vel.set(posv.cpy().sub(pos2follow).clamp(vel2follow.len(), vel2follow.len()));
+        if (pos2follow.cpy().sub(posv).angle(vel) >0) vel.rotate(-rotConst * vel.len());
+        else vel.rotate(rotConst*vel.len());
         posv.add(vel.cpy().scl(delta));
         pos.setPosition(posv);
         col.set(pos.getCenter(new Vector2()), pos.getWidth()/3);

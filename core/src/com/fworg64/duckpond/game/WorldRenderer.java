@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -56,9 +57,11 @@ public class WorldRenderer
             for (Duck fred: world.ducks)
             {
                 batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+                Gdx.app.debug("Duck", fred.pos.toString());
                 for (Duckling f: fred.ducklings)
                 {
-                    batch.draw(Assets.duckSwimFrames.first(), f.pos.getX(), f.pos.getY(), f.pos.getWidth(), f.pos.getHeight());
+                    batch.draw(fred.currAnim.getKeyFrame(clock), f.pos.getX(), f.pos.getY(), f.pos.getWidth(), f.pos.getHeight());
+                    Gdx.app.debug("ducklingpos", f.pos.toString());
                 }
             }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);
@@ -71,7 +74,7 @@ public class WorldRenderer
                 batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX()*2, fred.pos.getY()*2);
                 for (Duckling f: fred.ducklings)
                 {
-                    batch.draw(Assets.duckSwimFrames.first(), f.pos.getX()*2, f.pos.getY()*2, f.pos.getWidth()*2, f.pos.getHeight()*2);
+                    batch.draw(fred.currAnim.getKeyFrame(clock), f.pos.getX()*2, f.pos.getY()*2, f.pos.getWidth()*2, f.pos.getHeight()*2);
                 }
             }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX()*2, sam.pos.getY()*2);
