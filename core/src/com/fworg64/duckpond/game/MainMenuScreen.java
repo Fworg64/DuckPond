@@ -26,11 +26,16 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MainMenuScreen extends ScreenAdapter
 {
-    final static int MENU_X = (int)(.2f * DuckPondGame.worldW); //bottom left corner of first menu button
-    final static int MENU_Y = (int)(.49f * DuckPondGame.worldH);//bottom left corner of first menu button
-    final static int MENU_WIDTH = (int)(.6f * DuckPondGame.worldW); //width of buttons
-    final static int BUTT_HEIGHT = (int)(.1f * DuckPondGame.worldH); //Height of buttons, must be < space
-    final static int MENU_SPACE = (int)(.133f * DuckPondGame.worldH);//height of button and gap between the next
+    final static int PLAY_X = (int)(.309f* DuckPondGame.worldW);
+    final static int PLAY_Y = (int)(.41f* DuckPondGame.worldH);
+    final static int LEVEL_X = (int)(.1f* DuckPondGame.worldW);
+    final static int LEVEL_Y = (int)(.253f* DuckPondGame.worldH);
+    final static int OPTIONS_X = (int)(.5f* DuckPondGame.worldW);
+    final static int OPTIONS_Y = (int)(.253f* DuckPondGame.worldH);
+    final static int EXIT_X = (int)(.309f* DuckPondGame.worldW);
+    final static int EXIT_Y = (int)(.134f* DuckPondGame.worldH);
+    final static int BUTT_W = (int)(.35f*DuckPondGame.worldW);
+    final static int BUTT_H = (int)(.09f*DuckPondGame.worldH);
 
     final static int OPTEXIT_X = (int)(.135f * DuckPondGame.worldW); //bottom left corner of saveandexit button for options
     final static int OPTEXIT_Y = (int)(.62f * DuckPondGame.worldH); //bottom left corner of saveandexit button for options
@@ -69,10 +74,10 @@ public class MainMenuScreen extends ScreenAdapter
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
 
-        playbutt = new Rectangle(MENU_X, MENU_Y, MENU_WIDTH, BUTT_HEIGHT); //bounds for button
-        leveleditbutt = new Rectangle(MENU_X, MENU_Y - MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
-        optionbutt = new Rectangle(MENU_X, MENU_Y - 2*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
-        exitbutt = new Rectangle(MENU_X, MENU_Y - 3*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
+        playbutt = new Rectangle(PLAY_X, PLAY_Y, BUTT_W, BUTT_H);
+        optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, BUTT_W, BUTT_H);
+        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, BUTT_W, BUTT_H);
+        exitbutt = new Rectangle(EXIT_X, EXIT_Y, BUTT_W, BUTT_H);
 
         SaveReturn = new Rectangle(OPTEXIT_X,OPTEXIT_Y,OPTWIDTH, OPTHEIGHT);
         ExitNoSave = new Rectangle(OPTEXIT_X + OPTSPACE, OPTEXIT_Y, OPTWIDTH, OPTHEIGHT);
