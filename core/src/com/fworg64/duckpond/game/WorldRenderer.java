@@ -53,13 +53,27 @@ public class WorldRenderer
         if (!Options.highres)
         {
             for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY(), Options.spriteWidth, Options.spriteHeight);
-            for (Duck fred: world.ducks) batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+            for (Duck fred: world.ducks)
+            {
+                batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+                for (Duckling f: fred.ducklings)
+                {
+                    batch.draw(Assets.duckSwimFrames.first(), f.pos.getX(), f.pos.getY(), f.pos.getWidth(), f.pos.getHeight());
+                }
+            }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);
         }
         else
         {
             for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX()*2, laura.pos.getY()*2);
-            for (Duck fred: world.ducks) batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX()*2, fred.pos.getY()*2);
+            for (Duck fred: world.ducks)
+            {
+                batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX()*2, fred.pos.getY()*2);
+                for (Duckling f: fred.ducklings)
+                {
+                    batch.draw(Assets.duckSwimFrames.first(), f.pos.getX()*2, f.pos.getY()*2, f.pos.getWidth()*2, f.pos.getHeight()*2);
+                }
+            }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX()*2, sam.pos.getY()*2);
         }
         batch.end();
