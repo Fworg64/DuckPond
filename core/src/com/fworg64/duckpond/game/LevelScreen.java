@@ -52,7 +52,6 @@ public class LevelScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-<<<<<<< HEAD
         exitbutt = new Rectangle(0,0,100,100); //this isn't exact yet
         duckCounter=0;
         //intialize all necessary variables for the editor
@@ -65,9 +64,7 @@ public class LevelScreen extends ScreenAdapter
         sharks = new Rectangle(200,0,50,96);
         sharkCounter = 1;
         lillies = new Rectangle(275,0,50,96);
-=======
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
->>>>>>> refs/remotes/origin/master
 
         in = new InputListener();
         touchpoint = new Vector2();
