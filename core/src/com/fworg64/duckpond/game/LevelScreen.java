@@ -7,6 +7,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+//might wanna use draglistener??????
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by fworg on 2/17/2016.
@@ -19,16 +27,36 @@ public class LevelScreen extends ScreenAdapter
     Vector3 touchpoint; //input vector
 
     Rectangle exitbutt;
+    ArrayList<Duck> dL;//contains the ducks in the game
+    Rectangle ducks;//for collision
+    int duckCounter;//counts the ducks
+    ArrayList<Shark> sL;//contains the ducks in the game
+    Rectangle sharks;//for collision
+    int sharkCounter;//counts the ducks
+    Rectangle lillies;
 
     private ShapeRenderer shapeRenderer;//this helps for checking button rectangles
 
     public LevelScreen(DuckPondGame game)
     {
+
+        Assets.load();
         this.game = game;
         gcam = new OrthographicCamera(320, 480);
         gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
 
         exitbutt = new Rectangle(0,0,100,100); //this isn't exact yet
+        duckCounter=0;
+        //intialize all necessary variables for the editor
+        dL = new ArrayList<Duck>();
+        dL.add(duckCounter, new Duck(100, 0, 96, 96));
+        ducks = new Rectangle(100,0,96,96);
+        duckCounter = 1;
+        sL = new ArrayList<Shark>();
+        sL.add(sharkCounter,new Shark(200,0,96,96));
+        sharks = new Rectangle(200,0,50,96);
+        sharkCounter = 1;
+        lillies = new Rectangle(275,0,50,96);
 
         touchpoint = new Vector3();
 
@@ -44,12 +72,67 @@ public class LevelScreen extends ScreenAdapter
         {
             gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //store recent touchpoint in vector for handling
 
+
+                if (ducks.contains(touchpoint.x, touchpoint.y)) {
+                    //adds new duck the user wants to have in level
+                    dL.add(duckCounter, new Duck(100, 0, 96, 96));
+                    //test to see if ducks being touched
+                    System.out.println(duckCounter);
+                }
+            //need to think of better algorithm to move the ducks
+            //may need to implement for shark as well as well lilypad
+            if (touchpoint.x > dL.get(duckCounter).getXCord()) {
+                dL.get(duckCounter).setXCord(touchpoint.x);
+                duckCounter++;
+                dL.add(duckCounter, new Duck(100, 0, 96, 96));
+            } else if (touchpoint.y > dL.get(duckCounter).getYCord()) {
+                dL.get(duckCounter).setYCord(touchpoint.y);
+                duckCounter++;
+                dL.add(duckCounter, new Duck(100, 0, 96, 96));
+            } else if (touchpoint.x > dL.get(duckCounter).getXCord() && touchpoint.y > dL.get(duckCounter).getYCord()) {
+                dL.get(duckCounter).setXCord(touchpoint.x);
+                dL.get(duckCounter).setYCord(touchpoint.y);
+                duckCounter++;
+                dL.add(duckCounter, new Duck(100, 0, 96, 96));
+            }
+            else{
+                duckCounter++;
+            }
+
+            //if()
+
+
+            //make this save and exit maybe?
             if (exitbutt.contains(touchpoint.x, touchpoint.y))
             {
+                try {
+                    //we need to find a common file location on all machines
+                    //currently i am using where the txt file is placed on my system
+
+                    String s = "Q:\\DuckPond-master\\Levels";
+
+                    //keep getting filenotfound exception for some reason :((((
+                    FileWriter fw = new FileWriter(s);
+                    //LOOK AT COMMENT IN DRAW METHOD ABOUT ACCESSOR METHODS
+                    fw.append("amount of ducks(),amount of sharks,?lilypad placement?");
+                    // new line character is \n pretty sure xD
+                    fw.append("\n");
+                    fw.close();
+                }
+                    catch(FileNotFoundException e){
+                        System.out.println("invalid file");
+                    }
+                catch(IOException io){
+                    System.out.println("invalid operation, please get your life together.");
+                }
+
                 game.setScreen(new MainMenuScreen(game));
+
+
                 return 1;
             }
             //other stuffs
+
         }
         return 0;
 
@@ -73,12 +156,39 @@ public class LevelScreen extends ScreenAdapter
         game.batch.begin();
         //draw dynamic elements here
         //the difference is is the blend(tm)
+
+        //may have to get single duck sprite w/o the sprite sheet
+        //may have to get single sprite for all of these actually!!!!!!!!!!!!!!!!
+        //drawing multiple so it's easier to store in file and keep track\
+        for (Duck f : dL){
+
+            //WE MAY WANT TO IMPLEMENT ACCESOR METHODS TO GET CERTAIN COORDINATES OF EACH OBJECT!!!!!
+            //WHETHER THAT OBJECT BE SHARK, LILY, OR DUCK
+            //int i = dL.indexOf(f);
+
+            game.batch.draw(Assets.duck, f.getXCord(), f.getYCord(), 96, 96);
+    }
+        for (Shark f : sL){
+
+            //WE MAY WANT TO IMPLEMENT ACCESOR METHODS TO GET CERTAIN COORDINATES OF EACH OBJECT!!!!!
+            //WHETHER THAT OBJECT BE SHARK, LILY, OR DUCK
+            //int i = dL.indexOf(f);
+
+            game.batch.draw(Assets.shark, 200, 0, 80, 96);
+        }
+        game.batch.draw(Assets.lily, 275, 0, 80, 96 );
+
+
         game.batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f,.2f,.2f,.5f);
         //draw detection bounds here for debugging
         shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
+        shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
+        shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
+
         shapeRenderer.end();
     }
 
