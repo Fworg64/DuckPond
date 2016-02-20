@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -19,21 +20,32 @@ import com.badlogic.gdx.math.Vector3;
  * the reason to keep all these menus in one file is so that the ads served on the first menu can be carried
  * over to level selection and options (technically they will all be the same screen)
  *
+ * Not Resolution Aware
+ *
  * Created by fworg on 2/4/2016.
  */
 public class MainMenuScreen extends ScreenAdapter
 {
-    final static int MENU_X = 64; //top left corner of menu buttons
-    final static int MENU_Y = 235;//top left corner of menu buttons
-    final static int MENU_WIDTH = 192; //width of buttons
-    final static int BUTT_HEIGHT = 45; //Height of buttons, must be < space
-    final static int MENU_SPACE = 64;//height of button and gap between the next
+    final static int MENU_X = (int)(.2f * DuckPondGame.worldW); //bottom left corner of first menu button
+    final static int MENU_Y = (int)(.49f * DuckPondGame.worldH);//bottom left corner of first menu button
+    final static int MENU_WIDTH = (int)(.6f * DuckPondGame.worldW); //width of buttons
+    final static int BUTT_HEIGHT = (int)(.1f * DuckPondGame.worldH); //Height of buttons, must be < space
+    final static int MENU_SPACE = (int)(.133f * DuckPondGame.worldH);//height of button and gap between the next
+
+    final static int OPTEXIT_X = (int)(.135f * DuckPondGame.worldW); //bottom left corner of saveandexit button for options
+    final static int OPTEXIT_Y = (int)(.62f * DuckPondGame.worldH); //bottom left corner of saveandexit button for options
+    final static int OPTWIDTH = (int)(.33f * DuckPondGame.worldW); // width of options exit buttons
+    final static int OPTHEIGHT = (int)(.094f * DuckPondGame.worldH); //height of exit buttons
+    final static int OPTSPACE = (int)(.4f * DuckPondGame.worldW); //width of button and distance to next on xaxis
 
     boolean showOptions;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
     ShapeRenderer shapeRenderer;
+
+    InputListener in;
+    Vector2 touchpoint;
 
     Rectangle playbutt; //more buttons later
     Rectangle optionbutt;
@@ -47,16 +59,12 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle PremiumButt;
     Rectangle CreditsButt;
 
-    Vector3 touchpoint; //input vector
-
-    String touchpointstr;
-    String buttbounds;
 
     public MainMenuScreen (DuckPondGame game) //fuck your one true brace
     {
         this.game = game;
-        gcam = new OrthographicCamera(320, 480);
-        gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
@@ -66,24 +74,22 @@ public class MainMenuScreen extends ScreenAdapter
         optionbutt = new Rectangle(MENU_X, MENU_Y - 2*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
         exitbutt = new Rectangle(MENU_X, MENU_Y - 3*MENU_SPACE, MENU_WIDTH,BUTT_HEIGHT);
 
-        SaveReturn = new Rectangle(43,297,106, 45);
-        ExitNoSave = new Rectangle(171, 297, 106, 45);
+        SaveReturn = new Rectangle(OPTEXIT_X,OPTEXIT_Y,OPTWIDTH, OPTHEIGHT);
+        ExitNoSave = new Rectangle(OPTEXIT_X + OPTSPACE, OPTEXIT_Y, OPTWIDTH, OPTHEIGHT);
 
         showOptions = false;
 
-        touchpoint = new Vector3(); //input vector3, 3 for compatibilliyt
-
-        touchpointstr ="";
-        //buttbounds =String.format("%.1f, %.1f", playbutt.getX(), playbutt.getY());
+        in = new InputListener();
+        touchpoint = new Vector2();
 
     }
 
     public int update() //FYOTB
     {
-        if (Gdx.input.justTouched())
+        if (in.justTouched())
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //this is kinda odd
-            //touchpointstr = String.format("%.1f, %.1f", touchpoint.x, touchpoint.y);
+            touchpoint.set(in.getTouchpoint());
+            Gdx.app.debug("TOCUH", touchpoint.toString());
 
             if (showOptions ==false)
             {
@@ -96,7 +102,7 @@ public class MainMenuScreen extends ScreenAdapter
                 if (leveleditbutt.contains(touchpoint.x, touchpoint.y))
                 {
                     game.setScreen(new LevelScreen(game));
-                    return 1; //why?
+                    return 1;
                 }
                 if (optionbutt.contains(touchpoint.x, touchpoint.y))
                 {
@@ -129,7 +135,7 @@ public class MainMenuScreen extends ScreenAdapter
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(1, 0, 0, 1);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
@@ -137,14 +143,14 @@ public class MainMenuScreen extends ScreenAdapter
         {
             game.batch.disableBlending();
             game.batch.begin();
-            game.batch.draw(Assets.MainMenuBackgroundStd, 0, 0, 320, 480);
+            game.batch.draw(Assets.MainMenuBackground, 0, 0, Options.screenWidth, Options.screenHeight);
             game.batch.end();
         }
         else if (showOptions ==true)
         {
             game.batch.disableBlending();
             game.batch.begin();
-            game.batch.draw(Assets.OptionsMenuStd, 0, 0, 320, 480);
+            game.batch.draw(Assets.OptionsMenu, 0, 0, Options.screenWidth, Options.screenHeight);
             game.batch.end();
         }
 
@@ -167,13 +173,6 @@ public class MainMenuScreen extends ScreenAdapter
             shapeRenderer.rect(ExitNoSave.getX(), ExitNoSave.getY(), ExitNoSave.getWidth(), ExitNoSave.getHeight());
             shapeRenderer.end();
         }
-
-        //debug text
-//        game.batch.begin();
-//        Assets.font.draw(game.batch, game.debug, 50, 450);
-//        Assets.font.draw(game.batch, buttbounds, 50, 400);
-//        Assets.font.draw(game.batch, touchpointstr, 50, 350);
-//        game.batch.end();
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 //might wanna use draglistener??????
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
@@ -21,10 +22,16 @@ import java.util.Scanner;
  */
 public class LevelScreen extends ScreenAdapter
 {
+    public static final int EXIT_X = 0;//bottom left corner of button
+    public static final int EXIT_Y = 0;
+    public static final int EXIT_W = (int)(.25f * Options.screenWidth); //not exact yet
+    public static final int EXIT_H = (int)(.2f * Options.screenHeight);
+
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
+    InputListener in;
 
-    Vector3 touchpoint; //input vector
+    Vector2 touchpoint; //input vector
 
     Rectangle exitbutt;
     ArrayList<Duck> dL;//contains the ducks in the game
@@ -42,9 +49,10 @@ public class LevelScreen extends ScreenAdapter
 
         Assets.load();
         this.game = game;
-        gcam = new OrthographicCamera(320, 480);
-        gcam.position.set(320 / 2, 480 / 2, 0); //give ourselves a nice little camera
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
+<<<<<<< HEAD
         exitbutt = new Rectangle(0,0,100,100); //this isn't exact yet
         duckCounter=0;
         //intialize all necessary variables for the editor
@@ -57,8 +65,12 @@ public class LevelScreen extends ScreenAdapter
         sharks = new Rectangle(200,0,50,96);
         sharkCounter = 1;
         lillies = new Rectangle(275,0,50,96);
+=======
+        exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
+>>>>>>> refs/remotes/origin/master
 
-        touchpoint = new Vector3();
+        in = new InputListener();
+        touchpoint = new Vector2();
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -68,9 +80,9 @@ public class LevelScreen extends ScreenAdapter
     public int update()
     {
         //code that gets run each frame goes here
-        if (Gdx.input.justTouched())  //you just got touched son
+        if (in.justTouched())  //you just got touched son
         {
-            gcam.unproject(touchpoint.set(Gdx.input.getX(),Gdx.input.getY(),0)); //store recent touchpoint in vector for handling
+            touchpoint.set(in.getTouchpoint());
 
 
                 if (ducks.contains(touchpoint.x, touchpoint.y)) {
@@ -149,7 +161,7 @@ public class LevelScreen extends ScreenAdapter
         game.batch.disableBlending();
         game.batch.begin();
         //draw background image here
-        game.batch.draw(Assets.LevelEditBgStd, 0, 0, 320, 480);
+        game.batch.draw(Assets.LevelEditBg, 0, 0, Options.screenWidth, Options.screenHeight);
         game.batch.end();
 
         game.batch.enableBlending();

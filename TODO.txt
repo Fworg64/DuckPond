@@ -11,12 +11,23 @@ Add sharks(*) AFO
 Implement browser auto resize(*) AFO
 Update Main Menu (*) AFO
 Add Ooptions Menu (*) AFO
-Implement Options
-support different resolutions
+___________________________
+
+support different resolutions(*) AFO
+add ducklings
+add rules to game
+game over screen
+victory screen
 Add status bar to game screen
 add pause menu to gamescreen
+_________________________________
+
+Implement Options
+determine size for things reletive to screen
+
 ______________________
-Implement some sort of level stuff
+Implement Level Selection/shop screen
+
 Add level editor
 design levels
 

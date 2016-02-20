@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class World
             Duck d = iterator.next();
             d.update(delta);
             if (d.state == Duck.State.DEAD) {iterator.remove();} //safe way to clean dead ducks
+            if (swipestart.cpy().sub(swipeend).len2()>1) Gdx.app.debug("Known Duck",d.pos.toString());
             if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1)
             {
                 swipeend.sub(swipestart);
