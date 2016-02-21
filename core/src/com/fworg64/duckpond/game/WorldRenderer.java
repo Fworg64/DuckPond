@@ -89,13 +89,27 @@ public class WorldRenderer
         if (!Options.highres)
         {
             for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x, laura.col.y, laura.col.radius);
-            for (Duck fred: world.ducks) shapeRenderer.circle(fred.col.x, fred.col.y, fred.col.radius);
+            for (Duck fred: world.ducks)
+            {
+                shapeRenderer.circle(fred.col.x, fred.col.y, fred.col.radius);
+                for (Duckling f: fred.ducklings)
+                {
+                    shapeRenderer.circle(f.col.x, f.col.y, f.col.radius);
+                }
+            }
             for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x, sam.col.y, sam.col.radius);
         }
         else
         {
             for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x*2, laura.col.y*2, 2*laura.col.radius);
-            for (Duck fred: world.ducks) shapeRenderer.circle(fred.col.x*2, fred.col.y*2, 2*fred.col.radius);
+            for (Duck fred: world.ducks)
+            {
+                shapeRenderer.circle(fred.col.x*2, fred.col.y*2, 2*fred.col.radius);
+                for (Duckling f: fred.ducklings)
+                {
+                    shapeRenderer.circle(f.col.x*2, f.col.y*2, f.col.radius*2);
+                }
+            }
             for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x*2, sam.col.y*2, 2*sam.col.radius);
         }
         shapeRenderer.end();
