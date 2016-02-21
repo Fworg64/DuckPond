@@ -41,6 +41,11 @@ public class LevelScreen extends ScreenAdapter
     Rectangle sharks;//for collision
     int sharkCounter;//counts the ducks
     Rectangle lillies;
+    public boolean beingswiped; //swiperfile?
+    public boolean swiperegistered;
+    public Vector2 swipestart;
+    public Vector2 swipeend;
+    String swipedebug;
 
     private ShapeRenderer shapeRenderer;//this helps for checking button rectangles
 
@@ -52,22 +57,28 @@ public class LevelScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
 
-        exitbutt = new Rectangle(0,0,100,100); //this isn't exact yet
+        exitbutt = new Rectangle(1,1,20,20); //this isn't exact yet
         duckCounter=0;
         //intialize all necessary variables for the editor
         dL = new ArrayList<Duck>();
-        dL.add(duckCounter, new Duck(100, 0, 96, 96));
-        ducks = new Rectangle(100,0,96,96);
+        dL.add(duckCounter, new Duck(200, 0, 96, 96));
+        ducks = new Rectangle(200,0,96,96);
         duckCounter = 1;
         sL = new ArrayList<Shark>();
-        sL.add(sharkCounter,new Shark(200,0,96,96));
-        sharks = new Rectangle(200,0,50,96);
+        sL.add(sharkCounter,new Shark(300,0,96,96));
+        sharks = new Rectangle(400,0,50,96);
         sharkCounter = 1;
         lillies = new Rectangle(275,0,50,96);
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
         in = new InputListener();
         touchpoint = new Vector2();
+
+        beingswiped = false;
+        swiperegistered = false;
+        swipestart = new Vector2();
+        swipeend = new Vector2();
+        swipedebug = "herp";
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -80,39 +91,69 @@ public class LevelScreen extends ScreenAdapter
         if (in.justTouched())  //you just got touched son
         {
             touchpoint.set(in.getTouchpoint());
+            if (in.justTouched() && beingswiped ==false) //swipe is starting
+            {
+                touchpoint.set(in.getTouchpoint());
 
+                //register swipe
+                beingswiped = true;
+                swipestart.set(touchpoint.x, touchpoint.y);
+                swipedebug = "TOCUH";
+            }
+            else if (in.isTouched() && beingswiped ==true) //swipe in progess
+            {
+                touchpoint.set(in.getTouchpoint());
+                swipeend.set(touchpoint.x, touchpoint.y);
+            }
+            else if ( !in.isTouched() && beingswiped ==true)//swipe is over
+            {
+                beingswiped = false;
+                swiperegistered = true;
+                swipedebug = "NO TOCUH";
+            }
+
+            if (swiperegistered)
+            {
+               // world.update(delta, swipestart, swipeend);
+                dL.get(duckCounter).pos.x = swipeend.x;
+                dL.get(duckCounter).pos.y = touchpoint.y;
+                duckCounter++;
+                dL.add(duckCounter, new Duck(200, 0, 96, 96));
+                swiperegistered = false;
+                Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
+            }
+           // else world.update(delta,swipestart, swipestart.cpy()); //probably a better way to implement this
 
                 if (ducks.contains(touchpoint.x, touchpoint.y)) {
                     //adds new duck the user wants to have in level
-                    dL.add(duckCounter, new Duck(100, 0, 96, 96));
+                    dL.add(duckCounter, new Duck(200, 0, 96, 96));
                     //test to see if ducks being touched
                     System.out.println(duckCounter);
                 }
             //need to think of better algorithm to move the ducks
             //may need to implement for shark as well as well lilypad
-            if (touchpoint.x > dL.get(duckCounter).getXCord()) {
-                dL.get(duckCounter).setXCord(touchpoint.x);
+            /**
+            if (touchpoint.x >= dL.get(duckCounter).pos.x) {
+                dL.get(duckCounter).pos.x = touchpoint.x;
                 duckCounter++;
                 dL.add(duckCounter, new Duck(100, 0, 96, 96));
-            } else if (touchpoint.y > dL.get(duckCounter).getYCord()) {
-                dL.get(duckCounter).setYCord(touchpoint.y);
+            } else if (touchpoint.y > dL.get(duckCounter).pos.y) {
+                dL.get(duckCounter).pos.y = touchpoint.y;
                 duckCounter++;
                 dL.add(duckCounter, new Duck(100, 0, 96, 96));
-            } else if (touchpoint.x > dL.get(duckCounter).getXCord() && touchpoint.y > dL.get(duckCounter).getYCord()) {
-                dL.get(duckCounter).setXCord(touchpoint.x);
-                dL.get(duckCounter).setYCord(touchpoint.y);
+            } else if (touchpoint.x > dL.get(duckCounter).pos.x && touchpoint.y > dL.get(duckCounter).pos.y) {
+                dL.get(duckCounter).pos.x = touchpoint.x;
+                dL.get(duckCounter).pos.y = touchpoint.y;
                 duckCounter++;
                 dL.add(duckCounter, new Duck(100, 0, 96, 96));
             }
-            else{
-                duckCounter++;
-            }
+           //duck counter?
+            **/
 
-            //if()
 
 
             //make this save and exit maybe?
-            if (exitbutt.contains(touchpoint.x, touchpoint.y))
+           if (exitbutt.contains(touchpoint.x, touchpoint.y))
             {
                 try {
                     //we need to find a common file location on all machines
@@ -135,7 +176,7 @@ public class LevelScreen extends ScreenAdapter
                     System.out.println("invalid operation, please get your life together.");
                 }
 
-                game.setScreen(new MainMenuScreen(game));
+               // game.setScreen(new MainMenuScreen(game));
 
 
                 return 1;
@@ -175,7 +216,7 @@ public class LevelScreen extends ScreenAdapter
             //WHETHER THAT OBJECT BE SHARK, LILY, OR DUCK
             //int i = dL.indexOf(f);
 
-            game.batch.draw(Assets.duck, f.getXCord(), f.getYCord(), 96, 96);
+            game.batch.draw(Assets.duckSwimFrames.first(), f.pos.x, f.pos.y, 96, 96);
     }
         for (Shark f : sL){
 
@@ -183,9 +224,9 @@ public class LevelScreen extends ScreenAdapter
             //WHETHER THAT OBJECT BE SHARK, LILY, OR DUCK
             //int i = dL.indexOf(f);
 
-            game.batch.draw(Assets.shark, 200, 0, 80, 96);
+            game.batch.draw(Assets.sharkSwimFrames.first(), f.pos.x, f.pos.y, 80, 96);
         }
-        game.batch.draw(Assets.lily, 275, 0, 80, 96 );
+        game.batch.draw(Assets.lilyRotFrames.first(),lillies.x, lillies.y, 80, 96 );
 
 
         game.batch.end();
