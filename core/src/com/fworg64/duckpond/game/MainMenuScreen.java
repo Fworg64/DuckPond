@@ -106,8 +106,8 @@ public class MainMenuScreen extends ScreenAdapter
                 }
                 if (leveleditbutt.contains(touchpoint.x, touchpoint.y))
                 {
-                    //game.setScreen(new LevelScreen(game));
-                    //return 1;
+                    game.setScreen(new LevelScreen(game));
+                    return 1;
                 }
                 if (optionbutt.contains(touchpoint.x, touchpoint.y))
                 {
