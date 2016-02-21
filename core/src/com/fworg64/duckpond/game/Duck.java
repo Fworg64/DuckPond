@@ -91,8 +91,8 @@ public class Duck
 
         for (int i=0;i<ducklings.size();i++)
         {
-            if (i==0) ducklings.get(i).follow(this.posv, delta);
-            else ducklings.get(i).follow(ducklings.get(i-1).posv, delta);
+            if (i==0) ducklings.get(i).follow(this.posv, this.vel, delta);
+            else ducklings.get(i).follow(ducklings.get(i-1).posv, ducklings.get(i-1).vel, delta);
         }
     }
 
