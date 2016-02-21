@@ -1,12 +1,11 @@
 package com.fworg64.duckpond.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
 
 /**
  * These are the objects the player has control over
@@ -25,28 +24,34 @@ public class Duck
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
 
-    float dtheta; //when flicked this is how fast to rotate in rad/s
+    float dtheta; //direction to rotate 1/-1 for CW/CCW, or maybe CCW/CW.. it works
     Vector2 flickedinto;
     Vector2 vel;
     Vector2 posv;
 
+    ArrayList<Duckling> ducklings;
 
     private Animation swimmingAnim;
     private Animation padAnim;
     private Animation eatenAnim;
     public Animation currAnim;
 
-    public Duck(float x, float y, float vx, float vy)
-    {
-        pos = new Rectangle(x,y,DuckPondGame.spriteW,DuckPondGame.spriteH); //make this random for default constructor
-        col = new Circle(pos.getX() + .3f* pos.getWidth(), pos.getY() + .2f* pos.getHeight(), .3f* pos.getWidth()); //this needs moved to just the base
+    public Duck(float x, float y, float vx, float vy) {
+        pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
+        col = new Circle(pos.getX() + .3f * pos.getWidth(), pos.getY() + .2f * pos.getHeight(), .3f * pos.getWidth()); //this needs moved to just the base
 
-        dtheta =0; //1 if rotating CCW, -1 for CW, 0 for no rotation
+        dtheta = 0; //1 if rotating CCW, -1 for CW, 0 for no rotation
         vel = new Vector2(vx, vy); //must be floats... measured in worldunits/sec
         flickedinto = vel.cpy();
-        posv = new Vector2(pos.getX(),pos.getY());
+        posv = new Vector2(pos.getX(), pos.getY());
 
         state = State.SWIMMING;
+
+        ducklings = new ArrayList<Duckling>(5);
+        for (int i = 1; i < 6; i++)
+        {
+            ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 25));
+        }
 
         swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
         padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
@@ -81,6 +86,12 @@ public class Duck
                 state = State.DEAD;
 
             }
+        }
+
+        for (int i=0;i<ducklings.size();i++)
+        {
+            if (i==0) ducklings.get(i).follow(this.posv);
+            else ducklings.get(i).follow(ducklings.get(i-1).posv);
         }
     }
 
