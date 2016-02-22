@@ -17,11 +17,12 @@ public class World
 {
     public interface WorldListener
     {
-        //put methods here that you want executed using code in the screen class
-        //these are non-logic things such as play sound effects
-
-        //choose level might be a good function to do here as well
-        // or nah... world selection should happen not in this class
+        //game over victory
+        public void gameOverVictory();
+        //game over lose
+        public void gameOverLose();
+        //game over new world
+        //sound effects when we get to it
     }
 
     public final List<Duck> ducks;
