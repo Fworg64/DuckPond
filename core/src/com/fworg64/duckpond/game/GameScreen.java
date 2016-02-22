@@ -177,16 +177,13 @@ public class GameScreen extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        if (isPaused == false)
-        {
-            renderer.render(clock);
+        renderer.render(clock);
+        game.batch.begin();
+        game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
+        //draw other HUD shtuf
+        game.batch.end();
 
-            game.batch.begin();
-            game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
-            //draw other HUD shtuf
-            game.batch.end();
-        }
-        else
+        if (isPaused)
         {
             game.batch.enableBlending();
             game.batch.begin();
