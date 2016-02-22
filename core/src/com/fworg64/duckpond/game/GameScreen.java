@@ -105,7 +105,7 @@ public class GameScreen extends ScreenAdapter
         //resetbutt = new Rectangle(0, .9f*DuckPondGame.worldH, .1f*DuckPondGame.worldW, DuckPondGame.worldH);
         HUDarea = new Rectangle(0, (1-.1f)*Options.screenHeight, Options.screenWidth, .1f*Options.screenHeight);
         pausebutt = new Rectangle(0,DuckPondGame.worldH -.5f*HUDarea.getHeight(),(.3125f)*DuckPondGame.worldW, .1f*DuckPondGame.worldH);
-        unpausebutt = new Rectangle(115f/640f *Options.screenWidth, 90f/960f * Options.screenHeight, 415f/640f * Options.screenWidth, 120f/915f *Options.screenHeight);
+        unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
 
     }
 
@@ -142,11 +142,10 @@ public class GameScreen extends ScreenAdapter
             else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
             //if (resetbutt.contains(touchpoint)) world.LoadLevel(); //not really a reset, but ya know
-            if (pausebutt.contains(in.getTouchpoint()))
+            if (pausebutt.contains(in.getTouchpoint()) && in.justTouched())
             {
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
-                Gdx.app.debug("paused","button pressed");
             }
         }
         else
@@ -154,9 +153,11 @@ public class GameScreen extends ScreenAdapter
             switch (menu)
             {
                 case PAUSEMENU:
-                    if (unpausebutt.contains(in.getTouchpoint()))
+                    if (unpausebutt.contains(in.getTouchpoint()) && in.justTouched())
                     {
                         isPaused = false;
+
+                        in.getTouchpoint();
                         menu = Menus.PLAYING;
                     }
                     break;
@@ -189,7 +190,6 @@ public class GameScreen extends ScreenAdapter
         {
             game.batch.enableBlending();
             game.batch.begin();
-            Gdx.app.debug("Oh", "God");
             switch (menu)
             {
                 case PAUSEMENU:
