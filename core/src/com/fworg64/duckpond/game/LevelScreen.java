@@ -164,9 +164,13 @@ public class LevelScreen extends ScreenAdapter
                     //keep getting filenotfound exception for some reason :((((
                     FileWriter fw = new FileWriter(s);
                     //LOOK AT COMMENT IN DRAW METHOD ABOUT ACCESSOR METHODS
-                    fw.append("amount of ducks(),amount of sharks,?lilypad placement?");
+                    //fw.append("amount of ducks(),amount of sharks,?lilypad placement?");
+
+                    //********fw.append wasn't defined until after java 1.6, unfortunatly this means we cant use it with the html version
+                    //******** however, i dont think file saving would be the same anyway...
+
                     // new line character is \n pretty sure xD
-                    fw.append("\n");
+                    //fw.append("\n");
                     fw.close();
                 }
                     catch(FileNotFoundException e){

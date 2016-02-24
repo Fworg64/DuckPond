@@ -38,10 +38,14 @@ public class Assets
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
-    private static TextureRegion[] duckSwim;
+    private static TextureRegion[] duckSwimUp;
+    private static TextureRegion[] duckSwimDown;
+    private static TextureRegion[] duckSwimSide;
     private static TextureRegion[] duckPad;
     private static TextureRegion[] duckEaten;
-    public static Array<TextureRegion> duckSwimFrames;
+    public static Array<TextureRegion> duckSwimUpFrames;
+    public static Array<TextureRegion> duckSwimDownFrames;
+    public static Array<TextureRegion> duckSwimSideFrames;
     public static Array<TextureRegion> duckPadFrames;
     public static Array<TextureRegion> duckEatenFrames;
 
@@ -79,10 +83,14 @@ public class Assets
 
         duck = new Texture(Gdx.files.internal("duck.png"));
         duckframes = TextureRegion.split(duck, 96,96);
-        duckSwim = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1]};
-        duckPad =  new TextureRegion[] {duckframes[0][0], duckframes[1][0]};
-        duckEaten = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
-        duckSwimFrames = new Array<TextureRegion>(duckSwim);
+        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
+        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
+        duckSwimSide = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
+        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
+        duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
+        duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
+        duckSwimSideFrames = new Array<TextureRegion>(duckSwimSide);
         duckPadFrames = new Array<TextureRegion>(duckPad);
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
 
