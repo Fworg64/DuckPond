@@ -28,6 +28,13 @@ public class Assets
     public static Texture OptionsMenu;
     public static Texture LevelEditBg;
     public static Texture GameBackground;
+    public static Texture HUD;
+
+    public static Texture PauseMenu;
+    public static Texture ShowConfirmRestart;
+    public static Texture ShowConfirmExit;
+    public static Texture Victory;
+    public static Texture Defeat;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -62,6 +69,13 @@ public class Assets
         OptionsMenu = new Texture(Gdx.files.internal("OptionsMenu.png"));
         LevelEditBg = new Texture(Gdx.files.internal("LevelEditBackground.png"));
         GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
+        HUD = new Texture(Gdx.files.internal("HUD.png"));
+
+        PauseMenu = new Texture(Gdx.files.internal("pause.png"));
+        ShowConfirmExit = new Texture(Gdx.files.internal("exitconfirm.png"));
+        ShowConfirmRestart = new Texture(Gdx.files.internal("restartconfirm.png"));
+        Victory = new Texture(Gdx.files.internal("victory.png"));
+        Defeat = new Texture(Gdx.files.internal("defeat.png"));
 
         duck = new Texture(Gdx.files.internal("duck.png"));
         duckframes = TextureRegion.split(duck, 96,96);

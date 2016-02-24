@@ -77,7 +77,11 @@ public class Duck
         col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
         //stuff to determine frame animation
-        if (state == State.PAD) currAnim = padAnim;
+        if (state == State.PAD)
+        {
+            currAnim = padAnim;
+            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+        }
         if (state == State.EATEN)
         {
             currAnim = eatenAnim;
@@ -102,9 +106,13 @@ public class Duck
         else dtheta =1;
     }
 
-    public void pad()
+    public void pad(Lily pad)
     {
         state = State.PAD;
+        vel.set(pad.pos.getCenter(new Vector2()).sub(this.pos.getCenter(new Vector2())));
+        vel.setLength(50);
+        clock =0;
+
     }
 
     public void getEaten(Shark shark)
