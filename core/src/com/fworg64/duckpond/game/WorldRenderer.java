@@ -57,11 +57,9 @@ public class WorldRenderer
             for (Duck fred: world.ducks)
             {
                 batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
-                Gdx.app.debug("Duck", fred.pos.toString());
                 for (Duckling f: fred.ducklings)
                 {
                     batch.draw(fred.currAnim.getKeyFrame(clock), f.pos.getX(), f.pos.getY(), f.pos.getWidth(), f.pos.getHeight());
-                    Gdx.app.debug("ducklingpos", f.pos.toString());
                 }
             }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);

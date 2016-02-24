@@ -60,6 +60,11 @@ public class GameScreen extends ScreenAdapter
     private Rectangle restartbutt;
     private Rectangle confirmYes;
     private Rectangle confirmNo;
+    private Rectangle GOVnextLevel;
+    private Rectangle GOVmainMenu;
+    private Rectangle GOLmainMenu;
+    private Rectangle GOLrestart;
+    private Rectangle GOLlevelSelect;
     //private Rectangle resetbutt;
 
 
@@ -84,6 +89,7 @@ public class GameScreen extends ScreenAdapter
             {
                 isPaused = true;
                 menu = Menus.GMVICTORY;
+                Gdx.app.debug("gamestate", "VIctory!");
             }
 
             @Override
@@ -91,6 +97,7 @@ public class GameScreen extends ScreenAdapter
             {
                 isPaused = true;
                 menu = Menus.GMLOSE;
+                Gdx.app.debug("gamestate", "DEGEAT");
             }
         }; //implement later... later is now! 2/21
 
@@ -118,6 +125,9 @@ public class GameScreen extends ScreenAdapter
         exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
         confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
         confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+        GOVmainMenu = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        GOLmainMenu = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        GOLrestart = new Rectangle(400f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
 
     }
 
@@ -186,7 +196,10 @@ public class GameScreen extends ScreenAdapter
                     }
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        //reload level
+                        world.ReloadLevel();
+                        showConfirmRestart = false;
+                        isPaused = false;
+                        menu = Menus.PLAYING;
                     }
                     if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
                     {
@@ -195,8 +208,22 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMLOSE:
+                    if (GOLmainMenu.contains(in.getTouchpoint()) && in.justTouched())
+                    {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                    if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
+                    {
+                        world.ReloadLevel();
+                        menu = Menus.PLAYING;
+                        isPaused = false;
+                    }
                     break;
                 case GMVICTORY:
+                    if (GOVmainMenu.contains(in.getTouchpoint()) && in.justTouched())
+                    {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
                     break;
             }
         }
@@ -228,8 +255,10 @@ public class GameScreen extends ScreenAdapter
                     if (showConfirmRestart) game.batch.draw(Assets.ShowConfirmRestart, 0, 0, Options.screenWidth, Options.screenHeight);
                     break;
                 case GMLOSE:
+                    game.batch.draw(Assets.Defeat, 0,0,Options.screenWidth, Options.screenHeight);
                     break;
                 case GMVICTORY:
+                    game.batch.draw(Assets.Victory, 0,0,Options.screenWidth, Options.screenHeight);
                     break;
             }
             game.batch.end();
@@ -238,11 +267,27 @@ public class GameScreen extends ScreenAdapter
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
-        shapeRenderer.rect(unpausebutt.getX(), unpausebutt.getY(), unpausebutt.getWidth(), unpausebutt.getHeight());
-        shapeRenderer.rect(restartbutt.getX(), restartbutt.getY(), restartbutt.getWidth(), restartbutt.getHeight());
-        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
-        shapeRenderer.rect(confirmYes.getX(), confirmYes.getY(), confirmYes.getWidth(), confirmYes.getHeight());
-        shapeRenderer.rect(confirmNo.getX(), confirmNo.getY(), confirmNo.getWidth(), confirmNo.getHeight());
+        if (isPaused)
+        {
+            shapeRenderer.rect(unpausebutt.getX(), unpausebutt.getY(), unpausebutt.getWidth(), unpausebutt.getHeight());
+            shapeRenderer.rect(restartbutt.getX(), restartbutt.getY(), restartbutt.getWidth(), restartbutt.getHeight());
+            shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        }
+        if (showConfirmExit || showConfirmRestart)
+        {
+            shapeRenderer.rect(confirmYes.getX(), confirmYes.getY(), confirmYes.getWidth(), confirmYes.getHeight());
+            shapeRenderer.rect(confirmNo.getX(), confirmNo.getY(), confirmNo.getWidth(), confirmNo.getHeight());
+        }
+        if (menu == Menus.GMLOSE)
+        {
+            shapeRenderer.rect(GOLmainMenu.getX(), GOLmainMenu.getY(), GOLmainMenu.getWidth(), GOLmainMenu.getHeight());
+            shapeRenderer.rect(GOLrestart.getX(), GOLrestart.getY(), GOLrestart.getWidth(), GOLrestart.getHeight());
+        }
+        if (menu == Menus.GMVICTORY)
+        {
+            shapeRenderer.rect(GOVmainMenu.getX(), GOVmainMenu.getY(), GOVmainMenu.getWidth(), GOVmainMenu.getHeight());
+        }
+
         shapeRenderer.end();
 
     }

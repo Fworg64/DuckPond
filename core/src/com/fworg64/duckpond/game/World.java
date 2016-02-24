@@ -32,6 +32,7 @@ public class World
     public final WorldListener listener;
 
     public int score;
+    public int scoreNeeded;
     public int lives;
 
     String debug;
@@ -43,7 +44,8 @@ public class World
         pads = new ArrayList<Lily>();
         sharks = new ArrayList<Shark>();
         score =0;
-        lives =3;
+        scoreNeeded = 200;
+        lives =2;
 
         debug = "ALLSGOOD";
     }
@@ -59,6 +61,17 @@ public class World
         sharks.add(new Shark(400, 100, -60, 10));
     }
 
+    public void ReloadLevel() //should reload the current level
+    {
+        ducks.clear();
+        pads.clear();
+        sharks.clear();
+        score =0;
+        lives =2;
+
+        LoadLevel();
+    }
+
     public void update(float delta, Vector2 swipestart, Vector2 swipeend)
     {
 
@@ -66,6 +79,8 @@ public class World
         updateSharks(delta);
         checkPadsAndDucks();
         checkDucksAndSharks();
+        if (Victory()) listener.gameOverVictory();
+        if (Defeat()) listener.gameOverLose();
     }
 
     private void updateDucks(float delta, Vector2 swipestart, Vector2 swipeend)
@@ -100,9 +115,10 @@ public class World
         {
             for (Lily l: pads)
             {
-                if (l.col.overlaps(d.col))
+                if (l.col.overlaps(d.col) && d.state != Duck.State.PAD)
                 {
-                    d.pad();
+                    d.pad(l);
+                    score +=100;
                     debug = "DUCK PADDED!!";
                 }
 
@@ -121,9 +137,21 @@ public class World
                 {
                     s.eatDuck(d);
                     d.getEaten(s);
-                    debug = "DUCK EATEN!!";
+                    lives -=1;
+                    Gdx.app.debug("DuckEAted", Integer.toString(lives));
                 }
             }
         }
+    }
+
+    private boolean Victory()
+    {
+        if (score >= scoreNeeded) return true;
+        else return false;
+    }
+    private boolean Defeat()
+    {
+        if (lives <=0) return true; //or something
+        else return false;
     }
 }
