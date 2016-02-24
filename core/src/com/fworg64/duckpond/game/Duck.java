@@ -31,7 +31,9 @@ public class Duck
 
     ArrayList<Duckling> ducklings;
 
-    private Animation swimmingAnim;
+    private Animation swimUpAnim;
+    private Animation swimSideAnim;
+    private Animation swimDownAnim;
     private Animation padAnim;
     private Animation eatenAnim;
     public Animation currAnim;
@@ -53,10 +55,12 @@ public class Duck
             ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 25));
         }
 
-        swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideAnim = new Animation(.2f, Assets.duckSwimSideFrames, Animation.PlayMode.LOOP_PINGPONG);
         padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
         eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
-        currAnim = swimmingAnim;
+        currAnim = swimUpAnim;
 
     }
 
@@ -77,6 +81,14 @@ public class Duck
         col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
         //stuff to determine frame animation
+        if (state == State.SWIMMING)
+        {
+            float temp = vel.angle();
+            if (temp >=45 && temp <135) currAnim = swimUpAnim;
+            else if (temp >=135 &&  temp <225) currAnim = swimSideAnim;
+            else if (temp >=225 && temp <315) currAnim = swimDownAnim;
+            else currAnim = swimSideAnim;
+        }
         if (state == State.PAD)
         {
             currAnim = padAnim;
