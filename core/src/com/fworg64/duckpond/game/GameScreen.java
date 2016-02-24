@@ -49,11 +49,17 @@ public class GameScreen extends ScreenAdapter
     String swipedebug;
 
     private boolean isPaused;
+    private boolean showConfirmRestart;
+    private boolean showConfirmExit;
     Menus menu;
 
     private Rectangle HUDarea;
     private Rectangle pausebutt;
     private Rectangle unpausebutt;
+    private Rectangle exitbutt;
+    private Rectangle restartbutt;
+    private Rectangle confirmYes;
+    private Rectangle confirmNo;
     //private Rectangle resetbutt;
 
 
@@ -89,6 +95,8 @@ public class GameScreen extends ScreenAdapter
         }; //implement later... later is now! 2/21
 
         isPaused = false;
+        showConfirmRestart = false;
+        showConfirmExit = false;
         menu = Menus.PLAYING;
 
         world = new World(listener);
@@ -106,6 +114,10 @@ public class GameScreen extends ScreenAdapter
         HUDarea = new Rectangle(0, (1-.1f)*Options.screenHeight, Options.screenWidth, .1f*Options.screenHeight);
         pausebutt = new Rectangle(0,DuckPondGame.worldH -.5f*HUDarea.getHeight(),(.3125f)*DuckPondGame.worldW, .1f*DuckPondGame.worldH);
         unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+        confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
 
     }
 
@@ -160,6 +172,27 @@ public class GameScreen extends ScreenAdapter
                         in.getTouchpoint();
                         menu = Menus.PLAYING;
                     }
+                    if (exitbutt.contains(in.getTouchpoint()) && in.justTouched() && !(showConfirmRestart || showConfirmExit))
+                    {
+                        showConfirmExit = true;
+                    }
+                    if (restartbutt.contains(in.getTouchpoint()) && in.justTouched() && !(showConfirmRestart || showConfirmExit))
+                    {
+                        showConfirmRestart = true;
+                    }
+                    if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
+                    {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                    if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
+                    {
+                        //reload level
+                    }
+                    if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
+                    {
+                        showConfirmExit = false;
+                        showConfirmRestart = false;
+                    }
                     break;
                 case GMLOSE:
                     break;
@@ -191,6 +224,8 @@ public class GameScreen extends ScreenAdapter
             {
                 case PAUSEMENU:
                     game.batch.draw(Assets.PauseMenu, 0,0,Options.screenWidth, Options.screenHeight);
+                    if (showConfirmExit) game.batch.draw(Assets.ShowConfirmExit, 0, 0, Options.screenWidth, Options.screenHeight);
+                    if (showConfirmRestart) game.batch.draw(Assets.ShowConfirmRestart, 0, 0, Options.screenWidth, Options.screenHeight);
                     break;
                 case GMLOSE:
                     break;
@@ -204,6 +239,10 @@ public class GameScreen extends ScreenAdapter
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
         shapeRenderer.rect(unpausebutt.getX(), unpausebutt.getY(), unpausebutt.getWidth(), unpausebutt.getHeight());
+        shapeRenderer.rect(restartbutt.getX(), restartbutt.getY(), restartbutt.getWidth(), restartbutt.getHeight());
+        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        shapeRenderer.rect(confirmYes.getX(), confirmYes.getY(), confirmYes.getWidth(), confirmYes.getHeight());
+        shapeRenderer.rect(confirmNo.getX(), confirmNo.getY(), confirmNo.getWidth(), confirmNo.getHeight());
         shapeRenderer.end();
 
     }
