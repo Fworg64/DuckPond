@@ -72,7 +72,7 @@ public class Duckling
             posv.set(checkpoints.get(0));
             vel.set(checkpoints.get(1).cpy().sub(checkpoints.get(0)));
             checkpoints.remove(0);
-            state = State.SWIMMING;
+            if (!vel.isZero()) state = State.SWIMMING;
         }
         pos.setPosition(posv);
         col.setPosition(pos.getCenter(new Vector2()));
@@ -83,7 +83,8 @@ public class Duckling
         clock += delta;
 
         setSprite();
-        if (vel.len2()<=1) state = State.PAD;
+        if (vel.isZero() && state == State.SWIMMING) state = State.PAD;
+        Gdx.app.debug("lingvel",Float.toString(vel.len2()));
     }
 
     private void setSprite()
@@ -101,6 +102,7 @@ public class Duckling
         {
             currAnim = padAnim;
             if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+            Gdx.app.debug("wtf","padded");
         }
         if (state == State.EATEN)
         {
