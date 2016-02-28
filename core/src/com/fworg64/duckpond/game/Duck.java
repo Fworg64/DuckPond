@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -37,6 +38,7 @@ public class Duck
     private Animation padAnim;
     private Animation eatenAnim;
     public Animation currAnim;
+    public Sprite sprite;
 
     public Duck(float x, float y, float vx, float vy) {
         pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
@@ -61,6 +63,7 @@ public class Duck
         padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
         eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
         currAnim = swimUpAnim;
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
 
     }
 
@@ -85,7 +88,7 @@ public class Duck
         {
             float temp = vel.angle();
             if (temp >=45 && temp <135) currAnim = swimUpAnim;
-            else if (temp >=135 &&  temp <225) currAnim = swimSideAnim;
+            else if (temp >=135 &&  temp <225) currAnim = swimSideAnim; //and flip it
             else if (temp >=225 && temp <315) currAnim = swimDownAnim;
             else currAnim = swimSideAnim;
         }
@@ -103,6 +106,10 @@ public class Duck
 
             }
         }
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
+        sprite.setPosition(pos.getX(), pos.getY());
+        //sprite.setOriginCenter();
+        //sprite.setRotation(vel.angle());
 
         for (int i=0;i<ducklings.size();i++)
         {
