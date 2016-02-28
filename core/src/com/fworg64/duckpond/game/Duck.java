@@ -85,13 +85,17 @@ public class Duck
             //A dot B = mag(A)*mag(B)*cos(T) : the .9998 gives us +/- 1.40 deg of indifference (cos^-1())
             //if the .999X is too close to 1, the duck gets confused...
         }
+        if (state == State.PAD)
+        {
+            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+        }
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
         pos.setPosition(posv); //pos + vel*time = new pos
         col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
         //stuff to determine frame animation
-        setSprite();
+        setSprite(); //note, also determines when dead
 
 
         for (int i=0;i<ducklings.size();i++)
@@ -137,8 +141,7 @@ public class Duck
         }
         if (state == State.PAD)
         {
-            currAnim = padAnim;
-            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+            if (vel.isZero()) currAnim = padAnim;
         }
         if (state == State.EATEN)
         {
