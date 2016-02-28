@@ -47,7 +47,7 @@ public class Duck
 
     public Duck(float x, float y, float vx, float vy) {
         pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
-        col = new Circle(pos.getX() + .3f * pos.getWidth(), pos.getY() + .2f * pos.getHeight(), .3f * pos.getWidth()); //this needs moved to just the base
+        col = new Circle(pos.getX() + .5f * pos.getWidth(), pos.getY() + .5f * pos.getHeight(), .4f * pos.getWidth()); //this needs moved to just the base
 
         dtheta = 0; //1 if rotating CCW, -1 for CW, 0 for no rotation
         vel = new Vector2(vx, vy); //must be floats... measured in worldunits/sec
@@ -59,7 +59,7 @@ public class Duck
         ducklings = new ArrayList<Duckling>(5);
         for (int i = 1; i < 6; i++)
         {
-            ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 25));
+            ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 30));
         }
 
         swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
@@ -92,7 +92,7 @@ public class Duck
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
         pos.setPosition(posv); //pos + vel*time = new pos
-        col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
+        col.setPosition(pos.getX()+ .5f * pos.getWidth(), pos.getY() + .5f* pos.getHeight());
 
         //stuff to determine frame animation
         setSprite(); //note, also determines when dead
@@ -156,7 +156,7 @@ public class Duck
         sprite = new Sprite(currAnim.getKeyFrame(clock));
         sprite.setPosition(pos.getX(), pos.getY());
         sprite.setOriginCenter();
-        if (state != State.PAD && dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+        if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
         if (dir == Direction.RIGHT && vel.angle() <90) sprite.setRotation(ang*.3f);
         if (dir == Direction.RIGHT && vel.angle() >270) sprite.setRotation((ang-360)*.3f +360);
 
