@@ -39,12 +39,14 @@ public class Assets
     private static TextureRegion[][] duckframes;
     private static TextureRegion[] duckSwimUp;
     private static TextureRegion[] duckSwimDown;
-    private static TextureRegion[] duckSwimSide;
+    private static TextureRegion[] duckSwimSideRight;
+    private static TextureRegion[] duckSwimSideLeft;
     private static TextureRegion[] duckPad;
     private static TextureRegion[] duckEaten;
     public static Array<TextureRegion> duckSwimUpFrames;
     public static Array<TextureRegion> duckSwimDownFrames;
-    public static Array<TextureRegion> duckSwimSideFrames;
+    public static Array<TextureRegion> duckSwimSideRightFrames;
+    public static Array<TextureRegion> duckSwimSideLeftFrames;
     public static Array<TextureRegion> duckPadFrames;
     public static Array<TextureRegion> duckEatenFrames;
 
@@ -88,12 +90,20 @@ public class Assets
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
         duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
         duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
-        duckSwimSide = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
         duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
         duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
         duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
         duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
-        duckSwimSideFrames = new Array<TextureRegion>(duckSwimSide);
+        duckSwimSideRightFrames = new Array<TextureRegion>(duckSwimSideRight);
+        duckSwimSideLeftFrames = new Array<TextureRegion>();
+        for (TextureRegion t:duckSwimSideRightFrames)
+        {
+            TextureRegion temp = new TextureRegion(t);
+            temp.flip(true,false);
+            duckSwimSideLeftFrames.add(temp);
+        }
         duckPadFrames = new Array<TextureRegion>(duckPad);
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
 

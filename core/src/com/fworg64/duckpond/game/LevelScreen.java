@@ -220,7 +220,7 @@ public class LevelScreen extends ScreenAdapter
             //WHETHER THAT OBJECT BE SHARK, LILY, OR DUCK
             //int i = dL.indexOf(f);
 
-            game.batch.draw(Assets.duckSwimSideFrames.first(), f.pos.x, f.pos.y, 96, 96);
+            game.batch.draw(Assets.duckSwimSideRightFrames.first(), f.pos.x, f.pos.y, 96, 96);
     }
         for (Shark f : sL){
 
