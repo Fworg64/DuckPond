@@ -52,13 +52,13 @@ public class World
 
     public void LoadLevel() //eventually accept a string filename to load a level
     {
-        ducks.add(new Duck(-200, 50, 70, 20));
-        ducks.add(new Duck(600, 200, -50, 0));
+        //ducks.add(new Duck(-200, 50, 70, 20));
+        //ducks.add(new Duck(600, 200, -50, 0));
         ducks.add(new Duck(160, 300, -10, -40));
 
         pads.add(new Lily(120, 340));
 
-        sharks.add(new Shark(400, 100, -60, 10));
+        //sharks.add(new Shark(400, 100, -60, 10));
     }
 
     public void ReloadLevel() //should reload the current level

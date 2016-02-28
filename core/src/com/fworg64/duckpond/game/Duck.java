@@ -1,6 +1,8 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,8 +20,10 @@ public class Duck
 {
     public static final float rotConst = .03f; //constant for adjusting rotation speed
     public enum State {SWIMMING, PAD, EATEN, DEAD}; //mainly used for animation
+    public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
 
     State state;
+
     public float clock;
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
@@ -31,10 +35,15 @@ public class Duck
 
     ArrayList<Duckling> ducklings;
 
-    private Animation swimmingAnim;
+    private Animation swimUpAnim;
+    private Animation swimSideRightAnim;
+    private Animation swimSideLeftAnim;
+    private Animation swimDownAnim;
     private Animation padAnim;
     private Animation eatenAnim;
     public Animation currAnim;
+    public Sprite sprite;
+    Direction dir;
 
     public Duck(float x, float y, float vx, float vy) {
         pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
@@ -53,10 +62,15 @@ public class Duck
             ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 25));
         }
 
-        swimmingAnim = new Animation(.2f, Assets.duckSwimFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
         padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
         eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
-        currAnim = swimmingAnim;
+        currAnim = swimUpAnim;
+        dir = Direction.UP;
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
 
     }
 
@@ -77,25 +91,14 @@ public class Duck
         col.setPosition(pos.getX()+ .3f * pos.getWidth(), pos.getY() + .2f* pos.getHeight());
 
         //stuff to determine frame animation
-        if (state == State.PAD)
-        {
-            currAnim = padAnim;
-            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
-        }
-        if (state == State.EATEN)
-        {
-            currAnim = eatenAnim;
-            if (currAnim.isAnimationFinished(clock))
-            {
-                state = State.DEAD;
+        setSprite();
 
-            }
-        }
 
         for (int i=0;i<ducklings.size();i++)
         {
             if (i==0) ducklings.get(i).follow(this.posv);
             else ducklings.get(i).follow(ducklings.get(i-1).posv);
+            ducklings.get(i).update(delta); //while were iterating...
         }
     }
 
@@ -119,6 +122,41 @@ public class Duck
     {
         state = State.EATEN;
         clock =0;
+    }
+
+    private void setSprite()
+    {
+        float ang = vel.angle();
+        if (state == State.SWIMMING)
+        {
+
+            if (ang >=45 && ang <135) {currAnim = swimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = swimSideLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = swimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = swimSideRightAnim; dir = Direction.RIGHT;}
+        }
+        if (state == State.PAD)
+        {
+            currAnim = padAnim;
+            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+        }
+        if (state == State.EATEN)
+        {
+            currAnim = eatenAnim;
+            if (currAnim.isAnimationFinished(clock))
+            {
+                state = State.DEAD;
+
+            }
+        }
+
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
+        sprite.setPosition(pos.getX(), pos.getY());
+        sprite.setOriginCenter();
+        if (state != State.PAD && dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+        if (dir == Direction.RIGHT && vel.angle() <90) sprite.setRotation(ang*.3f);
+        if (dir == Direction.RIGHT && vel.angle() >270) sprite.setRotation((ang-360)*.3f +360);
+
     }
 
 }

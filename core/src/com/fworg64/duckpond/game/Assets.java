@@ -11,10 +11,9 @@ import com.badlogic.gdx.utils.Array;
 import sun.applet.Main;
 
 /**
- * This is the ASSets files, it handles loading of assets
+ * This is the Assets files, it handles loading of assets
  * and is where all assets are accesed from
  *
- * this shit needs to be higher res
  *
  * this includes textures and sounds
  *
@@ -38,10 +37,16 @@ public class Assets
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
-    private static TextureRegion[] duckSwim;
+    private static TextureRegion[] duckSwimUp;
+    private static TextureRegion[] duckSwimDown;
+    private static TextureRegion[] duckSwimSideRight;
+    private static TextureRegion[] duckSwimSideLeft;
     private static TextureRegion[] duckPad;
     private static TextureRegion[] duckEaten;
-    public static Array<TextureRegion> duckSwimFrames;
+    public static Array<TextureRegion> duckSwimUpFrames;
+    public static Array<TextureRegion> duckSwimDownFrames;
+    public static Array<TextureRegion> duckSwimSideRightFrames;
+    public static Array<TextureRegion> duckSwimSideLeftFrames;
     public static Array<TextureRegion> duckPadFrames;
     public static Array<TextureRegion> duckEatenFrames;
 
@@ -57,6 +62,8 @@ public class Assets
     private static TextureRegion[] lilyRot;
     public static Array<TextureRegion> lilyRotFrames;
 
+    static String res;
+
 
 
 
@@ -64,35 +71,49 @@ public class Assets
     {
 //        font = new BitmapFont();
 //        font.setColor(Color.FIREBRICK); //eventually get a real font
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
 
-        MainMenuBackground = new Texture(Gdx.files.internal("MainMenu.png"));
-        OptionsMenu = new Texture(Gdx.files.internal("OptionsMenu.png"));
-        LevelEditBg = new Texture(Gdx.files.internal("LevelEditBackground.png"));
-        GameBackground = new Texture(Gdx.files.internal("gbkgnd.png"));
-        HUD = new Texture(Gdx.files.internal("HUD.png"));
+        MainMenuBackground = new Texture(Gdx.files.internal(res + "MainMenu.png"));
+        OptionsMenu = new Texture(Gdx.files.internal(res + "OptionsMenu.png"));
+        LevelEditBg = new Texture(Gdx.files.internal(res + "LevelEditBackground.png"));
+        GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
+        HUD = new Texture(Gdx.files.internal(res + "HUD.png"));
 
-        PauseMenu = new Texture(Gdx.files.internal("pause.png"));
-        ShowConfirmExit = new Texture(Gdx.files.internal("exitconfirm.png"));
-        ShowConfirmRestart = new Texture(Gdx.files.internal("restartconfirm.png"));
-        Victory = new Texture(Gdx.files.internal("victory.png"));
-        Defeat = new Texture(Gdx.files.internal("defeat.png"));
+        PauseMenu = new Texture(Gdx.files.internal(res + "pause.png"));
+        ShowConfirmExit = new Texture(Gdx.files.internal(res + "exitconfirm.png"));
+        ShowConfirmRestart = new Texture(Gdx.files.internal(res + "restartconfirm.png"));
+        Victory = new Texture(Gdx.files.internal(res + "victory.png"));
+        Defeat = new Texture(Gdx.files.internal(res + "defeat.png"));
 
-        duck = new Texture(Gdx.files.internal("duck.png"));
-        duckframes = TextureRegion.split(duck, 96,96);
-        duckSwim = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1]};
-        duckPad =  new TextureRegion[] {duckframes[0][0], duckframes[1][0]};
-        duckEaten = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
-        duckSwimFrames = new Array<TextureRegion>(duckSwim);
+        duck = new Texture(Gdx.files.internal(res + "duck.png"));
+        duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
+        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
+        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
+        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
+        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
+        duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
+        duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
+        duckSwimSideRightFrames = new Array<TextureRegion>(duckSwimSideRight);
+        duckSwimSideLeftFrames = new Array<TextureRegion>();
+        for (TextureRegion t:duckSwimSideRightFrames)
+        {
+            TextureRegion temp = new TextureRegion(t);
+            temp.flip(true,false);
+            duckSwimSideLeftFrames.add(temp);
+        }
         duckPadFrames = new Array<TextureRegion>(duckPad);
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
 
-        lily = new Texture(Gdx.files.internal("lily.png"));
-        lilyframes = TextureRegion.split(lily, 96,96);
+        lily = new Texture(Gdx.files.internal(res + "lily.png"));
+        lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
 
-        shark = new Texture(Gdx.files.internal("shark.png"));
-        sharkframes = TextureRegion.split(shark, 96,96);
+        shark = new Texture(Gdx.files.internal(res + "shark.png"));
+        sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
         sharkSwim = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
         sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
         sharkSwimFrames = new Array<TextureRegion>(sharkSwim);

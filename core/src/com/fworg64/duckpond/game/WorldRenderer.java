@@ -56,10 +56,11 @@ public class WorldRenderer
             for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY(), Options.spriteWidth, Options.spriteHeight);
             for (Duck fred: world.ducks)
             {
-                batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX(), fred.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+                fred.sprite.draw(batch);
                 for (Duckling f: fred.ducklings)
                 {
-                    batch.draw(fred.currAnim.getKeyFrame(clock), f.pos.getX(), f.pos.getY(), f.pos.getWidth(), f.pos.getHeight());
+                    f.sprite.setScale(.5f);
+                    f.sprite.draw(batch);
                 }
             }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);
@@ -69,10 +70,13 @@ public class WorldRenderer
             for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX()*2, laura.pos.getY()*2);
             for (Duck fred: world.ducks)
             {
-                batch.draw(fred.currAnim.getKeyFrame(clock), fred.pos.getX()*2, fred.pos.getY()*2);
+                fred.sprite.setPosition(fred.pos.getX() *2, fred.pos.getY() *2);
+                fred.sprite.draw(batch);
                 for (Duckling f: fred.ducklings)
                 {
-                    batch.draw(fred.currAnim.getKeyFrame(clock), f.pos.getX()*2, f.pos.getY()*2, f.pos.getWidth()*2, f.pos.getHeight()*2);
+                    f.sprite.setScale(.5f);
+                    f.sprite.setPosition(f.pos.getX()*2,f.pos.getY()*2);
+                    f.sprite.draw(batch);
                 }
             }
             for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX()*2, sam.pos.getY()*2);
