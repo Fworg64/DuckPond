@@ -32,7 +32,7 @@ public class DuckPondGame extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		Options.loadDefault();
-		Options.setHighres();
+		//Options.setHighres();
 		Assets.load();
 
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);

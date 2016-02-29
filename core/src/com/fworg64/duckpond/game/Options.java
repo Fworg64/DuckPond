@@ -12,6 +12,8 @@ public class Options
     public static int screenHeight;
     public static int spriteWidth; //implied by screen width
     public static int spriteHeight;
+    public static int GUIWidth;
+    public static int GUIHeight;
 
     public static void loadDefault()
     {
@@ -20,6 +22,8 @@ public class Options
         screenHeight = DuckPondGame.worldH;
         spriteWidth = DuckPondGame.spriteW;
         spriteHeight = DuckPondGame.spriteH;
+        GUIWidth = 32;
+        GUIHeight = 32;
     }
 
     public static void setHighres()
@@ -29,5 +33,7 @@ public class Options
         screenHeight = 2*DuckPondGame.worldH;
         spriteWidth = 2*DuckPondGame.spriteW;
         spriteHeight = 2*DuckPondGame.spriteH;
+        GUIWidth = 64;
+        GUIHeight = 64;
     }
 }

@@ -91,7 +91,7 @@ public class World
             d.update(delta);
             if (d.state == Duck.State.DEAD) {iterator.remove();} //safe way to clean dead ducks
             if (swipestart.cpy().sub(swipeend).len2()>1) Gdx.app.debug("Known Duck",d.pos.toString());
-            if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1)
+            if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1 && d.state == Duck.State.SWIMMING)
             {
                 swipeend.sub(swipestart);
                 d.flick(swipeend);

@@ -16,7 +16,6 @@ public class Duckling
 {
     public enum State {INITIALIZING, SWIMMING, PAD, EATEN, DEAD};
     public enum Direction {RIGHT, UP, LEFT, DOWN};
-    public final static float rotConst = .6f* Duck.rotConst;
 
     Rectangle pos; //make a default obj class with a rect
     Circle col; //for collisions
@@ -31,7 +30,7 @@ public class Duckling
     private Animation swimDownAnim;
     private Animation padAnim;
     private Animation eatenAnim;
-    public Animation currAnim;
+    private Animation currAnim;
     public Sprite sprite;
     Direction dir;
 
@@ -42,7 +41,7 @@ public class Duckling
     public Duckling(int x, int y, int pointsbehind)
     {
         pos = new Rectangle(x,y, DuckPondGame.spriteW/2, DuckPondGame.spriteH/2);
-        col = new Circle(pos.getCenter(new Vector2()), pos.getWidth()/3);
+        col = new Circle(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight(), pos.getWidth()*.33f);
         posv = new Vector2(pos.getX(), pos.getY());
         vel = new Vector2();
 
@@ -75,7 +74,7 @@ public class Duckling
             if (!vel.isZero()) state = State.SWIMMING;
         }
         pos.setPosition(posv);
-        col.setPosition(pos.getCenter(new Vector2()));
+        col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
     }
 
     public void update(float delta)
@@ -84,7 +83,6 @@ public class Duckling
 
         setSprite();
         if (vel.isZero() && state == State.SWIMMING) state = State.PAD;
-        Gdx.app.debug("lingvel",Float.toString(vel.len2()));
     }
 
     private void setSprite()
@@ -100,9 +98,8 @@ public class Duckling
         }
         if (state == State.PAD)
         {
-            currAnim = padAnim;
+            if (vel.isZero()) currAnim = padAnim;
             if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
-            Gdx.app.debug("wtf","padded");
         }
         if (state == State.EATEN)
         {

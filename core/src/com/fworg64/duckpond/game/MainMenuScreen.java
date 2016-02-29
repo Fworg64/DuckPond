@@ -20,7 +20,6 @@ import com.badlogic.gdx.math.Vector3;
  * the reason to keep all these menus in one file is so that the ads served on the first menu can be carried
  * over to level selection and options (technically they will all be the same screen)
  *
- * Not Resolution Aware
  *
  * Created by fworg on 2/4/2016.
  */
@@ -41,7 +40,11 @@ public class MainMenuScreen extends ScreenAdapter
     final static int OPTEXIT_Y = (int)(.62f * DuckPondGame.worldH); //bottom left corner of saveandexit button for options
     final static int OPTWIDTH = (int)(.33f * DuckPondGame.worldW); // width of options exit buttons
     final static int OPTHEIGHT = (int)(.094f * DuckPondGame.worldH); //height of exit buttons
-    final static int OPTSPACE = (int)(.4f * DuckPondGame.worldW); //width of button and distance to next on xaxis
+    final static int RES_X = (int)(62./320. * DuckPondGame.worldW);//bottom left corner of lowres tickbox X
+    final static int RES_Y = (int)(224./480. * DuckPondGame.worldH);//bottom left corner of lowres tickbox Y
+    final static int RES_W = Options.GUIWidth;
+    final static int RES_H = Options.GUIHeight;
+    final static int RES_S = (int)(130./320. * DuckPondGame.worldW);
 
     boolean showOptions;
 
@@ -58,7 +61,6 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle leveleditbutt;
 
     Rectangle SaveReturn;
-    Rectangle ExitNoSave;
     Rectangle StdRes;
     Rectangle HighRes;
     Rectangle PremiumButt;
@@ -68,11 +70,7 @@ public class MainMenuScreen extends ScreenAdapter
     public MainMenuScreen (DuckPondGame game) //fuck your one true brace
     {
         this.game = game;
-        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
-        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
-        gcam.update();
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(gcam.combined);
+        resetCam(); //also sets shaperendererererer
 
         playbutt = new Rectangle(PLAY_X, PLAY_Y, BUTT_W, BUTT_H);
         optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, BUTT_W, BUTT_H);
@@ -80,7 +78,8 @@ public class MainMenuScreen extends ScreenAdapter
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, BUTT_W, BUTT_H);
 
         SaveReturn = new Rectangle(OPTEXIT_X,OPTEXIT_Y,OPTWIDTH, OPTHEIGHT);
-        ExitNoSave = new Rectangle(OPTEXIT_X + OPTSPACE, OPTEXIT_Y, OPTWIDTH, OPTHEIGHT);
+        StdRes = new Rectangle(RES_X, RES_Y, RES_W, RES_H);
+        HighRes = new Rectangle(RES_X + RES_S, RES_Y, RES_W, RES_H);
 
         showOptions = false;
 
@@ -124,9 +123,17 @@ public class MainMenuScreen extends ScreenAdapter
                 {
                     showOptions =false;
                 }
-                if (ExitNoSave.contains(touchpoint.x, touchpoint.y))
+                if (StdRes.contains(touchpoint.x, touchpoint.y) && Options.highres)
                 {
-                    showOptions =false;
+                    Options.loadDefault();
+                    Assets.load();
+                    resetCam();
+                }
+                if (HighRes.contains(touchpoint.x, touchpoint.y) && !Options.highres)
+                {
+                    Options.setHighres();
+                    Assets.load();
+                    resetCam();
                 }
             }
 
@@ -153,9 +160,11 @@ public class MainMenuScreen extends ScreenAdapter
         }
         else if (showOptions ==true)
         {
-            game.batch.disableBlending();
+            game.batch.enableBlending();
             game.batch.begin();
             game.batch.draw(Assets.OptionsMenu, 0, 0, Options.screenWidth, Options.screenHeight);
+            if (Options.highres) game.batch.draw(Assets.check, (RES_X + RES_S)*2, RES_Y*2);
+            else game.batch.draw(Assets.check, RES_X, RES_Y);
             game.batch.end();
         }
 
@@ -175,9 +184,19 @@ public class MainMenuScreen extends ScreenAdapter
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(.5f, .2f, .2f, .5f);
             shapeRenderer.rect(SaveReturn.getX(), SaveReturn.getY(), SaveReturn.getWidth(), SaveReturn.getHeight());
-            shapeRenderer.rect(ExitNoSave.getX(), ExitNoSave.getY(), ExitNoSave.getWidth(), ExitNoSave.getHeight());
+            shapeRenderer.rect(StdRes.getX(), StdRes.getY(), StdRes.getWidth(), StdRes.getHeight());
+            shapeRenderer.rect(HighRes.getX(), HighRes.getY(), HighRes.getWidth(), HighRes.getHeight());
             shapeRenderer.end();
         }
+    }
+
+    private void resetCam()
+    {
+        gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
+        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
+        gcam.update();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(gcam.combined);
     }
 
     @Override
