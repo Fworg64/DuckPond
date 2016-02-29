@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -35,12 +36,16 @@ public class Assets
     public static Texture Victory;
     public static Texture Defeat;
 
+    private static Texture GUIelements;
+    private static TextureRegion[][] GUIparts;
+    public static TextureRegion check;
+
     private static Texture duck;
     private static TextureRegion[][] duckframes;
     private static TextureRegion[] duckSwimUp;
     private static TextureRegion[] duckSwimDown;
     private static TextureRegion[] duckSwimSideRight;
-    private static TextureRegion[] duckSwimSideLeft;
+    //private static TextureRegion[] duckSwimSideLeft;
     private static TextureRegion[] duckPad;
     private static TextureRegion[] duckEaten;
     public static Array<TextureRegion> duckSwimUpFrames;
@@ -86,12 +91,16 @@ public class Assets
         Victory = new Texture(Gdx.files.internal(res + "victory.png"));
         Defeat = new Texture(Gdx.files.internal(res + "defeat.png"));
 
+        GUIelements = new Texture(Gdx.files.internal(res + "guielements.png"));
+        GUIparts = TextureRegion.split(GUIelements, Options.GUIWidth, Options.GUIHeight);
+        check = GUIparts[0][0];
+
         duck = new Texture(Gdx.files.internal(res + "duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
         duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
         duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
         duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
-        duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        //duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
         duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
         duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
         duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);

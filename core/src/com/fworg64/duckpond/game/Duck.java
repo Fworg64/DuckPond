@@ -87,7 +87,7 @@ public class Duck
         }
         if (state == State.PAD)
         {
-            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+            if (vel.len() * clock >= DuckPondGame.spriteW*1.0f) vel.setZero();
         }
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
@@ -118,6 +118,7 @@ public class Duck
         state = State.PAD;
         vel.set(pad.pos.getCenter(new Vector2()).sub(this.pos.getCenter(new Vector2())));
         vel.setLength(50);
+        dtheta =0;
         clock =0;
 
     }
