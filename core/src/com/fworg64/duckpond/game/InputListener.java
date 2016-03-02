@@ -17,6 +17,8 @@ public class InputListener
     private float Xscalefactor;
     private float Yscalefactor;
 
+    private int worldw, worldh;
+
     private float rawTouchX; //the touchpoint in screen coord
     private float rawTouchY;
     private int Yoffset;
@@ -24,11 +26,32 @@ public class InputListener
 
     public InputListener()
     {
-        Xscalefactor = (float)(DuckPondGame.worldW)/((float)Gdx.app.getGraphics().getWidth());
-        Yscalefactor = -(float)(DuckPondGame.worldH)/((float)Gdx.app.getGraphics().getHeight());
-        Yoffset = DuckPondGame.worldH;
-        Gdx.app.debug("worldW",Float.toString(DuckPondGame.worldW));
-        Gdx.app.debug("worldH",Float.toString(DuckPondGame.worldH));
+        worldw = DuckPondGame.worldW;
+        worldh = DuckPondGame.worldH;
+        Xscalefactor = (float)(worldw)/((float)Gdx.app.getGraphics().getWidth());
+        Yscalefactor = -(float)(worldh)/((float)Gdx.app.getGraphics().getHeight());
+        Yoffset = worldh;
+        Gdx.app.debug("worldW",Float.toString(worldw));
+        Gdx.app.debug("worldH",Float.toString(worldh));
+
+
+        Gdx.app.debug("Xscalefactor",Float.toString(Xscalefactor));
+        Gdx.app.debug("Yscalefactor",Float.toString(Yscalefactor));
+//        Gdx.app.debug("Yoffset",Float.toString(Yoffset));
+        rawTouchX = 0;
+        rawTouchY =0;
+        projTouch = new Vector2();
+    }
+
+    public InputListener(int worldW, int worldH)
+    {
+        worldw = worldW;
+        worldh = worldH;
+        Xscalefactor = (float)(worldw)/((float)Gdx.app.getGraphics().getWidth());
+        Yscalefactor = -(float)(worldh)/((float)Gdx.app.getGraphics().getHeight());
+        Yoffset = worldh;
+        Gdx.app.debug("worldW",Float.toString(worldw));
+        Gdx.app.debug("worldH",Float.toString(worldh));
 
 
         Gdx.app.debug("Xscalefactor",Float.toString(Xscalefactor));
@@ -46,8 +69,8 @@ public class InputListener
 
     public Vector2 getTouchpoint()
     {
-        Xscalefactor = (float)(DuckPondGame.worldW)/((float)Gdx.app.getGraphics().getWidth()); //protect against resizes
-        Yscalefactor = -(float)(DuckPondGame.worldH)/((float)Gdx.app.getGraphics().getHeight());
+        Xscalefactor = (float)(worldw)/((float)Gdx.app.getGraphics().getWidth()); //protect against resizes
+        Yscalefactor = -(float)(worldh)/((float)Gdx.app.getGraphics().getHeight());
         //need to transform ydown to yup with different spaces
         rawTouchX =Gdx.input.getX();
         rawTouchY = Gdx.input.getY();

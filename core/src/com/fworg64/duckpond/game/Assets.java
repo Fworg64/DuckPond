@@ -1,11 +1,8 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
@@ -24,9 +21,15 @@ public class Assets
 {
     public static BitmapFont font;
 
+    public static Texture LevelEditBg;
+    private static Texture LevelEditPartSheet;
+    private static TextureRegion[][] LevelEditParts;
+    public static TextureRegion leveditDuck;
+    public static TextureRegion leveditShark;
+    public static TextureRegion leveditPad;
+
     public static Texture MainMenuBackground;
     public static Texture OptionsMenu;
-    public static Texture LevelEditBg;
     public static Texture GameBackground;
     public static Texture HUD;
 
@@ -81,7 +84,6 @@ public class Assets
 
         MainMenuBackground = new Texture(Gdx.files.internal(res + "MainMenu.png"));
         OptionsMenu = new Texture(Gdx.files.internal(res + "OptionsMenu.png"));
-        LevelEditBg = new Texture(Gdx.files.internal(res + "LevelEditBackground.png"));
         GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
         HUD = new Texture(Gdx.files.internal(res + "HUD.png"));
 
@@ -130,6 +132,18 @@ public class Assets
 
         // i think we're suppose to dispose of some textures here...
         //or maybe that will make the world burn
+
+    }
+
+    public static void levelEditLoad()
+    {
+        LevelEditBg = new Texture(Gdx.files.internal("leveledit\\LevelEditBackground.png"));
+        GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
+        LevelEditPartSheet = new Texture(Gdx.files.internal("leveledit\\leveledit.png"));
+        LevelEditParts = TextureRegion.split(LevelEditPartSheet, 48, 48);
+        leveditDuck = LevelEditParts[0][0];
+        leveditShark = LevelEditParts[0][1];
+        leveditPad = LevelEditParts[0][2];
 
     }
 }
