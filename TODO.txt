@@ -14,23 +14,33 @@ Add Ooptions Menu (*) AFO
 ___________________________
 
 support different resolutions(*) AFO
-add ducklings
-add rules to game
-game over screen
-victory screen
-Add status bar to game screen
-add pause menu to gamescreen
+add ducklings (*)
+add rules to game (*half)
+game over screen(*)
+victory screen(*)
+Add status bar to game screen(*)
+add pause menu to gamescreen(*)
 _________________________________
 
-Implement Options
-determine size for things reletive to screen
+Implement Options - preferences
+finish rules for gameplay (ducks dying on self collision, collision for ducklings)
+add ads
+animation code for sharks (similar to ducks)
 
 ______________________
 Implement Level Selection/shop screen
 
-Add level editor
+====================
+finish level editor
+-------------------
+Create class for levelObj
+get input for velocity and time to spawn
+export to .txt file
+
+make method to import .txt file in World.loadLevel(String level)
+
+-------------------
 design levels
 
-????? (adds)
+????? (ads)
 Profit!
-hi
