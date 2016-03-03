@@ -162,5 +162,9 @@ public class Duck
         if (dir == Direction.RIGHT && vel.angle() >270) sprite.setRotation((ang-360)*.3f +360);
 
     }
+    public  String toString(){
+        String s = "x: " + pos.x + " y: " + pos.y + " velocity: " + " velocity x: " + this.vel.x + " velocity y: " + this.vel.y + "\n";
+        return s;
+    }
 
 }

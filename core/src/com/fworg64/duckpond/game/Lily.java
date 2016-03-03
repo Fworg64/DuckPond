@@ -26,6 +26,11 @@ public class Lily
 
         padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
     }
+    public  String toString(){
+        String s = "x: " + pos.x + " y: " + pos.y + " velocity: " + " velocity x: " + "\n";
+        return s;
+    }
+
 
     public void update()
     {

@@ -2,6 +2,7 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +24,10 @@ public class LevelScreen extends ScreenAdapter
     OrthographicCamera gcam; //camera
     InputListener in;
 
+    //file is working bro!!!!possibly consider writing to new files for each level
+
+    FileHandle fileR = Gdx.files.local("writez.txt");
+    FileHandle fileW = Gdx.files.local("writez.txt");
     Vector2 touchpoint; //input vector
 
     Rectangle exitbutt;
@@ -31,7 +36,8 @@ public class LevelScreen extends ScreenAdapter
     Rectangle ducks;//for collision
     Vector2 tempDuckPos;
     boolean droppinDuck;
-
+    boolean droppinLily;
+    boolean droppingsharks;
     Array<Shark> sL;//contains the ducks in the game
     Rectangle sharks;//for collision
     Vector2 tempSharkPos;
@@ -111,9 +117,75 @@ public class LevelScreen extends ScreenAdapter
             Gdx.app.debug("DuckDropped", tempDuckPos.toString());
             //get velocity information, number of ducklings, time to spawn
         }
+        if (in.justTouched() && sharks.contains(touchpoint) && !droppinShark) //the ducks have been touched
+    {
+        touchpoint.set(in.getTouchpoint());
+        Gdx.app.debug("Tocuh", touchpoint.toString());
+        tempSharkPos.set(touchpoint.x, touchpoint.y);
+        droppinShark= true;
+        Gdx.app.debug("touch", "duck");
+    }
 
+        if (in.isTouched() && droppinShark)
+        {
+            touchpoint.set(in.getTouchpoint());
+            tempSharkPos.set(touchpoint);
+            Gdx.app.debug("duck draaaaged", tempSharkPos.toString());
+        }
+
+
+        if (!in.isTouched() && droppinShark) //duck dropped
+        {
+            droppinShark = false;
+            sL.add(new Shark(tempSharkPos.x, tempSharkPos.y, 35, 35));
+            Gdx.app.debug("SharkDropped", tempSharkPos.toString());
+            //get velocity information, number of ducklings, time to spawn
+        }
+
+        if (in.justTouched() && lillies.contains(touchpoint) && !droppinLily) //the ducks have been touched
+        {
+            touchpoint.set(in.getTouchpoint());
+            Gdx.app.debug("Tocuh", touchpoint.toString());
+            tempLilyPos.set(touchpoint.x, touchpoint.y);
+            droppinLily= true;
+            Gdx.app.debug("touch", "duck");
+        }
+
+        if (in.isTouched() && droppinLily)
+        {
+            touchpoint.set(in.getTouchpoint());
+            tempLilyPos.set(touchpoint);
+            Gdx.app.debug("duck draaaaged", tempLilyPos.toString());
+        }
+
+
+        if (!in.isTouched() && droppinLily) //duck dropped
+        {
+            droppinLily = false;
+            lL.add(new Lily(tempLilyPos.x, tempLilyPos.y));
+            Gdx.app.debug("LilyDropped", tempLilyPos.toString());
+            //get velocity information, number of ducklings, time to spawn
+        }
         if (exitbutt.contains(touchpoint.x, touchpoint.y))
         {
+            //have the boolean parameter set to true for testing but false for when we implement(maybe)
+            //false for append = over writes current contents
+            //true for append = continues to pad file with text
+            //might need that set to true for multiple stuffs to write for file
+            //use false to over write all current txt in the file
+
+            //assuming there is just one lilypad, idk homie
+            fileW.writeString("Lily " + lL.get(0).toString(), false);
+            for (Duck d: dL) {
+                fileW.writeString("Duck " + d.toString(), true);
+
+            }
+            for (Shark s: sL) {
+                fileW.writeString("Shark: " + s.toString(), true);
+
+            }
+            String text = fileR.readString();
+            System.out.println(text);
             game.setScreen(new MainMenuScreen(game));
             return 1;
         }
@@ -141,6 +213,10 @@ public class LevelScreen extends ScreenAdapter
 
         if (!tempDuckPos.isZero()) game.batch.draw(Assets.leveditDuck, tempDuckPos.x, tempDuckPos.y);
         game.batch.draw(Assets.leveditDuck, ducks.getX(), ducks.getY());
+        if (!tempSharkPos.isZero()) game.batch.draw(Assets.leveditShark, tempSharkPos.x, tempSharkPos.y);
+        game.batch.draw(Assets.leveditShark, sharks.getX(), sharks.getY());
+        if (!tempLilyPos.isZero()) game.batch.draw(Assets.leveditPad, tempLilyPos.x, tempLilyPos.y);
+        game.batch.draw(Assets.leveditPad, lillies.getX(), lillies.getY());
 
         for (Duck f : dL){game.batch.draw(Assets.leveditDuck, f.pos.x, f.pos.y);} //oh so you wanna save lines..
         for (Shark f : sL){game.batch.draw(Assets.leveditShark, f.pos.x, f.pos.y);}
