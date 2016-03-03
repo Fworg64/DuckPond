@@ -106,18 +106,18 @@ public class LevelScreen extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             tempDuckPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempDuckPos.toString());
         }
 
 
         if (!in.isTouched() && droppinDuck) //duck dropped
         {
             droppinDuck = false;
+            //need to get velocity and time to spawn from user
             dL.add(new Duck(tempDuckPos.x, tempDuckPos.y, 35, 35));
             Gdx.app.debug("DuckDropped", tempDuckPos.toString());
             //get velocity information, number of ducklings, time to spawn
         }
-        if (in.justTouched() && sharks.contains(touchpoint) && !droppinShark) //the ducks have been touched
+        if (in.justTouched() && sharks.contains(touchpoint) && !droppinShark) //the sharks have been touched
     {
         touchpoint.set(in.getTouchpoint());
         Gdx.app.debug("Tocuh", touchpoint.toString());
@@ -130,38 +130,38 @@ public class LevelScreen extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             tempSharkPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempSharkPos.toString());
         }
 
 
         if (!in.isTouched() && droppinShark) //duck dropped
         {
             droppinShark = false;
+            //need to get velecity and time to spawn from user
             sL.add(new Shark(tempSharkPos.x, tempSharkPos.y, 35, 35));
             Gdx.app.debug("SharkDropped", tempSharkPos.toString());
             //get velocity information, number of ducklings, time to spawn
         }
 
-        if (in.justTouched() && lillies.contains(touchpoint) && !droppinLily) //the ducks have been touched
+        if (in.justTouched() && lillies.contains(touchpoint) && !droppinLily) //the lillies have been touched
         {
             touchpoint.set(in.getTouchpoint());
             Gdx.app.debug("Tocuh", touchpoint.toString());
             tempLilyPos.set(touchpoint.x, touchpoint.y);
             droppinLily= true;
-            Gdx.app.debug("touch", "duck");
+            Gdx.app.debug("touch", "lily");
         }
 
         if (in.isTouched() && droppinLily)
         {
             touchpoint.set(in.getTouchpoint());
             tempLilyPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempLilyPos.toString());
         }
 
 
         if (!in.isTouched() && droppinLily) //duck dropped
         {
             droppinLily = false;
+            //I suppose lillys have no velocity and a spawn time of 0
             lL.add(new Lily(tempLilyPos.x, tempLilyPos.y));
             Gdx.app.debug("LilyDropped", tempLilyPos.toString());
             //get velocity information, number of ducklings, time to spawn
