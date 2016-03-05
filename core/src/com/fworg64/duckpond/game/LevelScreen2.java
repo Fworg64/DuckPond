@@ -56,7 +56,7 @@ public class LevelScreen2 extends ScreenAdapter
         this.game = game;
         gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
         gcam.position.set(Options.screenWidth, Options.screenHeight, 0); //give ourselves a nice little camera //centered since its doubled
-        dafile = Gdx.files.local("derp.txt");
+        dafile = Gdx.files.local("LEVELS\\derp.txt");
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
@@ -112,6 +112,7 @@ public class LevelScreen2 extends ScreenAdapter
             touchpoint.set(in.getTouchpoint());
             if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
                 tempguy.setPos(touchpoint);
+                Message = tempguy.getPos().toString();
             }
             if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
                 getVel = true;
@@ -119,14 +120,13 @@ public class LevelScreen2 extends ScreenAdapter
                 getPos = false;
             }
         }
-
-        if (tempguy.getObjtype().equals("Lily")) {getVel = false;}
         if (getVel)
         {
             temppos.set(tempguy.getPos());
             if (in.isTouched()) {
+                touchpoint.set(in.getTouchpoint());
                 tempvel.set(touchpoint);
-                Message = tempvel.cpy().sub(temppos).toString();
+                Message = tempvel.cpy().sub(temppos).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).len());
             }
             if (!in.isTouched() && !tempvel.isZero()) //vel was set
             {
@@ -177,7 +177,7 @@ public class LevelScreen2 extends ScreenAdapter
             else if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,s.getPos().x, s.getPos().y);
             else if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,s.getPos().x, s.getPos().y);
         }
-        Assets.font.draw(game.batch,Message,.1f*gcam.viewportWidth,.8f* gcam.viewportHeight);
+        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .8f * gcam.viewportHeight);
         game.batch.end();
 
 
@@ -185,6 +185,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         //draw detection bounds here for debugging
         shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        shapeRenderer.rect(savebutt.getX(), savebutt.getY(), savebutt.getWidth(), savebutt.getHeight());
         shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
         shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
         shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
@@ -201,10 +202,13 @@ public class LevelScreen2 extends ScreenAdapter
             case 0:
                 break;
             case 1:
+                Gdx.app.debug("screenstate", "exit");
                 this.dispose();
                 game.setScreen(new MainMenuScreen(game));
                 break;
             case 2:
+                Gdx.app.debug("screenstate", "save");
+                savefile();
                 break;
 
         }
@@ -213,9 +217,10 @@ public class LevelScreen2 extends ScreenAdapter
 
     public int savefile()
     {
+        dafile.writeString("Start:\n", false);
         for (Spawnable s: spawnables)
         {
-            //dafile.write(true, )
+            dafile.writeString(s.toString() + '\n', true);
         }
         return 0;
     }
