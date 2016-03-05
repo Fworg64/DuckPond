@@ -2,6 +2,7 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -19,8 +20,14 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int EXIT_W = (int)(.25f * Options.screenWidth); //not exact yet
     public static final int EXIT_H = (int)(.2f * Options.screenHeight);
 
+    public static final int SAVE_X = (int)(.01f * Options.screenWidth);
+    public static final int SAVE_Y = (int)(.8f * Options.screenHeight);
+    public static final int SAVE_W = (int)(.1f * Options.screenWidth); //not exact yet
+    public static final int SAVE_H = (int)(.2f * Options.screenHeight);
+    
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
+    FileHandle dafile;
     InputListener in;
     Vector2 touchpoint;
     boolean getPos;
@@ -28,6 +35,7 @@ public class LevelScreen2 extends ScreenAdapter
     boolean getT;
 
     Rectangle exitbutt;
+    Rectangle savebutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -48,6 +56,7 @@ public class LevelScreen2 extends ScreenAdapter
         this.game = game;
         gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
         gcam.position.set(Options.screenWidth, Options.screenHeight, 0); //give ourselves a nice little camera //centered since its doubled
+        dafile = Gdx.files.local("derp.txt");
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
@@ -59,6 +68,7 @@ public class LevelScreen2 extends ScreenAdapter
         lillies = new Rectangle(300f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
+        savebutt = new Rectangle(SAVE_X, SAVE_Y, SAVE_W, SAVE_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -81,6 +91,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
+            if (savebutt.contains(touchpoint)) return 2;
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
         if (!getVel && !getT & !getPos) {
@@ -193,7 +204,19 @@ public class LevelScreen2 extends ScreenAdapter
                 this.dispose();
                 game.setScreen(new MainMenuScreen(game));
                 break;
+            case 2:
+                break;
+
         }
         draw();
+    }
+
+    public int savefile()
+    {
+        for (Spawnable s: spawnables)
+        {
+            //dafile.write(true, )
+        }
+        return 0;
     }
 }
