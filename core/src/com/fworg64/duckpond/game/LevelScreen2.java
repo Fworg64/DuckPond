@@ -44,11 +44,15 @@ public class LevelScreen2 extends ScreenAdapter
     Vector2 temppos;
     Vector2 tempvel;
     float tempt2s;
+    int tempducks;
 
     String Message;
     Rectangle Tknob;
     Rectangle Tslider;
     Rectangle Taccept;
+    Rectangle Dup;
+    Rectangle Ddown;
+    Rectangle Daccept;
 
     Rectangle ducks;
     Rectangle sharks;
@@ -70,6 +74,7 @@ public class LevelScreen2 extends ScreenAdapter
         temppos = new Vector2();
         tempvel = new Vector2();
         tempt2s = -1;
+        tempducks =0;
 
         ducks = new Rectangle(100f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
         sharks = new Rectangle(200f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
@@ -84,6 +89,9 @@ public class LevelScreen2 extends ScreenAdapter
         Tknob = new Rectangle(100f/640f * 2*Options.screenWidth, .9f* 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Tslider = new Rectangle(100f/640f * 2*Options.screenWidth, .9f* 2*Options.screenHeight, 440f/640f * 2*Options.screenWidth, Options.spriteHeight);
         Taccept = new Rectangle(540f/640f * 2*Options.screenWidth, .8f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Dup = new Rectangle(540f/640f * 2*Options.screenWidth, .7f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Ddown = new Rectangle(540f/640f * 2*Options.screenWidth, .6f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Daccept = new Rectangle(540f/640f * 2*Options.screenWidth, .5f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
 
         getD = false;
         getT = false;
@@ -156,24 +164,43 @@ public class LevelScreen2 extends ScreenAdapter
             if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
             if (gettingT && in.isTouched())
             {
-                {Tknob.setX(touchpoint.x); Gdx.app.debug("","3");}//clamp
-                if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x); Gdx.app.debug("","1");}
-                if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth()); Gdx.app.debug("","2");}
+                {Tknob.setX(touchpoint.x);}//clamp
+                if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
+                if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
             }
             if (gettingT && !in.isTouched())
             {
                 gettingT = false;
-                Gdx.app.debug("oh","noes");
             }
             if (in.justTouched() && Taccept.contains(touchpoint))
             {
+                if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
                 tempguy.setTime2spawn(tempt2s); //number between 0 and 1
+                if (!getD) {
+                    spawnables.add(tempguy);
+                    Message = tempguy.toString();
+                    tempguy = new Spawnable();
+                    temppos.setZero();
+                    tempvel.setZero();
+                }
+                getT = false;
+            }
+        }
+        if (getD)
+        {
+            touchpoint.set(in.getTouchpoint());
+            Message = Integer.toString(tempducks);
+            if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;
+            if (in.justTouched() && Ddown.contains(touchpoint) && tempducks>0) tempducks--;
+            if (in.justTouched() && Daccept.contains(touchpoint))
+            {
+                tempguy.setNumducks(tempducks);
                 spawnables.add(tempguy);
                 Message = tempguy.toString();
                 tempguy = new Spawnable();
                 temppos.setZero();
                 tempvel.setZero();
-                getT = false;
+                getD = false;
             }
         }
 
@@ -211,6 +238,10 @@ public class LevelScreen2 extends ScreenAdapter
         }
         game.batch.draw(Assets.leveditTslider, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.leveditTknob, Tknob.getX(), Tknob.getY());
+        game.batch.draw(Assets.leveditTaccept, Taccept.getX(), Taccept.getY());
+        game.batch.draw(Assets.leveditDup, Dup.getX(), Dup.getY());
+        game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
+        game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .8f * gcam.viewportHeight);
         game.batch.end();
 
@@ -226,6 +257,9 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
         shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         shapeRenderer.rect(Taccept.getX(), Taccept.getY(), Taccept.getWidth(), Taccept.getHeight());
+        shapeRenderer.rect(Dup.getX(), Dup.getY(), Dup.getWidth(), Dup.getHeight());
+        shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
+        shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
         if (getVel) shapeRenderer.line(temppos, tempvel);
 
         shapeRenderer.end();

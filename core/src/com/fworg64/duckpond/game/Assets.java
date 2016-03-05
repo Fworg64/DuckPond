@@ -29,6 +29,10 @@ public class Assets
     public static TextureRegion leveditPad;
     public static TextureRegion leveditTknob;
     public static TextureRegion leveditTslider;
+    public static TextureRegion leveditDup;
+    public static TextureRegion leveditDdown;
+    public static TextureRegion leveditTaccept;
+    public static TextureRegion leveditDaccept;
 
     public static Texture MainMenuBackground;
     public static Texture OptionsMenu;
@@ -148,6 +152,10 @@ public class Assets
         leveditPad = LevelEditParts[0][2];
         leveditTknob = LevelEditParts[0][3];
         leveditTslider = LevelEditParts[0][4];
+        leveditDup = LevelEditParts[1][0];
+        leveditDdown = LevelEditParts[1][1];
+        leveditTaccept = LevelEditParts[1][2];
+        leveditDaccept = LevelEditParts[1][3];
 
     }
 }
