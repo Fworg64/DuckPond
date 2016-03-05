@@ -77,8 +77,7 @@ public class Assets
 
     public static void load()
     {
-//        font = new BitmapFont();
-//        font.setColor(Color.FIREBRICK); //eventually get a real font
+        font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
@@ -137,6 +136,7 @@ public class Assets
 
     public static void levelEditLoad()
     {
+        //font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
         LevelEditBg = new Texture(Gdx.files.internal("leveledit\\LevelEditBackground.png"));
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
         LevelEditPartSheet = new Texture(Gdx.files.internal("leveledit\\leveledit.png"));
