@@ -27,6 +27,8 @@ public class Assets
     public static TextureRegion leveditDuck;
     public static TextureRegion leveditShark;
     public static TextureRegion leveditPad;
+    public static TextureRegion leveditTknob;
+    public static TextureRegion leveditTslider;
 
     public static Texture MainMenuBackground;
     public static Texture OptionsMenu;
@@ -144,6 +146,8 @@ public class Assets
         leveditDuck = LevelEditParts[0][0];
         leveditShark = LevelEditParts[0][1];
         leveditPad = LevelEditParts[0][2];
+        leveditTknob = LevelEditParts[0][3];
+        leveditTslider = LevelEditParts[0][4];
 
     }
 }

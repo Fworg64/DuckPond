@@ -63,6 +63,7 @@ public class Spawnable
     public String getObjtype() {return objtype;}
     public Vector2 getVel() {return vel;}
     public Vector2 getPos() {return pos;}
+    public float getTime2spawn() {return time2spawn;}
     public String toString()
     {
         return Float.toString(time2spawn)+" " + objtype + " " + pos.toString() + " " + vel.toString() + " " + Integer.toString(numducks);
