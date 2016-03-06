@@ -35,9 +35,11 @@ public class LevelScreen2 extends ScreenAdapter
     boolean gettingT;
     boolean getT;
     boolean getD;
+    boolean choiceDestroy;
 
     Rectangle exitbutt;
     Rectangle savebutt;
+    Rectangle trashbutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -92,12 +94,14 @@ public class LevelScreen2 extends ScreenAdapter
         Dup = new Rectangle(540f/640f * 2*Options.screenWidth, .7f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Ddown = new Rectangle(540f/640f * 2*Options.screenWidth, .6f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Daccept = new Rectangle(540f/640f * 2*Options.screenWidth, .5f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        trashbutt = new Rectangle(540f/640f * 2*Options.screenWidth, .25f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
 
         getD = false;
         getT = false;
         gettingT = false;
         getVel = false;
         getPos = false;
+        choiceDestroy = false;
 
         Gdx.app.debug("testicles", tempguy.objtype);
 
@@ -113,9 +117,52 @@ public class LevelScreen2 extends ScreenAdapter
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
             if (savebutt.contains(touchpoint)) return 2;
+            if (trashbutt.contains(touchpoint)&& !(getVel || getT || getPos || getD))
+            {
+                Message = "Mark for destruction";
+                choiceDestroy = true;
+                getVel = false;
+                getT = false;
+                getPos = false;
+                getD = false;
+                Gdx.app.debug("OH", "1");
+            }
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
-        if (!getVel && !getT & !getPos && !getD) {
+        if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
+        {
+            Message = "Current temp destroyed.";
+            tempguy = new Spawnable();
+            temppos.setZero();
+            tempvel.setZero();
+            getVel = false;
+            getT = false;
+            getPos = false;
+            getD = false;
+            choiceDestroy = false;
+            Gdx.app.debug("OH", "2");
+        }
+        if (choiceDestroy)
+        {
+            touchpoint.set(in.getTouchpoint());
+            for (Spawnable s: spawnables)
+            {
+                if (in.isTouched())
+                {
+                    if (touchpoint.x<(s.getPos().x + Options.spriteWidth) && touchpoint.x > s.getPos().x) //x matches
+                    {
+                        if (touchpoint.y<(s.getPos().y + Options.spriteHeight) && touchpoint.y > s.getPos().y)//y matches
+                        {
+                            Message = s.getObjtype() + "\nDestroyed";
+                            spawnables.removeValue(s,true);
+                        }
+                    }
+                }
+            }
+            if (in.justTouched() && !trashbutt.contains(touchpoint)) choiceDestroy = false;
+        }
+        if (!getVel && !getT & !getPos && !getD && !choiceDestroy) {
+            Message = "Choose a character\nDrag to Position";
             if (in.justTouched() && ducks.contains(touchpoint)) {
                 tempguy.setObjtype("Duck");
                 getPos = true;
@@ -130,6 +177,7 @@ public class LevelScreen2 extends ScreenAdapter
             }
         }
         if (getPos) {
+            //Message = "Drag to position";
             touchpoint.set(in.getTouchpoint());
             if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
                 tempguy.setPos(touchpoint);
@@ -143,6 +191,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (getVel)
         {
+            Message = "Set Velocity by releasing click next to char";
             temppos.set(tempguy.getPos());
             if (in.isTouched()) {
                 touchpoint.set(in.getTouchpoint());
@@ -159,7 +208,7 @@ public class LevelScreen2 extends ScreenAdapter
         if (getT)
         {
             tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
-            Message = Float.toString(tempt2s);
+            Message = "Drag slider\npress confirm for SpawnTime\n" + Float.toString(tempt2s);
             touchpoint.set(in.getTouchpoint());
             if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
             if (gettingT && in.isTouched())
@@ -188,8 +237,9 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (getD)
         {
+            if (tempducks ==0) Message = "Use arrows to adjust #ducklings";
+            else Message = Integer.toString(tempducks) + " ducklings";
             touchpoint.set(in.getTouchpoint());
-            Message = Integer.toString(tempducks);
             if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;
             if (in.justTouched() && Ddown.contains(touchpoint) && tempducks>0) tempducks--;
             if (in.justTouched() && Daccept.contains(touchpoint))
@@ -242,7 +292,8 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.leveditDup, Dup.getX(), Dup.getY());
         game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
         game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
-        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .8f * gcam.viewportHeight);
+        game.batch.draw(Assets.leveditTrash, trashbutt.getX(), trashbutt.getY());
+        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
         game.batch.end();
 
 
@@ -260,6 +311,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(Dup.getX(), Dup.getY(), Dup.getWidth(), Dup.getHeight());
         shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
         shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
+        shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
         if (getVel) shapeRenderer.line(temppos, tempvel);
 
         shapeRenderer.end();
