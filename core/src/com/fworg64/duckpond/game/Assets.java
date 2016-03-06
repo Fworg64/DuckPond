@@ -27,6 +27,13 @@ public class Assets
     public static TextureRegion leveditDuck;
     public static TextureRegion leveditShark;
     public static TextureRegion leveditPad;
+    public static TextureRegion leveditTknob;
+    public static TextureRegion leveditTslider;
+    public static TextureRegion leveditDup;
+    public static TextureRegion leveditDdown;
+    public static TextureRegion leveditTaccept;
+    public static TextureRegion leveditDaccept;
+    public static TextureRegion leveditTrash;
 
     public static Texture MainMenuBackground;
     public static Texture OptionsMenu;
@@ -77,8 +84,7 @@ public class Assets
 
     public static void load()
     {
-//        font = new BitmapFont();
-//        font.setColor(Color.FIREBRICK); //eventually get a real font
+        font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
@@ -137,6 +143,7 @@ public class Assets
 
     public static void levelEditLoad()
     {
+        //font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
         LevelEditBg = new Texture(Gdx.files.internal("leveledit\\LevelEditBackground.png"));
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
         LevelEditPartSheet = new Texture(Gdx.files.internal("leveledit\\leveledit.png"));
@@ -144,6 +151,13 @@ public class Assets
         leveditDuck = LevelEditParts[0][0];
         leveditShark = LevelEditParts[0][1];
         leveditPad = LevelEditParts[0][2];
+        leveditTknob = LevelEditParts[0][3];
+        leveditTslider = LevelEditParts[0][4];
+        leveditDup = LevelEditParts[1][0];
+        leveditDdown = LevelEditParts[1][1];
+        leveditTaccept = LevelEditParts[1][2];
+        leveditDaccept = LevelEditParts[1][3];
+        leveditTrash = LevelEditParts[1][4];
 
     }
 }

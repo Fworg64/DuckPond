@@ -24,6 +24,12 @@ public class LevelScreen extends ScreenAdapter
     OrthographicCamera gcam; //camera
     InputListener in;
 
+    boolean getVel;
+    boolean VelGot;
+    Vector2 velStart;
+    Vector2 velEnd;
+    String  VelgetterMsg;
+
     //file is working bro!!!!possibly consider writing to new files for each level
 
     FileHandle fileR = Gdx.files.local("writez.txt");
@@ -36,17 +42,14 @@ public class LevelScreen extends ScreenAdapter
     Rectangle ducks;//for collision
     Vector2 tempDuckPos;
     boolean droppinDuck;
-    boolean droppinLily;
-    boolean droppingsharks;
     Array<Shark> sL;//contains the ducks in the game
     Rectangle sharks;//for collision
     Vector2 tempSharkPos;
     boolean droppinShark;
-
     Rectangle lillies;
     Array<Lily> lL;
     Vector2 tempLilyPos;
-    boolean droppinPad;
+    boolean droppinLily;
 
     private ShapeRenderer shapeRenderer;//this helps for checking button rectangles
 
@@ -72,13 +75,19 @@ public class LevelScreen extends ScreenAdapter
         lL = new Array<Lily>();
         lillies = new Rectangle(300f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
         tempLilyPos = new Vector2();
-        droppinPad = false;
+        droppinLily = false;
 
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
+
+        getVel = false;
+        VelGot = false;
+        velStart = new Vector2();
+        velEnd = new Vector2();
+        VelgetterMsg = "";
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -106,62 +115,68 @@ public class LevelScreen extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             tempDuckPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempDuckPos.toString());
         }
 
 
         if (!in.isTouched() && droppinDuck) //duck dropped
         {
             droppinDuck = false;
-            dL.add(new Duck(tempDuckPos.x, tempDuckPos.y, 35, 35));
+            //need to get velocity and time to spawn from user
+            //dL.add(new Duck(tempDuckPos.x, tempDuckPos.y, 35, 35));
             Gdx.app.debug("DuckDropped", tempDuckPos.toString());
             //get velocity information, number of ducklings, time to spawn
+            getVel = true;
+            VelgetterMsg = "Press+hold to choose vel, release to confirm";
         }
-        if (in.justTouched() && sharks.contains(touchpoint) && !droppinShark) //the ducks have been touched
-    {
+        if (in.justTouched() && sharks.contains(touchpoint) && !droppinShark) //the sharks have been touched
+        {
         touchpoint.set(in.getTouchpoint());
         Gdx.app.debug("Tocuh", touchpoint.toString());
         tempSharkPos.set(touchpoint.x, touchpoint.y);
         droppinShark= true;
         Gdx.app.debug("touch", "duck");
-    }
+        }
 
         if (in.isTouched() && droppinShark)
         {
             touchpoint.set(in.getTouchpoint());
             tempSharkPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempSharkPos.toString());
         }
 
 
-        if (!in.isTouched() && droppinShark) //duck dropped
+        if (!in.isTouched() && droppinShark) //shark dropped
         {
             droppinShark = false;
-            sL.add(new Shark(tempSharkPos.x, tempSharkPos.y, 35, 35));
+            //need to get velecity and time to spawn from user
+            //sL.add(new Shark(tempSharkPos.x, tempSharkPos.y, 35, 35));
             Gdx.app.debug("SharkDropped", tempSharkPos.toString());
             //get velocity information, number of ducklings, time to spawn
+            getVel = true;
+            VelgetterMsg = "Press+hold to choose vel, release to confirm";
         }
 
-        if (in.justTouched() && lillies.contains(touchpoint) && !droppinLily) //the ducks have been touched
+
+
+        if (in.justTouched() && lillies.contains(touchpoint) && !droppinLily) //the lillies have been touched
         {
             touchpoint.set(in.getTouchpoint());
             Gdx.app.debug("Tocuh", touchpoint.toString());
             tempLilyPos.set(touchpoint.x, touchpoint.y);
             droppinLily= true;
-            Gdx.app.debug("touch", "duck");
+            Gdx.app.debug("touch", "lily");
         }
 
         if (in.isTouched() && droppinLily)
         {
             touchpoint.set(in.getTouchpoint());
             tempLilyPos.set(touchpoint);
-            Gdx.app.debug("duck draaaaged", tempLilyPos.toString());
         }
 
 
         if (!in.isTouched() && droppinLily) //duck dropped
         {
             droppinLily = false;
+            //I suppose lillys have no velocity and a spawn time of 0
             lL.add(new Lily(tempLilyPos.x, tempLilyPos.y));
             Gdx.app.debug("LilyDropped", tempLilyPos.toString());
             //get velocity information, number of ducklings, time to spawn
@@ -208,6 +223,7 @@ public class LevelScreen extends ScreenAdapter
         game.batch.draw(Assets.GameBackground, Options.screenWidth * .5f, Options.screenHeight * .5f);
         game.batch.end();
 
+
         game.batch.enableBlending();
         game.batch.begin();
 
@@ -222,11 +238,13 @@ public class LevelScreen extends ScreenAdapter
         for (Shark f : sL){game.batch.draw(Assets.leveditShark, f.pos.x, f.pos.y);}
         for (Lily f: lL) {game.batch.draw(Assets.leveditPad, f.pos.x, f.pos.y);}
 
+        Assets.font.draw(game.batch,VelgetterMsg,.1f*gcam.viewportWidth,.8f* gcam.viewportHeight);
 
         game.batch.end();
 
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f,.2f,.2f,.5f);
+        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         //draw detection bounds here for debugging
         shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
         shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
