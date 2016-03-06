@@ -24,6 +24,8 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_Y = (int)(.8f * Options.screenHeight);
     public static final int SAVE_W = (int)(.1f * Options.screenWidth); //not exact yet
     public static final int SAVE_H = (int)(.2f * Options.screenHeight);
+
+    public static final Vector2 EDITOR_OFFSET = new Vector2(160,240);
     
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -47,6 +49,8 @@ public class LevelScreen2 extends ScreenAdapter
     Vector2 tempvel;
     float tempt2s;
     int tempducks;
+    int time;
+    int lives;
 
     String Message;
     Rectangle Tknob;
@@ -130,129 +134,19 @@ public class LevelScreen2 extends ScreenAdapter
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
         if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
-        {
-            Message = "Current temp destroyed.";
-            tempguy = new Spawnable();
-            temppos.setZero();
-            tempvel.setZero();
-            getVel = false;
-            getT = false;
-            getPos = false;
-            getD = false;
-            choiceDestroy = false;
-            Gdx.app.debug("OH", "2");
-        }
+        {DestroyCurrent();}
         if (choiceDestroy)
-        {
-            touchpoint.set(in.getTouchpoint());
-            for (Spawnable s: spawnables)
-            {
-                if (in.isTouched())
-                {
-                    if (touchpoint.x<(s.getPos().x + Options.spriteWidth) && touchpoint.x > s.getPos().x) //x matches
-                    {
-                        if (touchpoint.y<(s.getPos().y + Options.spriteHeight) && touchpoint.y > s.getPos().y)//y matches
-                        {
-                            Message = s.getObjtype() + "\nDestroyed";
-                            spawnables.removeValue(s,true);
-                        }
-                    }
-                }
-            }
-            if (in.justTouched() && !trashbutt.contains(touchpoint)) choiceDestroy = false;
-        }
-        if (!getVel && !getT & !getPos && !getD && !choiceDestroy) {
-            Message = "Choose a character\nDrag to Position";
-            if (in.justTouched() && ducks.contains(touchpoint)) {
-                tempguy.setObjtype("Duck");
-                getPos = true;
-            }
-            else if (in.justTouched() && sharks.contains(touchpoint)) {
-                tempguy.setObjtype("Shark");
-                getPos = true;
-            }
-            else if (in.justTouched() && lillies.contains(touchpoint)) {
-                tempguy.setObjtype("Lily");
-                getPos = true;
-            }
-        }
-        if (getPos) {
-            //Message = "Drag to position";
-            touchpoint.set(in.getTouchpoint());
-            if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
-                tempguy.setPos(touchpoint);
-                Message = tempguy.getPos().toString();
-            }
-            if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
-                getVel = true;
-                if (tempguy.getObjtype().equals("Lily")) {getVel = false; getT = true;}
-                getPos = false;
-            }
-        }
+        {Choose2Destroy();}
+        if (!getVel && !getT & !getPos && !getD && !choiceDestroy)
+        {ChooseActor();}
+        if (getPos)
+        {ChoosePos();}
         if (getVel)
-        {
-            Message = "Set Velocity by releasing click next to char";
-            temppos.set(tempguy.getPos());
-            if (in.isTouched()) {
-                touchpoint.set(in.getTouchpoint());
-                tempvel.set(touchpoint);
-                Message = tempvel.cpy().sub(temppos).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).len());
-            }
-            if (!in.isTouched() && !tempvel.isZero()) //vel was set
-            {
-                tempguy.setVel(tempvel.cpy().sub(temppos));
-                getVel = false;
-                getT = true;
-            }
-        }
+        {ChooseVel();}
         if (getT)
-        {
-            tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
-            Message = "Drag slider\npress confirm for SpawnTime\n" + Float.toString(tempt2s);
-            touchpoint.set(in.getTouchpoint());
-            if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
-            if (gettingT && in.isTouched())
-            {
-                {Tknob.setX(touchpoint.x);}//clamp
-                if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
-                if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
-            }
-            if (gettingT && !in.isTouched())
-            {
-                gettingT = false;
-            }
-            if (in.justTouched() && Taccept.contains(touchpoint))
-            {
-                if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
-                tempguy.setTime2spawn(tempt2s); //number between 0 and 1
-                if (!getD) {
-                    spawnables.add(tempguy);
-                    Message = tempguy.toString();
-                    tempguy = new Spawnable();
-                    temppos.setZero();
-                    tempvel.setZero();
-                }
-                getT = false;
-            }
-        }
+        {ChooseT();}
         if (getD)
-        {
-            if (tempducks ==0) Message = "Use arrows to adjust #ducklings";
-            else Message = Integer.toString(tempducks) + " ducklings";
-            touchpoint.set(in.getTouchpoint());
-            if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;
-            if (in.justTouched() && Ddown.contains(touchpoint) && tempducks>0) tempducks--;
-            if (in.justTouched() && Daccept.contains(touchpoint))
-            {
-                tempguy.setNumducks(tempducks);
-                spawnables.add(tempguy);
-                Message = tempguy.toString();
-                tempguy = new Spawnable();
-                temppos.setZero();
-                tempvel.setZero();
-                getD = false;
-            }
-        }
+        {ChooseD();}
 
         return 0;
     }
@@ -277,14 +171,14 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.leveditDuck, ducks.getX(), ducks.getY());
         game.batch.draw(Assets.leveditShark, sharks.getX(), sharks.getY());
         game.batch.draw(Assets.leveditPad, lillies.getX(), lillies.getY());
-        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,tempguy.getPos().x, tempguy.getPos().y);
-        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,tempguy.getPos().x, tempguy.getPos().y);
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,tempguy.getPos().x, tempguy.getPos().y);
+        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
         for (Spawnable s: spawnables)
         {
-            if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,s.getPos().x, s.getPos().y);
-            else if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,s.getPos().x, s.getPos().y);
-            else if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,s.getPos().x, s.getPos().y);
+            if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
+            else if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
+            else if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
         }
         game.batch.draw(Assets.leveditTslider, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.leveditTknob, Tknob.getX(), Tknob.getY());
@@ -312,7 +206,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
         shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
         shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
-        if (getVel) shapeRenderer.line(temppos, tempvel);
+        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(EDITOR_OFFSET));
 
         shapeRenderer.end();
     }
@@ -346,5 +240,138 @@ public class LevelScreen2 extends ScreenAdapter
             dafile.writeString(s.toString() + '\n', true);
         }
         return 0;
+    }
+
+    public void DestroyCurrent()
+    {
+        Message = "Current temp destroyed.";
+        tempguy = new Spawnable();
+        temppos.setZero();
+        tempvel.setZero();
+        getVel = false;
+        getT = false;
+        getPos = false;
+        getD = false;
+        choiceDestroy = false;
+        //Gdx.app.debug("OH", "2");
+    }
+
+    public void Choose2Destroy()
+    {
+        touchpoint.set(in.getTouchpoint());
+        for (Spawnable s: spawnables)
+        {
+            if (in.isTouched())
+            {
+                if (touchpoint.x<(s.getPos().x + Options.spriteWidth) && touchpoint.x > s.getPos().x) //x matches
+                {
+                    if (touchpoint.y<(s.getPos().y + Options.spriteHeight) && touchpoint.y > s.getPos().y)//y matches
+                    {
+                        Message = s.getObjtype() + "\nDestroyed";
+                        spawnables.removeValue(s,true);
+                    }
+                }
+            }
+        }
+        if (in.justTouched() && !trashbutt.contains(touchpoint)) choiceDestroy = false;
+    }
+
+    public void ChooseActor()
+    {
+        Message = "Choose a character\nDrag to Position";
+        if (in.justTouched() && ducks.contains(touchpoint)) {
+            tempguy.setObjtype("Duck");
+            getPos = true;
+        }
+        else if (in.justTouched() && sharks.contains(touchpoint)) {
+            tempguy.setObjtype("Shark");
+            getPos = true;
+        }
+        else if (in.justTouched() && lillies.contains(touchpoint)) {
+            tempguy.setObjtype("Lily");
+            getPos = true;
+        }
+    }
+
+    public void ChoosePos()
+    {
+        //Message = "Drag to position";
+        touchpoint.set(in.getTouchpoint());
+        if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
+            tempguy.setPos(touchpoint.cpy().sub(EDITOR_OFFSET));
+            Message = tempguy.getPos().toString();
+        }
+        if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
+            getVel = true;
+            if (tempguy.getObjtype().equals("Lily")) {getVel = false; getT = true;}
+            getPos = false;
+        }
+    }
+
+    public void ChooseVel()
+    {
+        Message = "Set Velocity by releasing click next to char";
+        temppos.set(tempguy.getPos());
+        if (in.isTouched()) {
+            touchpoint.set(in.getTouchpoint());
+            tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET));
+            Message = tempvel.cpy().sub(temppos).scl(.2f).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).scl(.2f).len());
+        }
+        if (!in.isTouched() && !tempvel.isZero()) //vel was set
+        {
+            tempguy.setVel(tempvel.cpy().sub(temppos).scl(.2f));
+            getVel = false;
+            getT = true;
+        }
+    }
+
+    public void ChooseT()
+    {
+        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
+        Message = "Drag slider\npress confirm for SpawnTime\n" + Float.toString(tempt2s);
+        touchpoint.set(in.getTouchpoint());
+        if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
+        if (gettingT && in.isTouched())
+        {
+            {Tknob.setX(touchpoint.x);}//clamp
+            if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
+            if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
+        }
+        if (gettingT && !in.isTouched())
+        {
+            gettingT = false;
+        }
+        if (in.justTouched() && Taccept.contains(touchpoint))
+        {
+            if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
+            tempguy.setTime2spawn(tempt2s); //number between 0 and 1
+            if (!getD) {
+                spawnables.add(tempguy);
+                Message = tempguy.toString();
+                tempguy = new Spawnable();
+                temppos.setZero();
+                tempvel.setZero();
+            }
+            getT = false;
+        }
+    }
+
+    public void ChooseD()
+    {
+        if (tempducks ==0) Message = "Use arrows to adjust #ducklings";
+        else Message = Integer.toString(tempducks) + " ducklings";
+        touchpoint.set(in.getTouchpoint());
+        if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;
+        if (in.justTouched() && Ddown.contains(touchpoint) && tempducks>0) tempducks--;
+        if (in.justTouched() && Daccept.contains(touchpoint))
+        {
+            tempguy.setNumducks(tempducks);
+            spawnables.add(tempguy);
+            Message = tempguy.toString();
+            tempguy = new Spawnable();
+            temppos.setZero();
+            tempvel.setZero();
+            getD = false;
+        }
     }
 }
