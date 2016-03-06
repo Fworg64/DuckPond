@@ -31,11 +31,11 @@ ______________________
 Implement Level Selection/shop screen
 
 ====================
-finish level editor
+finish level editor(*) AFO
 -------------------
-Create class for levelObj
-get input for velocity and time to spawn
-export to .txt file
+Create class for levelObj(*) AFO
+get input for velocity and time to spawn(*) AFO
+export to .txt file(*) AFO
 
 make method to import .txt file in World.loadLevel(String level)
 
