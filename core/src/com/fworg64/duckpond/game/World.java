@@ -152,7 +152,15 @@ public class World
                     s.eatDuck(d);
                     d.getEaten(s);
                     lives -=1;
-                    Gdx.app.debug("DuckEAted", Integer.toString(lives));
+                }
+                for (Duckling dd: d.ducklings)
+                {
+                    if (dd.col.overlaps(s.col) && d.state != Duck.State.EATEN)
+                    {
+                        s.eatDuck(d);
+                        d.getEaten(s);
+                        lives-=1;
+                    }
                 }
             }
         }
