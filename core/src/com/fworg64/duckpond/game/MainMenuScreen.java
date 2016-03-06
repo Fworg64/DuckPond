@@ -67,7 +67,7 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle CreditsButt;
 
 
-    public MainMenuScreen (DuckPondGame game) //fuck your one true brace
+    public MainMenuScreen (DuckPondGame game)
     {
         this.game = game;
         resetCam(); //also sets shaperendererererer
@@ -100,7 +100,7 @@ public class MainMenuScreen extends ScreenAdapter
                 if (playbutt.contains(touchpoint.x, touchpoint.y))
                 {
                     game.debug = "play pressed";
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(new LevelSelectionScreen(game));
                     return 2;
                 }
                 if (leveleditbutt.contains(touchpoint.x, touchpoint.y))

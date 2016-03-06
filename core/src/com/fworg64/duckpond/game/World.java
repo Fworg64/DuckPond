@@ -1,7 +1,9 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,11 +37,14 @@ public class World
     public int scoreNeeded;
     public int lives;
 
+    FileHandle level;
+
     String debug;
 
-    public World (WorldListener listener)
+    public World (WorldListener listener, FileHandle level)
     {
         this.listener = listener;
+        this.level = level;
         ducks = new ArrayList<Duck>();
         pads = new ArrayList<Lily>();
         sharks = new ArrayList<Shark>();
@@ -50,15 +55,25 @@ public class World
         debug = "ALLSGOOD";
     }
 
-    public void LoadLevel() //eventually accept a string filename to load a level
+    public void LoadLevel()
     {
-        //ducks.add(new Duck(-200, 50, 70, 20));
-        //ducks.add(new Duck(600, 200, -50, 0));
-        ducks.add(new Duck(160, 300, -10, -40));
+        String levelstring = level.readString();
+        Gdx.app.debug(levelstring, "");
+        Array<String> levelcodes = new Array<String>(levelstring.split("\n"));
+        levelcodes.removeIndex(0);
+        for(String code: levelcodes)
+        {
+            String[] codelet = code.split(" ");
+            Vector2 temppos = new Vector2();
+            Vector2 tempvel = new Vector2();
+            int tempducks = Integer.parseInt(codelet[4].trim());
+            temppos.fromString(codelet[2]);
+            tempvel.fromString(codelet[3]);
 
-        pads.add(new Lily(120, 340));
-
-        //sharks.add(new Shark(400, 100, -60, 10));
+            if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
+            if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
+            if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+        }
     }
 
     public void ReloadLevel() //should reload the current level

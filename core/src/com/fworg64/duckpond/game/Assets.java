@@ -35,6 +35,8 @@ public class Assets
     public static TextureRegion leveditDaccept;
     public static TextureRegion leveditTrash;
 
+    public static Texture LevelSelectionBackground;
+
     public static Texture MainMenuBackground;
     public static Texture OptionsMenu;
     public static Texture GameBackground;
@@ -92,6 +94,8 @@ public class Assets
         OptionsMenu = new Texture(Gdx.files.internal(res + "OptionsMenu.png"));
         GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
         HUD = new Texture(Gdx.files.internal(res + "HUD.png"));
+
+        LevelSelectionBackground = new Texture(Gdx.files.internal(res + "LevelSelectionBckgnd.png"));
 
         PauseMenu = new Texture(Gdx.files.internal(res + "pause.png"));
         ShowConfirmExit = new Texture(Gdx.files.internal(res + "exitconfirm.png"));
