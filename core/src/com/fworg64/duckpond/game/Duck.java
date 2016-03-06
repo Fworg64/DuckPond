@@ -45,7 +45,7 @@ public class Duck
     public Sprite sprite;
     Direction dir;
 
-    public Duck(float x, float y, float vx, float vy) {
+    public Duck(float x, float y, float vx, float vy, int numDuc) {
         pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
         col = new Circle(pos.getX() + .5f * pos.getWidth(), pos.getY() + .5f * pos.getHeight(), .4f * pos.getWidth()); //this needs moved to just the base
 
@@ -56,8 +56,8 @@ public class Duck
 
         state = State.SWIMMING;
 
-        ducklings = new ArrayList<Duckling>(5);
-        for (int i = 1; i < 6; i++)
+        ducklings = new ArrayList<Duckling>(numDuc);
+        for (int i = 0; i < numDuc; i++)
         {
             ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), 30));
         }

@@ -2,6 +2,7 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -68,7 +69,7 @@ public class GameScreen extends ScreenAdapter
     //private Rectangle resetbutt;
 
 
-    GameScreen(DuckPondGame game)
+    GameScreen(DuckPondGame game, FileHandle level)
     {
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -106,7 +107,7 @@ public class GameScreen extends ScreenAdapter
         showConfirmExit = false;
         menu = Menus.PLAYING;
 
-        world = new World(listener);
+        world = new World(listener, level);
         world.LoadLevel();
 
         renderer = new WorldRenderer(game.batch, world);
