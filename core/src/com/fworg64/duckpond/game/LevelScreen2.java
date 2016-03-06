@@ -17,13 +17,13 @@ public class LevelScreen2 extends ScreenAdapter
 {
     public static final int EXIT_X = 1;//bottom left corner of button
     public static final int EXIT_Y = 1;
-    public static final int EXIT_W = (int)(.25f * Options.screenWidth); //not exact yet
-    public static final int EXIT_H = (int)(.2f * Options.screenHeight);
+    public static final int EXIT_W = (int)(.1f * 2*Options.screenWidth); //not exact yet
+    public static final int EXIT_H = (int)(.1f * 2*Options.screenHeight);
 
-    public static final int SAVE_X = (int)(.01f * Options.screenWidth);
-    public static final int SAVE_Y = (int)(.8f * Options.screenHeight);
-    public static final int SAVE_W = (int)(.1f * Options.screenWidth); //not exact yet
-    public static final int SAVE_H = (int)(.2f * Options.screenHeight);
+    public static final int SAVE_X = (int)(.01f * 2*Options.screenWidth);
+    public static final int SAVE_Y = (int)(.9f * 2*Options.screenHeight);
+    public static final int SAVE_W = (int)(.1f * 2*Options.screenWidth); //not exact yet
+    public static final int SAVE_H = (int)(.1f * 2*Options.screenHeight);
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(160,240);
     
@@ -59,6 +59,10 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle Dup;
     Rectangle Ddown;
     Rectangle Daccept;
+    Rectangle TtimeUp;
+    Rectangle TtimeDown;
+    Rectangle LivesUp;
+    Rectangle LivesDown;
 
     Rectangle ducks;
     Rectangle sharks;
@@ -81,8 +85,10 @@ public class LevelScreen2 extends ScreenAdapter
         tempvel = new Vector2();
         tempt2s = -1;
         tempducks =0;
+        lives = 3;
+        time = 60;
 
-        ducks = new Rectangle(100f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
+        ducks = new Rectangle(400f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
         sharks = new Rectangle(200f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
         lillies = new Rectangle(300f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
 
@@ -99,6 +105,10 @@ public class LevelScreen2 extends ScreenAdapter
         Ddown = new Rectangle(540f/640f * 2*Options.screenWidth, .6f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Daccept = new Rectangle(540f/640f * 2*Options.screenWidth, .5f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         trashbutt = new Rectangle(540f/640f * 2*Options.screenWidth, .25f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        TtimeUp = new Rectangle(400f/640f * 2*Options.screenWidth, .15f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        TtimeDown = new Rectangle(400f/640f * 2*Options.screenWidth, .075f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        LivesUp = new Rectangle(500f/640f * 2*Options.screenWidth, .15f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        LivesDown = new Rectangle(500f/640f * 2*Options.screenWidth, .074f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
 
         getD = false;
         getT = false;
@@ -131,6 +141,10 @@ public class LevelScreen2 extends ScreenAdapter
                 getD = false;
                 Gdx.app.debug("OH", "1");
             }
+            if (TtimeUp.contains(touchpoint) && time < 120) time+=30;
+            if (TtimeDown.contains(touchpoint) && time>30) time-=30;
+            if (LivesUp.contains(touchpoint) && lives <5) lives++;
+            if (LivesDown.contains(touchpoint) && lives >1) lives--;
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
         if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
@@ -187,7 +201,13 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
         game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
         game.batch.draw(Assets.leveditTrash, trashbutt.getX(), trashbutt.getY());
+        game.batch.draw(Assets.leveditDup, TtimeUp.getX(), TtimeUp.getY());
+        game.batch.draw(Assets.leveditDdown, TtimeDown.getX(), TtimeDown.getY());
+        game.batch.draw(Assets.leveditDup, LivesUp.getX(), LivesUp.getY());
+        game.batch.draw(Assets.leveditDdown, LivesDown.getX(), LivesDown.getY());
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
+        Assets.font.draw(game.batch, "Time: " + Integer.toString(time), TtimeUp.getX() - .5f*TtimeUp.getWidth(), TtimeUp.getY());
+        Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
         game.batch.end();
 
 
@@ -206,6 +226,10 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
         shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
         shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
+        shapeRenderer.rect(TtimeUp.getX(), TtimeUp.getY(), TtimeUp.getWidth(), TtimeUp.getHeight());
+        shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
+        shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
+        shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
         if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(EDITOR_OFFSET));
 
         shapeRenderer.end();
@@ -234,7 +258,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public int savefile()
     {
-        dafile.writeString("TIME: 120\n", false);
+        dafile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
         for (Spawnable s: spawnables)
         {
             dafile.writeString(s.toString() + '\n', true);
