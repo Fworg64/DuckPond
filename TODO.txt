@@ -1,4 +1,4 @@
-As of 2/17 (*) denotes completed
+As of 3/6 (*) denotes completed
 
 Need to add lilypad goal (*)AFO
 Add collision detection between pad and duck(*)AFO
@@ -14,22 +14,13 @@ Add Ooptions Menu (*) AFO
 ___________________________
 
 support different resolutions(*) AFO
-add ducklings (*)
-add rules to game (*half)
-game over screen(*)
-victory screen(*)
-Add status bar to game screen(*)
-add pause menu to gamescreen(*)
+add ducklings (*)AFO
+add rules to game (*half)AFO
+game over screen(*)AFO
+victory screen(*)AFO
+Add status bar to game screen(*)AFO
+add pause menu to gamescreen(*)AFO
 _________________________________
-
-Implement Options - preferences
-finish rules for gameplay (ducks dying on self collision, collision for ducklings)
-add ads
-animation code for sharks (similar to ducks)
-
-______________________
-Implement Level Selection/shop screen
-
 ====================
 finish level editor(*) AFO
 -------------------
@@ -37,7 +28,32 @@ Create class for levelObj(*) AFO
 get input for velocity and time to spawn(*) AFO
 export to .txt file(*) AFO
 
-make method to import .txt file in World.loadLevel(String level)
+make method to import .txt file in World(*)AFO
+____________________________________________________
+
+Implement Options - preferences
+finish rules for gameplay 
+-ducks dying on self collision
+-collision for ducklings
+-add timer to level
+
+add ads
+
+animation code for sharks (similar to ducks)
+
+______________________
+Implement Level Selection/shop screen
+-display levelname on button
+-display graphic to represent level
+
+_______________________________
+iron out bugs in leveleditor
+-Set Pos offset by map in center of screen
+-scale vel by 1/5
+-autoincrement filename
+
+_______________________________
+sound...
 
 -------------------
 design levels
