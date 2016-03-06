@@ -33,8 +33,7 @@ public class World
 
     public final WorldListener listener;
 
-    public int score;
-    public int scoreNeeded;
+    public float time;
     public int lives;
 
     FileHandle level;
@@ -48,8 +47,7 @@ public class World
         ducks = new ArrayList<Duck>();
         pads = new ArrayList<Lily>();
         sharks = new ArrayList<Shark>();
-        score =0;
-        scoreNeeded = 200;
+        time = 30;
         lives =2;
 
         debug = "ALLSGOOD";
@@ -60,6 +58,8 @@ public class World
         String levelstring = level.readString();
         Gdx.app.debug(levelstring, "");
         Array<String> levelcodes = new Array<String>(levelstring.split("\n"));
+        time = Float.parseFloat(levelcodes.get(0).split(" ")[0].trim());
+        lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
         levelcodes.removeIndex(0);
         for(String code: levelcodes)
         {
@@ -81,7 +81,7 @@ public class World
         ducks.clear();
         pads.clear();
         sharks.clear();
-        score =0;
+        time =30;
         lives =2;
 
         LoadLevel();
@@ -89,7 +89,7 @@ public class World
 
     public void update(float delta, Vector2 swipestart, Vector2 swipeend)
     {
-
+        time -=delta;
         updateDucks(delta, swipestart, swipeend);
         updateSharks(delta);
         checkPadsAndDucks();
@@ -133,7 +133,6 @@ public class World
                 if (l.col.overlaps(d.col) && d.state != Duck.State.PAD)
                 {
                     d.pad(l);
-                    score +=100;
                     debug = "DUCK PADDED!!";
                 }
 
@@ -161,12 +160,12 @@ public class World
 
     private boolean Victory()
     {
-        if (score >= scoreNeeded) return true;
+        if (false) return true;
         else return false;
     }
     private boolean Defeat()
     {
-        if (lives <=0) return true; //or something
+        if (lives <=0 || time <=0) return true; //or something
         else return false;
     }
 }

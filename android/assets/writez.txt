@@ -1,3 +1,0 @@
-Lily x: 282.0 y: 658.0 velocity:  velocity x: 
-Duck x: 74.0 y: 398.0 velocity:  velocity x: 35.0 velocity y: 35.0
-Shark: x: 104.0 y: 514.0 velocity:  velocity x: 35.0 velocity y: 35.0

@@ -241,6 +241,8 @@ public class GameScreen extends ScreenAdapter
         renderer.render(clock);
         game.batch.begin();
         game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
+        Assets.font.draw(game.batch, Integer.toString((int) world.time), .8f*Options.screenWidth, 1.0f*Options.screenHeight);
+        Assets.font.draw(game.batch, Integer.toString(world.lives), .8f*Options.screenWidth, .9f*Options.screenHeight);
         //draw other HUD shtuf
         game.batch.end();
 
