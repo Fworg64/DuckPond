@@ -17,13 +17,13 @@ public class LevelScreen2 extends ScreenAdapter
 {
     public static final int EXIT_X = 1;//bottom left corner of button
     public static final int EXIT_Y = 1;
-    public static final int EXIT_W = (int)(.1f * 2*Options.screenWidth); //not exact yet
-    public static final int EXIT_H = (int)(.1f * 2*Options.screenHeight);
+    public static final int EXIT_W = (int)(.1f * 2*DuckPondGame.worldW); //not exact yet
+    public static final int EXIT_H = (int)(.1f * 2*DuckPondGame.worldH);
 
-    public static final int SAVE_X = (int)(.01f * 2*Options.screenWidth);
-    public static final int SAVE_Y = (int)(.9f * 2*Options.screenHeight);
-    public static final int SAVE_W = (int)(.1f * 2*Options.screenWidth); //not exact yet
-    public static final int SAVE_H = (int)(.1f * 2*Options.screenHeight);
+    public static final int SAVE_X = (int)(.01f * 2*DuckPondGame.worldW);
+    public static final int SAVE_Y = (int)(.9f * 2*DuckPondGame.worldH);
+    public static final int SAVE_W = (int)(.1f * 2*DuckPondGame.worldW); //not exact yet
+    public static final int SAVE_H = (int)(.1f * 2*DuckPondGame.worldH);
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(160,240);
     public static final float VELOCITY_INPUT_SCALE = .35f;
@@ -73,7 +73,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public LevelScreen2(DuckPondGame game)
     {
-        Options.loadDefault();
+        Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
         gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
@@ -246,6 +246,7 @@ public class LevelScreen2 extends ScreenAdapter
             case 1:
                 Gdx.app.debug("screenstate", "exit");
                 this.dispose();
+                Options.loadOptions();
                 game.setScreen(new MainMenuScreen(game));
                 break;
             case 2:

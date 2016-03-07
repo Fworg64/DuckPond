@@ -122,10 +122,11 @@ public class MainMenuScreen extends ScreenAdapter
                 if (SaveReturn.contains(touchpoint.x, touchpoint.y))
                 {
                     showOptions =false;
+                    Options.save();
                 }
                 if (StdRes.contains(touchpoint.x, touchpoint.y) && Options.highres)
                 {
-                    Options.loadDefault();
+                    Options.setStdres();
                     Assets.load();
                     resetCam();
                 }
