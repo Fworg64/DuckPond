@@ -71,7 +71,7 @@ public class Duckling
             posv.set(checkpoints.get(0));
             vel.set(checkpoints.get(1).cpy().sub(checkpoints.get(0)));
             checkpoints.remove(0);
-            if (!vel.isZero()) state = State.SWIMMING;
+            if (!vel.isZero() && state != State.EATEN) state = State.SWIMMING;
         }
         pos.setPosition(posv);
         col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
@@ -83,6 +83,12 @@ public class Duckling
 
         setSprite();
         if (vel.isZero() && state == State.SWIMMING) state = State.PAD;
+    }
+
+    public void getEaten()
+    {
+        state = State.EATEN;
+        clock =0;
     }
 
     private void setSprite()
