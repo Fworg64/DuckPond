@@ -26,6 +26,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_H = (int)(.1f * 2*Options.screenHeight);
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(160,240);
+    public static final float VELOCITY_INPUT_SCALE = .35f;
     
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -339,11 +340,11 @@ public class LevelScreen2 extends ScreenAdapter
         if (in.isTouched()) {
             touchpoint.set(in.getTouchpoint());
             tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET));
-            Message = tempvel.cpy().sub(temppos).scl(.2f).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).scl(.2f).len());
+            Message = tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).len());
         }
         if (!in.isTouched() && !tempvel.isZero()) //vel was set
         {
-            tempguy.setVel(tempvel.cpy().sub(temppos).scl(.2f));
+            tempguy.setVel(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE));
             getVel = false;
             getT = true;
         }

@@ -34,8 +34,8 @@ ____________________________________________________
 Implement Options - preferences
 finish rules for gameplay 
 -ducks dying on self collision
--collision for ducklings
--add timer to level
+-collision for ducklings(*) AFO
+-add timer to level(*) AFO
 
 add ads
 
@@ -48,9 +48,10 @@ Implement Level Selection/shop screen
 
 _______________________________
 iron out bugs in leveleditor
--Set Pos offset by map in center of screen
--scale vel by 1/5
+-Set Pos offset by map in center of screen (*)AFO
+-scale vel by .35(*) AFO 
 -autoincrement filename
+-arrange interface
 
 _______________________________
 sound...
