@@ -11,6 +11,7 @@ import com.badlogic.gdx.Preferences;
 public class Options
 {
     public static boolean highres;
+
     public static float sfxVol;
     public static float musicVol;
 
@@ -67,6 +68,30 @@ public class Options
         GUIWidth = 64;
         GUIHeight = 64;
         prefs.putBoolean("highres", highres);
+    }
+
+    public static float getMusicVol()
+    {
+        musicVol = prefs.getFloat("musicVol");
+        return musicVol;
+    }
+
+    public static void setMusicVol(float musicVol)
+    {
+        Options.musicVol = musicVol;
+        prefs.putFloat("musicVol", Options.musicVol);
+    }
+
+    public static float getSfxVol()
+    {
+        sfxVol = prefs.getFloat("sfxVol");
+        return sfxVol;
+    }
+
+    public static void setSfxVol(float sfxVol)
+    {
+        Options.sfxVol = sfxVol;
+        prefs.putFloat("sfxVol", Options.sfxVol);
     }
 
     public static void save()
