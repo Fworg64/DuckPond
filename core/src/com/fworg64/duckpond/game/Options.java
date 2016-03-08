@@ -1,5 +1,8 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+
 /**
  * Created by fworg on 2/17/2016.
  *
@@ -8,6 +11,10 @@ package com.fworg64.duckpond.game;
 public class Options
 {
     public static boolean highres;
+
+    public static float sfxVol;
+    public static float musicVol;
+
     public static int screenWidth; //implied by highres
     public static int screenHeight;
     public static int spriteWidth; //implied by screen width
@@ -15,7 +22,29 @@ public class Options
     public static int GUIWidth;
     public static int GUIHeight;
 
-    public static void loadDefault()
+    private static Preferences prefs;
+    private static boolean isDefault;
+
+    public static void loadOptions()
+    {
+        prefs = Gdx.app.getPreferences("com.fworg64.duckpond.options");
+        if (!prefs.contains("isDefault")) //options not present
+        {
+            prefs.putBoolean("isDefault", true);
+            prefs.putBoolean("highres", false);
+            prefs.putFloat("sfxVol", 1f);
+            prefs.putFloat("musicVol", 1f);
+        }
+        isDefault = prefs.getBoolean("isDefault");
+        sfxVol = prefs.getFloat("sfxVol");
+        musicVol = prefs.getFloat("musicVol");
+        highres = prefs.getBoolean("highres");
+
+        if (highres) setHighres();
+        else setStdres();
+    }
+
+    public static void setStdres()
     {
         highres = false;
         screenWidth = DuckPondGame.worldW;
@@ -24,6 +53,9 @@ public class Options
         spriteHeight = DuckPondGame.spriteH;
         GUIWidth = 32;
         GUIHeight = 32;
+        prefs.putBoolean("highres", highres);
+
+
     }
 
     public static void setHighres()
@@ -35,5 +67,35 @@ public class Options
         spriteHeight = 2*DuckPondGame.spriteH;
         GUIWidth = 64;
         GUIHeight = 64;
+        prefs.putBoolean("highres", highres);
+    }
+
+    public static float getMusicVol()
+    {
+        musicVol = prefs.getFloat("musicVol");
+        return musicVol;
+    }
+
+    public static void setMusicVol(float musicVol)
+    {
+        Options.musicVol = musicVol;
+        prefs.putFloat("musicVol", Options.musicVol);
+    }
+
+    public static float getSfxVol()
+    {
+        sfxVol = prefs.getFloat("sfxVol");
+        return sfxVol;
+    }
+
+    public static void setSfxVol(float sfxVol)
+    {
+        Options.sfxVol = sfxVol;
+        prefs.putFloat("sfxVol", Options.sfxVol);
+    }
+
+    public static void save()
+    {
+        prefs.flush();
     }
 }

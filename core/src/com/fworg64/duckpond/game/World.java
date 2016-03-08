@@ -94,6 +94,7 @@ public class World
         updateSharks(delta);
         checkPadsAndDucks();
         checkDucksAndSharks();
+        checkDucksAndLings();
         if (Victory()) listener.gameOverVictory();
         if (Defeat()) listener.gameOverLose();
     }
@@ -150,7 +151,7 @@ public class World
                 if (d.col.overlaps(s.col) && d.state != Duck.State.EATEN)
                 {
                     s.eatDuck(d);
-                    d.getEaten(s);
+                    d.getEaten();
                     lives -=1;
                 }
                 for (Duckling dd: d.ducklings)
@@ -158,8 +159,41 @@ public class World
                     if (dd.col.overlaps(s.col) && d.state != Duck.State.EATEN)
                     {
                         s.eatDuck(d);
-                        d.getEaten(s);
+                        d.getEaten();
                         lives-=1;
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkDucksAndLings()
+    {
+        for (Duck d : ducks)
+        {
+            for (Duck dd: ducks)
+            {
+                if (d != dd && d.col.overlaps(dd.col) && d.state == Duck.State.SWIMMING && dd.state == Duck.State.SWIMMING)
+                {
+                    d.getEaten();
+                    lives--;
+                    if (d != dd)
+                    {
+                        dd.getEaten();
+                        lives--;
+                    }
+                }
+                for (Duckling ddd: dd.ducklings)
+                {
+                    if (d.col.overlaps(ddd.col) && d.state == Duck.State.SWIMMING && dd.state == Duck.State.SWIMMING && ddd.state == Duckling.State.SWIMMING)
+                    {
+                        d.getEaten();
+                        lives--;
+                        if (d != dd)
+                        {
+                            dd.getEaten();
+                            lives--;
+                        }
                     }
                 }
             }

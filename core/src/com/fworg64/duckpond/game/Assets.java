@@ -51,6 +51,7 @@ public class Assets
     private static Texture GUIelements;
     private static TextureRegion[][] GUIparts;
     public static TextureRegion check;
+    public static TextureRegion slideball;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -106,6 +107,7 @@ public class Assets
         GUIelements = new Texture(Gdx.files.internal(res + "guielements.png"));
         GUIparts = TextureRegion.split(GUIelements, Options.GUIWidth, Options.GUIHeight);
         check = GUIparts[0][0];
+        slideball = GUIparts[0][1];
 
         duck = new Texture(Gdx.files.internal(res + "duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
