@@ -39,28 +39,42 @@ finish rules for gameplay (*) AFO
 ______________________
 AssetManager...(NOT NECCESARY)
 ________________________________
+=====================
+World/Gameplay
+-animation code for sharks (similar to ducks)
+-theres a bug with the ducks getting eaten and padded at the same time
+-it involves the ducklings too
+-add victory conditions (if enough ducks are padded)
+-let ducks fall off the world (die) if the come on screen and then escape
 
-animation code for sharks (similar to ducks)
-add ads
-sound...
 ____________________________
 =========================
-Level Selection/shop screen
--display levelname on button
--display graphic to represent level
+Level Selection Screen
+-display levelname on button (*) AFO
+-make pretty
+--Background
+--display graphic to represent level
+-Basic file browser
+--folders are worlds
+--contain levelfiles inside
+--store progress somehow (preferences - see Options.java)
 
 _______________________________
-iron out bugs in leveleditor
+==========================
+Level Editor Screen
 -Set Pos offset by map in center of screen (*)AFO
 -scale vel by .35(*) AFO 
--use spawntime
 -improve save interface
+--save to prefernces
+--save to file if not webGL
 -autoincrement filename
 -arrange interface
 
 _______________________________
 
 -------------------
+add ads
+sound...
 design levels
 
 ????? (ads)
