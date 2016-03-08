@@ -120,6 +120,11 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.draw(Assets.MainMenuBackground, 0, 0);
         game.batch.end();
 
+        game.batch.enableBlending();
+        game.batch.begin();
+        Assets.font.draw(game.batch, DuckPondGame.version, 0, Options.GUIHeight);
+        game.batch.end();
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(playbutt.getX(), playbutt.getY(), playbutt.getWidth(), playbutt.getHeight());

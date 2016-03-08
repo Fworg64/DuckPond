@@ -80,7 +80,7 @@ public class LevelScreen2 extends ScreenAdapter
         this.game = game;
         gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
         gcam.position.set(Options.screenWidth, Options.screenHeight, 0); //give ourselves a nice little camera //centered since its doubled
-        dafile = Gdx.files.local("LEVELS\\derp.txt");
+        dafile = Gdx.files.local("LEVELS\\test.txt");
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
@@ -119,8 +119,6 @@ public class LevelScreen2 extends ScreenAdapter
         getVel = false;
         getPos = false;
         choiceDestroy = false;
-
-        Gdx.app.debug("testicles", tempguy.objtype);
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
