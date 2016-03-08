@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
@@ -80,7 +81,8 @@ public class LevelScreen2 extends ScreenAdapter
         this.game = game;
         gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
         gcam.position.set(Options.screenWidth, Options.screenHeight, 0); //give ourselves a nice little camera //centered since its doubled
-        dafile = Gdx.files.local("LEVELS\\test.txt");
+
+        if (Gdx.app.getType() != Application.ApplicationType.WebGL) dafile = Gdx.files.local("LEVELS\\test.txt");
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
@@ -262,16 +264,30 @@ public class LevelScreen2 extends ScreenAdapter
 
     public int savefile()
     {
-        dafile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
-        for (Spawnable s: spawnables)
+        if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            dafile.writeString(s.toString() + '\n', true);
+            dafile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
+            for (Spawnable s: spawnables)
+            {
+                dafile.writeString(s.toString() + '\n', true);
+            }
+
+            Options.setCustom1(dafile.readString());
+            Options.save();
+        }
+        else
+        {
+            String temp =Integer.toString(time) + " " + Integer.toString(lives) + "\n";
+            for (Spawnable s: spawnables)
+            {
+                temp = temp + s.toString() + '\n';
+            }
+
+            Options.setCustom1(temp);
+            Options.save();
         }
 
-        Options.setCustom1(dafile.readString());
-        Options.save();
-
-        Message = "file saved.";
+        Message = "file saved.\n" + Integer.toString(spawnables.size);
 
         return 0;
     }
