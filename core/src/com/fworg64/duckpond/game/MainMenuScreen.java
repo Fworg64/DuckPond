@@ -25,16 +25,16 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MainMenuScreen extends ScreenAdapter
 {
-    final static int PLAY_X = (int)(.309f* DuckPondGame.worldW);
-    final static int PLAY_Y = (int)(.41f* DuckPondGame.worldH);
-    final static int LEVEL_X = (int)(.1f* DuckPondGame.worldW);
-    final static int LEVEL_Y = (int)(.253f* DuckPondGame.worldH);
-    final static int OPTIONS_X = (int)(.5f* DuckPondGame.worldW);
-    final static int OPTIONS_Y = (int)(.253f* DuckPondGame.worldH);
-    final static int EXIT_X = (int)(.309f* DuckPondGame.worldW);
-    final static int EXIT_Y = (int)(.134f* DuckPondGame.worldH);
-    final static int BUTT_W = (int)(.35f*DuckPondGame.worldW);
-    final static int BUTT_H = (int)(.09f*DuckPondGame.worldH);
+    int PLAY_X;
+    int PLAY_Y;
+    int LEVEL_X;
+    int LEVEL_Y;
+    int OPTIONS_X;
+    int OPTIONS_Y;
+    int EXIT_X;
+    int EXIT_Y;
+    int BUTT_W;
+    int BUTT_H;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -50,6 +50,17 @@ public class MainMenuScreen extends ScreenAdapter
 
     public MainMenuScreen (DuckPondGame game)
     {
+        PLAY_X = (int)(.309f* Options.screenWidth);
+        PLAY_Y = (int)(.41f* Options.screenHeight);
+        LEVEL_X = (int)(.1f* Options.screenWidth);
+        LEVEL_Y = (int)(.253f* Options.screenHeight);
+        OPTIONS_X = (int)(.5f* Options.screenWidth);
+        OPTIONS_Y = (int)(.253f* Options.screenHeight);
+        EXIT_X = (int)(.309f* Options.screenWidth);
+        EXIT_Y = (int)(.134f* Options.screenHeight);
+        BUTT_W = (int)(.35f*Options.screenWidth);
+        BUTT_H = (int)(.09f*Options.screenHeight);
+        
         this.game = game;
         Assets.load();
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -63,7 +74,7 @@ public class MainMenuScreen extends ScreenAdapter
         leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, BUTT_W, BUTT_H);
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, BUTT_W, BUTT_H);
 
-        in = new InputListener();
+        in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
 
     }
