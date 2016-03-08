@@ -40,6 +40,7 @@ public class LevelScreen2 extends ScreenAdapter
     boolean getD;
     boolean choiceDestroy;
 
+    boolean wasHighres;
     Rectangle exitbutt;
     Rectangle savebutt;
     Rectangle trashbutt;
@@ -73,6 +74,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public LevelScreen2(DuckPondGame game)
     {
+        wasHighres = Options.isHighres();
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
@@ -247,6 +249,8 @@ public class LevelScreen2 extends ScreenAdapter
                 Gdx.app.debug("screenstate", "exit");
                 this.dispose();
                 Options.loadOptions();
+                if (wasHighres) Options.setHighres();
+                else Options.setStdres();
                 game.setScreen(new MainMenuScreen(game));
                 break;
             case 2:
@@ -265,12 +269,18 @@ public class LevelScreen2 extends ScreenAdapter
         {
             dafile.writeString(s.toString() + '\n', true);
         }
+
+        Options.setCustom1(dafile.readString());
+        Options.save();
+
+        Message = "file saved.";
+
         return 0;
     }
 
     public void DestroyCurrent()
     {
-        Message = "Current temp destroyed.";
+        Message = "Current temp\n destroyed.";
         tempguy = new Spawnable();
         temppos.setZero();
         tempvel.setZero();
@@ -336,12 +346,12 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseVel()
     {
-        Message = "Set Velocity by releasing click next to char";
+        Message = "Set Velocity by \nreleasing click \nnext to char";
         temppos.set(tempguy.getPos());
         if (in.isTouched()) {
             touchpoint.set(in.getTouchpoint());
             tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET));
-            Message = tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).toString() + " " + Float.toString(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).len());
+            Message = tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).toString() + "\nSpeed:" + Float.toString(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).len());
         }
         if (!in.isTouched() && !tempvel.isZero()) //vel was set
         {
@@ -354,7 +364,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void ChooseT()
     {
         tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
-        Message = "Drag slider\npress confirm for SpawnTime\n" + Float.toString(tempt2s);
+        Message = "Drag slider\npress confirm \nfor SpawnTime\n" + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
@@ -384,7 +394,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseD()
     {
-        if (tempducks ==0) Message = "Use arrows to adjust #ducklings";
+        if (tempducks ==0) Message = "Use arrows to \nadjust #ducklings\n (0 now)";
         else Message = Integer.toString(tempducks) + " ducklings";
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;

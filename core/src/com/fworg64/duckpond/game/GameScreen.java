@@ -69,7 +69,7 @@ public class GameScreen extends ScreenAdapter
     //private Rectangle resetbutt;
 
 
-    GameScreen(DuckPondGame game, FileHandle level)
+    GameScreen(DuckPondGame game, String level)
     {
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);

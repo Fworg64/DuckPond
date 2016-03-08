@@ -25,6 +25,9 @@ public class LevelSelectionScreen extends ScreenAdapter
     FileHandle[] levels;
 
     Rectangle[] levelbutts;
+    Rectangle customlevelbutt;
+
+    Rectangle mainMenubutt;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -41,6 +44,9 @@ public class LevelSelectionScreen extends ScreenAdapter
         levelDir = Gdx.files.internal("LEVELS\\");
         levels = levelDir.list();
 
+        mainMenubutt = new Rectangle(10f/640f * Options.screenWidth, 800f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
+
+        customlevelbutt = new Rectangle(100f/640f * Options.screenWidth, 200f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts = new Rectangle[3];
         levelbutts[0] = new Rectangle(100f/640f * Options.screenWidth, 400f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts[1] = new Rectangle(300f/640f * Options.screenWidth, 400f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
@@ -56,9 +62,17 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 if (levels.length > i)
                 {
-                    game.setScreen(new GameScreen(game, levels[i]));
+                    game.setScreen(new GameScreen(game, levels[i].readString()));
                 }
             }
+        }
+        if (in.justTouched() && customlevelbutt.contains(touchpoint))
+        {
+            game.setScreen(new GameScreen(game, Options.getCustom1()));
+        }
+        if (in.justTouched() && mainMenubutt.contains(touchpoint))
+        {
+            game.setScreen(new MainMenuScreen(game));
         }
     }
 
@@ -74,9 +88,18 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.draw(Assets.LevelSelectionBackground, 0, 0);
         game.batch.end();
 
+        game.batch.enableBlending();
+        game.batch.begin();
+        Assets.font.draw(game.batch, "Return to MainMenu", mainMenubutt.getX(), mainMenubutt.getY());
+        Assets.font.draw(game.batch, "Custom Level", customlevelbutt.getX(), customlevelbutt.getY());
+        for (int i=0; i< levels.length; i++) Assets.font.draw(game.batch, levels[i].nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY());
+        game.batch.end();
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         for(Rectangle r: levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+        shapeRenderer.rect(customlevelbutt.getX(), customlevelbutt.getY(), customlevelbutt.getWidth(), customlevelbutt.getHeight());
+        shapeRenderer.rect(mainMenubutt.getX(), mainMenubutt.getY(), mainMenubutt.getWidth(), mainMenubutt.getHeight());
         shapeRenderer.end();
     }
 

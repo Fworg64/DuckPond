@@ -36,11 +36,11 @@ public class World
     public float time;
     public int lives;
 
-    FileHandle level;
+    String level;
 
     String debug;
 
-    public World (WorldListener listener, FileHandle level)
+    public World (WorldListener listener, String level)
     {
         this.listener = listener;
         this.level = level;
@@ -55,25 +55,33 @@ public class World
 
     public void LoadLevel()
     {
-        String levelstring = level.readString();
+        String levelstring = level;
         Gdx.app.debug(levelstring, "");
         Array<String> levelcodes = new Array<String>(levelstring.split("\n"));
-        time = Float.parseFloat(levelcodes.get(0).split(" ")[0].trim());
-        lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
-        levelcodes.removeIndex(0);
-        for(String code: levelcodes)
+        try
         {
-            String[] codelet = code.split(" ");
-            Vector2 temppos = new Vector2();
-            Vector2 tempvel = new Vector2();
-            int tempducks = Integer.parseInt(codelet[4].trim());
-            temppos.fromString(codelet[2]);
-            tempvel.fromString(codelet[3]);
+            time = Float.parseFloat(levelcodes.get(0).split(" ")[0].trim());
+            lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
+            levelcodes.removeIndex(0);
+            for(String code: levelcodes)
+            {
+                String[] codelet = code.split(" ");
+                Vector2 temppos = new Vector2();
+                Vector2 tempvel = new Vector2();
+                int tempducks = Integer.parseInt(codelet[4].trim());
+                temppos.fromString(codelet[2]);
+                tempvel.fromString(codelet[3]);
 
-            if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
-            if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
-            if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+                if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
+                if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
+                if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+            }
         }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            Gdx.app.debug("Error","Level File appers corrupt");
+        }
+
     }
 
     public void ReloadLevel() //should reload the current level
