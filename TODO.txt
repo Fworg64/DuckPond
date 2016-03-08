@@ -31,20 +31,21 @@ export to .txt file(*) AFO
 make method to import .txt file in World(*)AFO
 ____________________________________________________
 
-Implement Options - preferences
-finish rules for gameplay 
--ducks dying on self collision
+Implement Options - preferences(*) AFO
+finish rules for gameplay (*) AFO
+-ducks dying on self collision(*) AFO
 -collision for ducklings(*) AFO
 -add timer to level(*) AFO
-
-add ads
-
-animation code for sharks (similar to ducks)
-
 ______________________
+AssetManager...
+add ads
+sound...
+
 Implement Level Selection/shop screen
 -display levelname on button
 -display graphic to represent level
+
+animation code for sharks (similar to ducks)
 
 _______________________________
 iron out bugs in leveleditor
@@ -54,7 +55,6 @@ iron out bugs in leveleditor
 -arrange interface
 
 _______________________________
-sound...
 
 -------------------
 design levels
