@@ -24,6 +24,8 @@ public class DuckPondGame extends Game {
 	public static int spriteW = 48;
 	public static int spriteH = 48;
 
+	public static final String version = "v0.0.1a";
+
 	public SpriteBatch batch;
 
 	public String debug; //probably make a debug file too...

@@ -15,6 +15,8 @@ public class Options
     public static float sfxVol;
     public static float musicVol;
 
+    public static String custom1; //custom level, mainly for html
+
     public static int screenWidth; //implied by highres
     public static int screenHeight;
     public static int spriteWidth; //implied by screen width
@@ -34,11 +36,17 @@ public class Options
             prefs.putBoolean("highres", false);
             prefs.putFloat("sfxVol", 1f);
             prefs.putFloat("musicVol", 1f);
+            prefs.putString("custom1", "60 2\n" +
+                    "0.0 Duck (332.0,0.0) (-46.2,39.899998) 5\n" +
+                    "0.0 Duck (-62.0,-16.0) (44.1,56.0) 7\n" +
+                    "0.0 Shark (38.0,512.0) (14.7,-44.8) 0\n" +
+                    "0.0 Lily (134.0,16.0) (0.0,0.0) 0\n");
         }
         isDefault = prefs.getBoolean("isDefault");
         sfxVol = prefs.getFloat("sfxVol");
         musicVol = prefs.getFloat("musicVol");
         highres = prefs.getBoolean("highres");
+        custom1 = prefs.getString("custom1");
 
         if (highres) setHighres();
         else setStdres();
@@ -54,8 +62,6 @@ public class Options
         GUIWidth = 32;
         GUIHeight = 32;
         prefs.putBoolean("highres", highres);
-
-
     }
 
     public static void setHighres()
@@ -68,6 +74,12 @@ public class Options
         GUIWidth = 64;
         GUIHeight = 64;
         prefs.putBoolean("highres", highres);
+    }
+
+    public static boolean isHighres()
+    {
+        highres = prefs.getBoolean("highres");
+        return highres;
     }
 
     public static float getMusicVol()
@@ -92,6 +104,18 @@ public class Options
     {
         Options.sfxVol = sfxVol;
         prefs.putFloat("sfxVol", Options.sfxVol);
+    }
+
+    public static String getCustom1()
+    {
+        custom1 = prefs.getString("custom1");
+        return custom1;
+    }
+
+    public static void setCustom1(String custom1)
+    {
+        Options.custom1 = custom1;
+        prefs.putString("custom1", Options.custom1);
     }
 
     public static void save()

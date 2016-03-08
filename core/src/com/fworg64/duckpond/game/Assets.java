@@ -87,10 +87,10 @@ public class Assets
 
     public static void load()
     {
-        font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
+        font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
         MainMenuBackground = new Texture(Gdx.files.internal(res + "MainMenu.png"));
         OptionsMenu = new Texture(Gdx.files.internal(res + "OptionsMenu.png"));
         GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
