@@ -37,20 +37,24 @@ finish rules for gameplay (*) AFO
 -collision for ducklings(*) AFO
 -add timer to level(*) AFO
 ______________________
-AssetManager...
-add ads
-sound...
-
-Implement Level Selection/shop screen
--display levelname on button
--display graphic to represent level
+AssetManager...(NOT NECCESARY)
+________________________________
 
 animation code for sharks (similar to ducks)
+add ads
+sound...
+____________________________
+=========================
+Level Selection/shop screen
+-display levelname on button
+-display graphic to represent level
 
 _______________________________
 iron out bugs in leveleditor
 -Set Pos offset by map in center of screen (*)AFO
 -scale vel by .35(*) AFO 
+-use spawntime
+-improve save interface
 -autoincrement filename
 -arrange interface
 
