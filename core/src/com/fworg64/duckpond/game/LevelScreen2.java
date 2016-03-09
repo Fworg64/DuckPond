@@ -138,24 +138,28 @@ public class LevelScreen2 extends ScreenAdapter
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
             if (savebutt.contains(touchpoint)) return 2;
-            if (trashbutt.contains(touchpoint)&& defaultstate)
+            if (trashbutt.contains(touchpoint))
             {
-                Message = "Mark for destruction";
-                choiceDestroy = true;
+                if (defaultstate){
+                    Gdx.app.debug("choicedestroy", "heatinup");
+                    choiceDestroy = true;
+                    defaultstate = false;
+                }
+                else DestroyCurrent();
+
             }
-            if (TtimeUp.contains(touchpoint) && time < 120) time+=30;
-            if (TtimeDown.contains(touchpoint) && time>30) time-=30;
+            if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
+            if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
             if (LivesUp.contains(touchpoint) && lives <5) lives++;
             if (LivesDown.contains(touchpoint) && lives >1) lives--;
             if (Tknob.contains(touchpoint) && defaultstate)
             {
                 globalTAdjust = true;
+                defaultstate = false;
             }
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
         if (in.isBackPressed()) return 1;
-        if (!defaultstate && trashbutt.contains(touchpoint) && in.justTouched())
-        {DestroyCurrent();}
         if (choiceDestroy)
         {Choose2Destroy();}
         if (defaultstate)
@@ -238,29 +242,36 @@ public class LevelScreen2 extends ScreenAdapter
         getT = false;
         getPos = false;
         getD = false;
-        choiceDestroy = false;
         defaultstate = true;
         //Gdx.app.debug("OH", "2");
     }
 
     public void Choose2Destroy()
     {
+        Message = "choose to destroy";
         touchpoint.set(in.getTouchpoint());
-        for (Spawnable s: spawnables)
+        if (in.isTouched())
         {
-            if (in.isTouched())
+            for (Spawnable s: spawnables)
             {
-                if (touchpoint.x<(s.getPos().x + Options.spriteWidth) && touchpoint.x > s.getPos().x) //x matches
+                if (tempt2s >= s.getTime2spawn())
                 {
-                    if (touchpoint.y<(s.getPos().y + Options.spriteHeight) && touchpoint.y > s.getPos().y)//y matches
+                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn()) *time;
+                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn()) *time;
+                    if (touchpoint.x<(del_X + Options.spriteWidth) && touchpoint.x > del_X) //x matches
                     {
-                        Message = s.getObjtype() + "\nDestroyed";
-                        spawnables.removeValue(s,true);
+                        if (touchpoint.y<(del_Y + Options.spriteHeight) && touchpoint.y > del_Y)//y matches
+                        {
+                            Message = s.getObjtype() + "\nDestroyed";
+                            spawnables.removeValue(s,true);
+                        }
                     }
                 }
+
             }
         }
         if (in.justTouched() && !trashbutt.contains(touchpoint)) {
+            Gdx.app.debug("choicedestroy", "weout");
             choiceDestroy = false;
             defaultstate = true;
         }
@@ -272,14 +283,17 @@ public class LevelScreen2 extends ScreenAdapter
         if (in.justTouched() && ducks.contains(touchpoint)) {
             tempguy.setObjtype("Duck");
             getPos = true;
+            defaultstate = false;
         }
         else if (in.justTouched() && sharks.contains(touchpoint)) {
             tempguy.setObjtype("Shark");
             getPos = true;
+            defaultstate = false;
         }
         else if (in.justTouched() && lillies.contains(touchpoint)) {
             tempguy.setObjtype("Lily");
             getPos = true;
+            defaultstate = false;
         }
     }
 
@@ -317,7 +331,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseT()
     {
-        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
+        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
         Message = "Drag slider\npress confirm \nfor SpawnTime\n" + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
@@ -334,7 +348,7 @@ public class LevelScreen2 extends ScreenAdapter
         if (in.justTouched() && Taccept.contains(touchpoint))
         {
             if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
-            tempguy.setTime2spawn(tempt2s); //number between 0 and 1
+            tempguy.setTime2spawn(tempt2s);
             if (!getD) {
                 spawnables.add(tempguy);
                 Message = tempguy.toString();
@@ -349,8 +363,8 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void adjustGlobalT()
     {
-        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
-        Message = "Drag slider\npress confirm \nfor SpawnTime\n" + Float.toString(tempt2s);
+        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
+        Message = "Time:" + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
@@ -362,13 +376,12 @@ public class LevelScreen2 extends ScreenAdapter
         if (gettingT && !in.isTouched())
         {
             gettingT = false;
-        }
-        if (in.justTouched() && Taccept.contains(touchpoint))
-        {
             globalTAdjust = false;
             defaultstate = true;
         }
     }
+
+    public void updateTempt2s() {tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;}
 
     public void ChooseD()
     {
@@ -417,8 +430,8 @@ public class LevelScreen2 extends ScreenAdapter
         {
             if (s.getTime2spawn() <= tempt2s)
             {
-                float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn()) *time;
-                float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn()) *time;
+                float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
+                float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
                 if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark, render_X, render_Y);
                 if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck, render_X, render_Y);
                 if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad, render_X, render_Y);
@@ -436,9 +449,10 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.leveditDup, LivesUp.getX(), LivesUp.getY());
         game.batch.draw(Assets.leveditDdown, LivesDown.getX(), LivesDown.getY());
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
-        Assets.font.draw(game.batch, "Time: " + Integer.toString(time), TtimeUp.getX() - .5f*TtimeUp.getWidth(), TtimeUp.getY());
+        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TtimeUp.getX() - 1.0f*TtimeUp.getWidth(), TtimeUp.getY());
         Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
         Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
+        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), Tslider.getX(), Tslider.getY() + 1.5f* Tknob.getHeight());
         game.batch.end();
 
 
