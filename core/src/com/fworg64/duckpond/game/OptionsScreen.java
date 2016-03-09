@@ -90,7 +90,7 @@ public class OptionsScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (SaveReturn.contains(touchpoint) && in.justTouched())
+        if ((SaveReturn.contains(touchpoint) && in.justTouched()) || in.isBackPressed())
         {
             Options.save();
             game.setScreen(new MainMenuScreen(game));

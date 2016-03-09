@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Duckling
 {
-    public enum State {INITIALIZING, SWIMMING, PAD, EATEN, DEAD};
+    public enum State {INITIALIZING, SWIMMING, PADDING, PAD, EATEN, DEAD};
     public enum Direction {RIGHT, UP, LEFT, DOWN};
 
     Rectangle pos; //make a default obj class with a rect
@@ -104,7 +104,7 @@ public class Duckling
         }
         if (state == State.PAD)
         {
-            if (vel.isZero()) currAnim = padAnim;
+            currAnim = padAnim;
             if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
         }
         if (state == State.EATEN)

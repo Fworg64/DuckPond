@@ -119,7 +119,6 @@ public class World
             {
                 swipeend.sub(swipestart);
                 d.flick(swipeend);
-                debug = "DUCK SWIPED!!\n" + swipestart.toString() + '\n'+ swipeend.toString();
             }
             // if swipe was on the duck and bigger than not much, do the flick
         }
@@ -139,7 +138,7 @@ public class World
         {
             for (Lily l: pads)
             {
-                if (l.col.overlaps(d.col) && d.state != Duck.State.PAD)
+                if (l.col.overlaps(d.col) && d.state == Duck.State.SWIMMING)
                 {
                     d.pad(l);
                     debug = "DUCK PADDED!!";
@@ -156,7 +155,7 @@ public class World
         {
             for (Duck d: ducks)
             {
-                if (d.col.overlaps(s.col) && d.state != Duck.State.EATEN)
+                if (d.col.overlaps(s.col) && d.state == Duck.State.SWIMMING)
                 {
                     s.eatDuck(d);
                     d.getEaten();
@@ -164,7 +163,7 @@ public class World
                 }
                 for (Duckling dd: d.ducklings)
                 {
-                    if (dd.col.overlaps(s.col) && d.state != Duck.State.EATEN)
+                    if (dd.col.overlaps(s.col) && dd.state == Duckling.State.SWIMMING)
                     {
                         s.eatDuck(d);
                         d.getEaten();
@@ -210,8 +209,17 @@ public class World
 
     private boolean Victory()
     {
-        if (false) return true;
-        else return false;
+        for (Duck d: ducks)
+        {
+            if (d.state != Duck.State.PAD) return false;
+            for (Duckling dd: d.ducklings)
+            {
+                if (dd.state != Duckling.State.PAD) return false;
+            }
+        }
+        if (lives <=0) return false;
+        //if more ducks will spawn, return false
+        return true;
     }
     private boolean Defeat()
     {

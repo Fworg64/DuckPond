@@ -42,6 +42,7 @@ public class MainMenuScreen extends ScreenAdapter
 
     InputListener in;
     Vector2 touchpoint;
+    boolean catchOtherBack;
 
     Rectangle playbutt; //more buttons later
     Rectangle optionbutt;
@@ -76,6 +77,8 @@ public class MainMenuScreen extends ScreenAdapter
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
+        if (in.isBackPressed()) catchOtherBack = true;
+        else catchOtherBack = false;
 
     }
 
@@ -86,7 +89,6 @@ public class MainMenuScreen extends ScreenAdapter
 
         if (playbutt.contains(touchpoint) && in.justTouched())
         {
-            game.debug = "play pressed";
             game.setScreen(new LevelSelectionScreen(game));
             return 2;
         }
@@ -104,6 +106,11 @@ public class MainMenuScreen extends ScreenAdapter
         {
             Gdx.app.exit();
         }
+        if (in.isBackPressed())
+        {
+           if (!catchOtherBack) Gdx.app.exit();
+        }
+        if (!in.isBackPressed()) catchOtherBack = false;
         return 0;
     }
 

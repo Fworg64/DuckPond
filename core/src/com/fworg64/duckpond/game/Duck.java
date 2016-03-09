@@ -20,7 +20,7 @@ public class Duck
 {
     public static final float rotConst = .03f; //constant for adjusting rotation speed
     public static final float ducklingDistConst = 2000;
-    public enum State {SWIMMING, PAD, EATEN, DEAD}; //mainly used for animation
+    public enum State {SWIMMING, PADDING, PAD, EATEN, DEAD}; //mainly used for animation
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
 
     State state;
@@ -86,9 +86,9 @@ public class Duck
             //A dot B = mag(A)*mag(B)*cos(T) : the .9998 gives us +/- 1.40 deg of indifference (cos^-1())
             //if the .999X is too close to 1, the duck gets confused...
         }
-        if (state == State.PAD)
+        if (state == State.PADDING)
         {
-            if (vel.len() * clock >= DuckPondGame.spriteW*1.0f) vel.setZero();
+            if (vel.len() * clock >= DuckPondGame.spriteW*1.0f) {vel.setZero(); state = State.PAD;}
         }
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure
@@ -116,7 +116,7 @@ public class Duck
 
     public void pad(Lily pad)
     {
-        state = State.PAD;
+        state = State.PADDING;
         vel.set(pad.pos.getCenter(new Vector2()).sub(this.pos.getCenter(new Vector2())));
         vel.setLength(50);
         dtheta =0;
@@ -144,7 +144,7 @@ public class Duck
         }
         if (state == State.PAD)
         {
-            if (vel.isZero()) currAnim = padAnim;
+            currAnim = padAnim;
         }
         if (state == State.EATEN)
         {

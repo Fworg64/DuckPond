@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -57,15 +58,14 @@ public class GameScreen extends ScreenAdapter
     private Rectangle HUDarea;
     private Rectangle pausebutt;
     private Rectangle unpausebutt;
-    private Rectangle exitbutt;
+    private Rectangle exitbutt; //goes to level selectionscreen
     private Rectangle restartbutt;
     private Rectangle confirmYes;
     private Rectangle confirmNo;
     private Rectangle GOVnextLevel;
-    private Rectangle GOVmainMenu;
-    private Rectangle GOLmainMenu;
+    private Rectangle GOVLevelSelection;
+    private Rectangle GOLLevelSelection;
     private Rectangle GOLrestart;
-    private Rectangle GOLlevelSelect;
     //private Rectangle resetbutt;
 
 
@@ -121,14 +121,14 @@ public class GameScreen extends ScreenAdapter
         //resetbutt = new Rectangle(0, .9f*DuckPondGame.worldH, .1f*DuckPondGame.worldW, DuckPondGame.worldH);
         HUDarea = new Rectangle(0, (1-.1f)*Options.screenHeight, Options.screenWidth, .1f*Options.screenHeight);
         pausebutt = new Rectangle(0,DuckPondGame.worldH -.5f*HUDarea.getHeight(),(.3125f)*DuckPondGame.worldW, .1f*DuckPondGame.worldH);
-        unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
-        restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
-        exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+        exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
         confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
         confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
-        GOVmainMenu = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
-        GOLmainMenu = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
-        GOLrestart = new Rectangle(400f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
 
     }
 
@@ -164,8 +164,7 @@ public class GameScreen extends ScreenAdapter
             }
             else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
-            //if (resetbutt.contains(touchpoint)) world.LoadLevel(); //not really a reset, but ya know
-            if (pausebutt.contains(in.getTouchpoint()) && in.justTouched())
+            if ((pausebutt.contains(in.getTouchpoint()) && in.justTouched()) || in.isBackPressed())
             {
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
@@ -193,7 +192,7 @@ public class GameScreen extends ScreenAdapter
                     }
                     if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
@@ -209,9 +208,9 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMLOSE:
-                    if (GOLmainMenu.contains(in.getTouchpoint()) && in.justTouched())
+                    if (GOLLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
                     {
@@ -221,9 +220,9 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMVICTORY:
-                    if (GOVmainMenu.contains(in.getTouchpoint()) && in.justTouched())
+                    if (GOVLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     break;
             }
@@ -283,12 +282,12 @@ public class GameScreen extends ScreenAdapter
         }
         if (menu == Menus.GMLOSE)
         {
-            shapeRenderer.rect(GOLmainMenu.getX(), GOLmainMenu.getY(), GOLmainMenu.getWidth(), GOLmainMenu.getHeight());
+            shapeRenderer.rect(GOLLevelSelection.getX(), GOLLevelSelection.getY(), GOLLevelSelection.getWidth(), GOLLevelSelection.getHeight());
             shapeRenderer.rect(GOLrestart.getX(), GOLrestart.getY(), GOLrestart.getWidth(), GOLrestart.getHeight());
         }
         if (menu == Menus.GMVICTORY)
         {
-            shapeRenderer.rect(GOVmainMenu.getX(), GOVmainMenu.getY(), GOVmainMenu.getWidth(), GOVmainMenu.getHeight());
+            shapeRenderer.rect(GOVLevelSelection.getX(), GOVLevelSelection.getY(), GOVLevelSelection.getWidth(), GOVLevelSelection.getHeight());
         }
 
         shapeRenderer.end();

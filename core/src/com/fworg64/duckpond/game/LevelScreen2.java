@@ -150,6 +150,7 @@ public class LevelScreen2 extends ScreenAdapter
             if (LivesDown.contains(touchpoint) && lives >1) lives--;
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
+        if (in.isBackPressed()) return 1;
         if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
         {DestroyCurrent();}
         if (choiceDestroy)
@@ -211,6 +212,7 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
         Assets.font.draw(game.batch, "Time: " + Integer.toString(time), TtimeUp.getX() - .5f*TtimeUp.getWidth(), TtimeUp.getY());
         Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
+        Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
         game.batch.end();
 
 
