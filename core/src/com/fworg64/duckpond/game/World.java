@@ -209,8 +209,17 @@ public class World
 
     private boolean Victory()
     {
-        if (false) return true;
-        else return false;
+        for (Duck d: ducks)
+        {
+            if (d.state != Duck.State.PAD) return false;
+            for (Duckling dd: d.ducklings)
+            {
+                if (dd.state != Duckling.State.PAD) return false;
+            }
+        }
+        if (lives <=0) return false;
+        //if more ducks will spawn, return false
+        return true;
     }
     private boolean Defeat()
     {
