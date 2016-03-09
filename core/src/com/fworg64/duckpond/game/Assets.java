@@ -149,7 +149,7 @@ public class Assets
 
     public static void levelEditLoad()
     {
-        //font = new BitmapFont(Gdx.files.internal("FONT\\opensans.fnt"));
+        font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
         LevelEditBg = new Texture(Gdx.files.internal("leveledit\\LevelEditBackground.png"));
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
         LevelEditPartSheet = new Texture(Gdx.files.internal("leveledit\\leveledit.png"));
