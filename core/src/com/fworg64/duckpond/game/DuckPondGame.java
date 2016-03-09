@@ -36,6 +36,8 @@ public class DuckPondGame extends Game {
 		Options.loadOptions();
 		Assets.load();
 
+		Gdx.input.setCatchBackKey(true);
+
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		debug = "herpp";
 

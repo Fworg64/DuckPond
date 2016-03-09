@@ -150,6 +150,7 @@ public class LevelScreen2 extends ScreenAdapter
             if (LivesDown.contains(touchpoint) && lives >1) lives--;
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
+        if (in.isBackPressed()) return 1;
         if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
         {DestroyCurrent();}
         if (choiceDestroy)

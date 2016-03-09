@@ -70,7 +70,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             game.setScreen(new GameScreen(game, Options.getCustom1()));
         }
-        if (in.justTouched() && mainMenubutt.contains(touchpoint))
+        if ((in.justTouched() && mainMenubutt.contains(touchpoint)) || in.isBackPressed())
         {
             game.setScreen(new MainMenuScreen(game));
         }

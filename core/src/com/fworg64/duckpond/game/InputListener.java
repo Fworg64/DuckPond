@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -23,6 +24,8 @@ public class InputListener
     private float rawTouchY;
     private int Yoffset;
     private Vector2 projTouch;// the touchpoint projected to the assumed camera
+
+    private boolean backflag;
 
     public InputListener()
     {
@@ -88,5 +91,13 @@ public class InputListener
     public boolean isTouched()
     {
         return Gdx.input.isTouched();
+    }
+
+    public boolean isBackPressed() {
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK))
+        {
+            return true;
+        }
+        else return false;
     }
 }
