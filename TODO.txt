@@ -57,6 +57,7 @@ Level Selection Screen
 -Basic file browser
 --folders are worlds
 --contain levelfiles inside
+--put world graphic in folder
 --store progress somehow (preferences - see Options.java)
 
 _______________________________
@@ -64,11 +65,18 @@ _______________________________
 Level Editor Screen
 -Set Pos offset by map in center of screen (*)AFO
 -scale vel by .35(*) AFO 
+-represent that top part of gameplay area is covered by the GUI
 -improve save interface
 --save to prefernces
---save to file if not webGL
--autoincrement filename
+--save to file if not running from webGL
+--give the save button a graphic
+-autoincrement filename (how many levels should we save in preferences?
 -arrange interface
+-have objects move when time is changed according to their velocities
+-this means render ducklings too
+-enforce minimum speed for ducks (max too)
+-add min/max speed for sharks as well
+-load existing file/customlevel_from_preferences
 
 _______________________________
 
