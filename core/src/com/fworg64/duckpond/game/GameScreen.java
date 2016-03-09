@@ -193,7 +193,7 @@ public class GameScreen extends ScreenAdapter
                     }
                     if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
@@ -211,7 +211,7 @@ public class GameScreen extends ScreenAdapter
                 case GMLOSE:
                     if (GOLmainMenu.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
                     {
@@ -223,7 +223,7 @@ public class GameScreen extends ScreenAdapter
                 case GMVICTORY:
                     if (GOVmainMenu.contains(in.getTouchpoint()) && in.justTouched())
                     {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectionScreen(game));
                     }
                     break;
             }
