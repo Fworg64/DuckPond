@@ -42,10 +42,10 @@ ________________________________
 =====================
 World/Gameplay
 -animation code for sharks (similar to ducks)
--theres a bug with the ducks getting eaten and padded at the same time
--it involves the ducklings too
--add victory conditions (if enough ducks are padded)
--let ducks fall off the world (die) if the come on screen and then escape
+-fix duck states (*) AFO
+-add victory conditions (if enough ducks are padded)(*)AFO
+-let ducks fall off the world (die) if they go to far away
+-implement spawn time mechanism
 
 ____________________________
 =========================
@@ -76,6 +76,7 @@ Level Editor Screen
 -this means render ducklings too
 -enforce minimum speed for ducks (max too)
 -add min/max speed for sharks as well
+-force at least 1 lilypad
 -load existing file/customlevel_from_preferences
 
 _______________________________
