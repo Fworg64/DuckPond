@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,10 +31,13 @@ public class World
     public final List<Duck> ducks;
     public final List<Lily> pads;
     public final List<Shark> sharks;
+    public List<String> toBeLoaded;
+    public boolean more2load;
 
     public final WorldListener listener;
 
     public float time;
+    public float clock;
     public int lives;
 
     String level;
@@ -47,8 +51,13 @@ public class World
         ducks = new ArrayList<Duck>();
         pads = new ArrayList<Lily>();
         sharks = new ArrayList<Shark>();
-        time = 30;
-        lives =2;
+
+        toBeLoaded = new ArrayList<String>();
+        more2load = false;
+
+        time = 420;
+        clock =0;
+        lives =69;
 
         debug = "ALLSGOOD";
     }
@@ -57,31 +66,41 @@ public class World
     {
         String levelstring = level;
         Gdx.app.debug(levelstring, "");
-        Array<String> levelcodes = new Array<String>(levelstring.split("\n"));
+        ArrayList<String> levelcodes = new ArrayList<String>(Arrays.asList(levelstring.split("\n")));
         try
         {
             time = Float.parseFloat(levelcodes.get(0).split(" ")[0].trim());
             lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
-            levelcodes.removeIndex(0);
-            for(String code: levelcodes)
+            levelcodes.remove(0);
+            for(Iterator<String> iterator = levelcodes.iterator(); iterator.hasNext();)
             {
+                String code = iterator.next();
+                Gdx.app.debug("code:", code);
                 String[] codelet = code.split(" ");
-                Vector2 temppos = new Vector2();
-                Vector2 tempvel = new Vector2();
-                int tempducks = Integer.parseInt(codelet[4].trim());
-                temppos.fromString(codelet[2]);
-                tempvel.fromString(codelet[3]);
+                if (codelet[0].equals("0.0"));
+                {
+                    Vector2 temppos = new Vector2();
+                    Vector2 tempvel = new Vector2();
+                    int tempducks = Integer.parseInt(codelet[4].trim());
+                    temppos.fromString(codelet[2]);
+                    tempvel.fromString(codelet[3]);
 
-                if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
-                if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
-                if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+                    if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
+                    if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
+                    if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+                    iterator.remove();
+                }
+            }
+            if (levelcodes.size() >0) {
+                toBeLoaded = levelcodes;
+                more2load = true;
+                Gdx.app.debug("uh-huh", "okay");
             }
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
             Gdx.app.debug("Error","Level File appers corrupt");
         }
-
     }
 
     public void ReloadLevel() //should reload the current level
@@ -95,9 +114,37 @@ public class World
         LoadLevel();
     }
 
+    public void checkAndLoadNotYetLoaded()
+    {
+        for(Iterator<String> iterator = toBeLoaded.iterator(); iterator.hasNext();)
+        {
+            String code = iterator.next();
+            String[] codelet = code.split(" ");
+            if (Float.parseFloat(codelet[0]) <=clock);
+            {
+                Vector2 temppos = new Vector2();
+                Vector2 tempvel = new Vector2();
+                int tempducks = Integer.parseInt(codelet[4].trim());
+                temppos.fromString(codelet[2]);
+                tempvel.fromString(codelet[3]);
+
+                if (codelet[1].equals("Duck")) ducks.add(new Duck(temppos.x, temppos.y, tempvel.x, tempvel.y, tempducks));
+                if (codelet[1].equals("Shark")) sharks.add(new Shark(temppos.x, temppos.y, tempvel.x, tempvel.y));
+                if (codelet[1].equals("Lily")) pads.add(new Lily(temppos.x, temppos.y));
+                iterator.remove();
+            }
+        }
+        if (toBeLoaded.size() ==0)
+        {
+            more2load = false;
+        }
+    }
+
     public void update(float delta, Vector2 swipestart, Vector2 swipeend)
     {
         time -=delta;
+        clock +=delta;
+        if (more2load) checkAndLoadNotYetLoaded();
         updateDucks(delta, swipestart, swipeend);
         updateSharks(delta);
         checkPadsAndDucks();
@@ -218,7 +265,8 @@ public class World
             }
         }
         if (lives <=0) return false;
-        //if more ducks will spawn, return false
+        if (more2load) return false;
+
         return true;
     }
     private boolean Defeat()
