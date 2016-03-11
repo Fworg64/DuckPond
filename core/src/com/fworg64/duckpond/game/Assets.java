@@ -21,8 +21,6 @@ import sun.applet.Main;
  */
 public class Assets
 {
-    public static Music mainmenuloop;
-
     public static BitmapFont font;
 
     public static Texture LevelEditBg;
@@ -91,8 +89,6 @@ public class Assets
 
     public static void load()
     {
-        mainmenuloop = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\mainmenuloop.mp3"));
-
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
@@ -149,9 +145,7 @@ public class Assets
         sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
         sharkEatFrames = new Array<TextureRegion>(sharkEat);
 
-        // i think we're suppose to dispose of some textures here...
-        //or maybe that will make the world burn
-
+        //no need to dispose of things if we just keep everything in memory the whole time hehe
     }
 
     public static void levelEditLoad()

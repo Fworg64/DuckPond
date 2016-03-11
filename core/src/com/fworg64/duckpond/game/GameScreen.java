@@ -82,6 +82,9 @@ public class GameScreen extends ScreenAdapter
 
         in = new InputListener();
 
+        game.mas.loadGameMusicAndDisposeMMM();
+        game.mas.playGameMusic();
+
         touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
         clock =0;
 
@@ -140,6 +143,7 @@ public class GameScreen extends ScreenAdapter
         if (isPaused ==false)
         {
             clock+=delta; //keep track of time
+            game.mas.playGameMusic();
 
             if (in.justTouched() && beingswiped ==false) //swipe is starting
             {
@@ -175,6 +179,7 @@ public class GameScreen extends ScreenAdapter
         }
         else
         {
+            game.mas.pauseCurrMusic();
             switch (menu)
             {
                 case PAUSEMENU:
@@ -204,6 +209,7 @@ public class GameScreen extends ScreenAdapter
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
                         isPaused = false;
+                        game.mas.stopCurrMusic();
 
                         showConfirmRestart = false;
                     }
@@ -224,6 +230,7 @@ public class GameScreen extends ScreenAdapter
                         clock = 0;
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
+                        game.mas.stopCurrMusic();
                         isPaused = false;
                     }
                     if (gameoverRunTime>0)

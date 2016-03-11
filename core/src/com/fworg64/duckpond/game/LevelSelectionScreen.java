@@ -41,6 +41,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
 
+        game.mas.playMainMenu();
+
         levelDir = Gdx.files.internal("LEVELS\\");
         levels = levelDir.list();
 

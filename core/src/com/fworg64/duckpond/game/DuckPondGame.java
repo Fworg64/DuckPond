@@ -27,12 +27,15 @@ public class DuckPondGame extends Game {
 	public static final String version = "v0.0.3a";
 
 	public SpriteBatch batch;
+    public MusicAndSounds mas;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load();
+        mas = new MusicAndSounds();
+        mas.playMainMenu();
 
 		Gdx.input.setCatchBackKey(true);
 

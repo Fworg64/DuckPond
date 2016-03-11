@@ -79,15 +79,6 @@ public class MainMenuScreen extends ScreenAdapter
         touchpoint = new Vector2();
         if (in.isBackPressed()) catchOtherBack = true;
         else catchOtherBack = false;
-        
-        Assets.mainmenuloop.setLooping(true);
-        Assets.mainmenuloop.setVolume(Options.getMusicVol());
-        if (!Assets.mainmenuloop.isPlaying())
-        {
-            Gdx.app.debug("Play", "That funky music");
-            Assets.mainmenuloop.play();
-        }
-
     }
 
     public int update() //FYOTB
