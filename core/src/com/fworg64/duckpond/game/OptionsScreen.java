@@ -111,11 +111,14 @@ public class OptionsScreen extends ScreenAdapter
             MusicSlider.setX(touchpoint.x);
             if (touchpoint.x < SLIDER_X) {MusicSlider.setX(SLIDER_X);}
             if (touchpoint.x > (SLIDER_X + SLIDER_W)) {MusicSlider.setX(SLIDER_X + SLIDER_W);}
+            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_W);
+            Assets.mainmenuloop.setVolume(Options.getMusicVol());
         }
         if (slidingMusic && !in.isTouched())
         {
             slidingMusic = false;
             Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_W);
+            Assets.mainmenuloop.setVolume(Options.getMusicVol());
             Gdx.app.debug("Volset", Float.toString((MusicSlider.getX()-SLIDER_X)/SLIDER_W));
         }
         if (SfxSlider.contains(touchpoint) && in.justTouched() && !slidingSfx)

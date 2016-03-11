@@ -1,6 +1,8 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,6 +21,8 @@ import sun.applet.Main;
  */
 public class Assets
 {
+    public static Music mainmenuloop;
+
     public static BitmapFont font;
 
     public static Texture LevelEditBg;
@@ -87,10 +91,13 @@ public class Assets
 
     public static void load()
     {
+        mainmenuloop = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\mainmenuloop.mp3"));
+
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
         font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
+
         MainMenuBackground = new Texture(Gdx.files.internal(res + "MainMenu.png"));
         OptionsMenu = new Texture(Gdx.files.internal(res + "OptionsMenu.png"));
         GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
