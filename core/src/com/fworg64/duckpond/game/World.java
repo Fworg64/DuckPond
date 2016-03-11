@@ -77,8 +77,9 @@ public class World
                 String code = iterator.next();
                 Gdx.app.debug("code:", code);
                 String[] codelet = code.split(" ");
-                if (codelet[0].equals("0.0"));
+                if (Float.parseFloat(codelet[0]) ==0)
                 {
+                    Gdx.app.debug(codelet[0], "");
                     Vector2 temppos = new Vector2();
                     Vector2 tempvel = new Vector2();
                     int tempducks = Integer.parseInt(codelet[4].trim());
@@ -119,9 +120,11 @@ public class World
         for(Iterator<String> iterator = toBeLoaded.iterator(); iterator.hasNext();)
         {
             String code = iterator.next();
+            Gdx.app.debug("loading", code);
             String[] codelet = code.split(" ");
-            if (Float.parseFloat(codelet[0]) <=clock);
+            if (Float.parseFloat(codelet[0]) <=clock)
             {
+                Gdx.app.debug("loaded", codelet[0]);
                 Vector2 temppos = new Vector2();
                 Vector2 tempvel = new Vector2();
                 int tempducks = Integer.parseInt(codelet[4].trim());
