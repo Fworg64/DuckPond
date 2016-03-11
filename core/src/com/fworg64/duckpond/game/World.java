@@ -2,6 +2,7 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -28,9 +29,9 @@ public class World
         //sound effects when we get to it
     }
 
-    public final List<Duck> ducks;
-    public final List<Lily> pads;
-    public final List<Shark> sharks;
+    public List<Duck> ducks;
+    public List<Lily> pads;
+    public List<Shark> sharks;
     public List<String> toBeLoaded;
     public boolean more2load;
 
@@ -40,9 +41,9 @@ public class World
     public float clock;
     public int lives;
 
-    String level;
+    public static Rectangle worldBounds = new Rectangle(-DuckPondGame.worldW*.5f, -DuckPondGame.worldH*.5f, 2.0f *DuckPondGame.worldW, 2.0f*DuckPondGame.worldH);
 
-    String debug;
+    String level;
 
     public World (WorldListener listener, String level)
     {
@@ -58,8 +59,6 @@ public class World
         time = 420;
         clock =0;
         lives =69;
-
-        debug = "ALLSGOOD";
     }
 
     public void LoadLevel()
@@ -150,8 +149,9 @@ public class World
         checkPadsAndDucks();
         checkDucksAndSharks();
         checkDucksAndLings();
-        if (Victory()) listener.gameOverVictory();
         if (Defeat()) listener.gameOverLose();
+        else if (Victory()) listener.gameOverVictory();
+
     }
 
     private void updateDucks(float delta, Vector2 swipestart, Vector2 swipeend)
@@ -160,6 +160,7 @@ public class World
         {
             Duck d = iterator.next();
             d.update(delta);
+            if (!worldBounds.contains(d.posv) && d.state == Duck.State.SWIMMING) {d.getEaten(); lives--;}
             if (d.state == Duck.State.DEAD) {iterator.remove();} //safe way to clean dead ducks
             if (swipestart.cpy().sub(swipeend).len2()>1) Gdx.app.debug("Known Duck",d.pos.toString());
             if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1 && d.state == Duck.State.SWIMMING)
@@ -173,9 +174,11 @@ public class World
 
     private void updateSharks(float delta)
     {
-        for (Shark s : sharks)
+        for (Iterator<Shark> iterator = sharks.iterator(); iterator.hasNext();)
         {
+            Shark s = iterator.next();
             s.update(delta);
+            if (!worldBounds.contains(s.posv)) iterator.remove(); //byebye shark
         }
     }
 
@@ -188,7 +191,6 @@ public class World
                 if (l.col.overlaps(d.col) && d.state == Duck.State.SWIMMING)
                 {
                     d.pad(l);
-                    debug = "DUCK PADDED!!";
                 }
 
             }
