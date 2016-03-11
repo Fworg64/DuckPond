@@ -27,8 +27,6 @@ public class DuckPondGame extends Game {
 	public static final String version = "v0.0.3a";
 
 	public SpriteBatch batch;
-
-	public String debug; //probably make a debug file too...
 	
 	@Override
 	public void create () {
@@ -39,7 +37,6 @@ public class DuckPondGame extends Game {
 		Gdx.input.setCatchBackKey(true);
 
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		debug = "herpp";
 
 		setScreen(new MainMenuScreen(this));
 	}
