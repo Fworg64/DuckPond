@@ -79,7 +79,6 @@ public class World
                 String[] codelet = code.split(" ");
                 if (Float.parseFloat(codelet[0]) ==0)
                 {
-                    Gdx.app.debug(codelet[0], "");
                     Vector2 temppos = new Vector2();
                     Vector2 tempvel = new Vector2();
                     int tempducks = Integer.parseInt(codelet[4].trim());
@@ -95,7 +94,6 @@ public class World
             if (levelcodes.size() >0) {
                 toBeLoaded = levelcodes;
                 more2load = true;
-                Gdx.app.debug("uh-huh", "okay");
             }
         }
         catch (ArrayIndexOutOfBoundsException e)
@@ -109,8 +107,7 @@ public class World
         ducks.clear();
         pads.clear();
         sharks.clear();
-        time =30;
-        lives =2;
+        clock = 0;
 
         LoadLevel();
     }
@@ -242,7 +239,7 @@ public class World
                 }
                 for (Duckling ddd: dd.ducklings)
                 {
-                    if (d.col.overlaps(ddd.col) && d.state == Duck.State.SWIMMING && dd.state == Duck.State.SWIMMING && ddd.state == Duckling.State.SWIMMING)
+                    if (d.col.overlaps(ddd.col) && d.state == Duck.State.SWIMMING && ddd.state == Duckling.State.SWIMMING)
                     {
                         d.getEaten();
                         lives--;
