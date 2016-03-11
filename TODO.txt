@@ -37,15 +37,17 @@ finish rules for gameplay (*) AFO
 -collision for ducklings(*) AFO
 -add timer to level(*) AFO
 ______________________
-AssetManager...(NOT NECCESARY)
+AssetManager...(NOT NECCESARY) 
+=since all resources are loaded at the begining
+=and disposed of at the end
 ________________________________
 =====================
 World/Gameplay
 -animation code for sharks (similar to ducks)
 -fix duck states (*) AFO
 -add victory conditions (if enough ducks are padded)(*)AFO
--let ducks fall off the world (die) if they go to far away
--implement spawn time mechanism
+-let ducks fall off the world (die) if they go to far away(*)AFO
+-implement spawn time mechanism(*)AFO
 
 ____________________________
 =========================
@@ -54,6 +56,7 @@ Level Selection Screen
 -make pretty
 --Background
 --display graphic to represent level
+
 -Basic file browser
 --folders are worlds
 --contain levelfiles inside
@@ -65,25 +68,36 @@ _______________________________
 Level Editor Screen
 -Set Pos offset by map in center of screen (*)AFO
 -scale vel by .35(*) AFO 
+
 -represent that top part of gameplay area is covered by the GUI
+
+-have objects move when time is changed according to their velocities
+-this means render ducklings too
+
+-enforce minimum speed for ducks (max too)
+-add min/max speed for sharks as well
+-force at least 1 lilypad
+
+-load existing file/customlevel_from_preferences
 -improve save interface
 --save to prefernces
 --save to file if not running from webGL
 --give the save button a graphic
 -autoincrement filename (how many levels should we save in preferences?
 -arrange interface
--have objects move when time is changed according to their velocities
--this means render ducklings too
--enforce minimum speed for ducks (max too)
--add min/max speed for sharks as well
--force at least 1 lilypad
--load existing file/customlevel_from_preferences
 
 _______________________________
+========================
+SOUND
+-Island music from http://freepd.com/Ragga/
+-duck sound effects
+--death
+--padding
+-shark sounds
+--chomp noise
 
 -------------------
 add ads
-sound...
 design levels
 
 ????? (ads)
