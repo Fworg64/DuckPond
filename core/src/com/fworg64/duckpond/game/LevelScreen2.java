@@ -34,12 +34,14 @@ public class LevelScreen2 extends ScreenAdapter
     FileHandle dafile;
     InputListener in;
     Vector2 touchpoint;
+    boolean defaultstate;
     boolean getPos;
     boolean getVel;
     boolean gettingT;
     boolean getT;
     boolean getD;
     boolean choiceDestroy;
+    boolean globalTAdjust;
 
     boolean wasHighres;
     Rectangle exitbutt;
@@ -88,7 +90,7 @@ public class LevelScreen2 extends ScreenAdapter
         tempguy = new Spawnable();
         temppos = new Vector2();
         tempvel = new Vector2();
-        tempt2s = -1;
+        tempt2s = 0;
         tempducks =0;
         lives = 3;
         time = 60;
@@ -115,12 +117,14 @@ public class LevelScreen2 extends ScreenAdapter
         LivesUp = new Rectangle(500f/640f * 2*Options.screenWidth, .15f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         LivesDown = new Rectangle(500f/640f * 2*Options.screenWidth, .074f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
 
+        defaultstate = true;
         getD = false;
         getT = false;
         gettingT = false;
         getVel = false;
         getPos = false;
         choiceDestroy = false;
+        globalTAdjust = false;
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -134,28 +138,31 @@ public class LevelScreen2 extends ScreenAdapter
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
             if (savebutt.contains(touchpoint)) return 2;
-            if (trashbutt.contains(touchpoint)&& !(getVel || getT || getPos || getD))
+            if (trashbutt.contains(touchpoint))
             {
-                Message = "Mark for destruction";
-                choiceDestroy = true;
-                getVel = false;
-                getT = false;
-                getPos = false;
-                getD = false;
-                Gdx.app.debug("OH", "1");
+                if (defaultstate){
+                    Gdx.app.debug("choicedestroy", "heatinup");
+                    choiceDestroy = true;
+                    defaultstate = false;
+                }
+                else DestroyCurrent();
+
             }
-            if (TtimeUp.contains(touchpoint) && time < 120) time+=30;
-            if (TtimeDown.contains(touchpoint) && time>30) time-=30;
+            if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
+            if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
             if (LivesUp.contains(touchpoint) && lives <5) lives++;
             if (LivesDown.contains(touchpoint) && lives >1) lives--;
+            if (Tknob.contains(touchpoint) && defaultstate)
+            {
+                globalTAdjust = true;
+                defaultstate = false;
+            }
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
         if (in.isBackPressed()) return 1;
-        if ((getVel || getT || getPos || getD) && trashbutt.contains(touchpoint) && in.justTouched())
-        {DestroyCurrent();}
         if (choiceDestroy)
         {Choose2Destroy();}
-        if (!getVel && !getT & !getPos && !getD && !choiceDestroy)
+        if (defaultstate)
         {ChooseActor();}
         if (getPos)
         {ChoosePos();}
@@ -165,79 +172,10 @@ public class LevelScreen2 extends ScreenAdapter
         {ChooseT();}
         if (getD)
         {ChooseD();}
+        if (globalTAdjust)
+        {adjustGlobalT();}
 
         return 0;
-    }
-
-    public void draw() //fyotb
-    {
-        GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 0, 0, 1);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        gcam.update();
-        game.batch.setProjectionMatrix(gcam.combined);
-
-        game.batch.disableBlending();
-        game.batch.begin();
-        //draw background image here
-        game.batch.draw(Assets.LevelEditBg, 0, 0);
-        game.batch.draw(Assets.GameBackground, Options.screenWidth * .5f, Options.screenHeight * .5f);
-        game.batch.end();
-
-        game.batch.enableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.leveditDuck, ducks.getX(), ducks.getY());
-        game.batch.draw(Assets.leveditShark, sharks.getX(), sharks.getY());
-        game.batch.draw(Assets.leveditPad, lillies.getX(), lillies.getY());
-        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        for (Spawnable s: spawnables)
-        {
-            if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
-            else if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
-            else if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,s.getPos().x + EDITOR_OFFSET.x, s.getPos().y+ EDITOR_OFFSET.y);
-        }
-        game.batch.draw(Assets.leveditTslider, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        game.batch.draw(Assets.leveditTknob, Tknob.getX(), Tknob.getY());
-        game.batch.draw(Assets.leveditTaccept, Taccept.getX(), Taccept.getY());
-        game.batch.draw(Assets.leveditDup, Dup.getX(), Dup.getY());
-        game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
-        game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
-        game.batch.draw(Assets.leveditTrash, trashbutt.getX(), trashbutt.getY());
-        game.batch.draw(Assets.leveditDup, TtimeUp.getX(), TtimeUp.getY());
-        game.batch.draw(Assets.leveditDdown, TtimeDown.getX(), TtimeDown.getY());
-        game.batch.draw(Assets.leveditDup, LivesUp.getX(), LivesUp.getY());
-        game.batch.draw(Assets.leveditDdown, LivesDown.getX(), LivesDown.getY());
-        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
-        Assets.font.draw(game.batch, "Time: " + Integer.toString(time), TtimeUp.getX() - .5f*TtimeUp.getWidth(), TtimeUp.getY());
-        Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
-        Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
-        game.batch.end();
-
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        //draw detection bounds here for debugging
-        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
-        shapeRenderer.rect(savebutt.getX(), savebutt.getY(), savebutt.getWidth(), savebutt.getHeight());
-        shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
-        shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
-        shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
-        shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
-        shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        shapeRenderer.rect(Taccept.getX(), Taccept.getY(), Taccept.getWidth(), Taccept.getHeight());
-        shapeRenderer.rect(Dup.getX(), Dup.getY(), Dup.getWidth(), Dup.getHeight());
-        shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
-        shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
-        shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
-        shapeRenderer.rect(TtimeUp.getX(), TtimeUp.getY(), TtimeUp.getWidth(), TtimeUp.getHeight());
-        shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
-        shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
-        shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(EDITOR_OFFSET));
-
-        shapeRenderer.end();
     }
 
     @Override
@@ -304,28 +242,39 @@ public class LevelScreen2 extends ScreenAdapter
         getT = false;
         getPos = false;
         getD = false;
-        choiceDestroy = false;
+        defaultstate = true;
         //Gdx.app.debug("OH", "2");
     }
 
     public void Choose2Destroy()
     {
+        Message = "choose to destroy";
         touchpoint.set(in.getTouchpoint());
-        for (Spawnable s: spawnables)
+        if (in.isTouched())
         {
-            if (in.isTouched())
+            for (Spawnable s: spawnables)
             {
-                if (touchpoint.x<(s.getPos().x + Options.spriteWidth) && touchpoint.x > s.getPos().x) //x matches
+                if (tempt2s >= s.getTime2spawn())
                 {
-                    if (touchpoint.y<(s.getPos().y + Options.spriteHeight) && touchpoint.y > s.getPos().y)//y matches
+                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn()) *time;
+                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn()) *time;
+                    if (touchpoint.x<(del_X + Options.spriteWidth) && touchpoint.x > del_X) //x matches
                     {
-                        Message = s.getObjtype() + "\nDestroyed";
-                        spawnables.removeValue(s,true);
+                        if (touchpoint.y<(del_Y + Options.spriteHeight) && touchpoint.y > del_Y)//y matches
+                        {
+                            Message = s.getObjtype() + "\nDestroyed";
+                            spawnables.removeValue(s,true);
+                        }
                     }
                 }
+
             }
         }
-        if (in.justTouched() && !trashbutt.contains(touchpoint)) choiceDestroy = false;
+        if (in.justTouched() && !trashbutt.contains(touchpoint)) {
+            Gdx.app.debug("choicedestroy", "weout");
+            choiceDestroy = false;
+            defaultstate = true;
+        }
     }
 
     public void ChooseActor()
@@ -334,14 +283,17 @@ public class LevelScreen2 extends ScreenAdapter
         if (in.justTouched() && ducks.contains(touchpoint)) {
             tempguy.setObjtype("Duck");
             getPos = true;
+            defaultstate = false;
         }
         else if (in.justTouched() && sharks.contains(touchpoint)) {
             tempguy.setObjtype("Shark");
             getPos = true;
+            defaultstate = false;
         }
         else if (in.justTouched() && lillies.contains(touchpoint)) {
             tempguy.setObjtype("Lily");
             getPos = true;
+            defaultstate = false;
         }
     }
 
@@ -373,13 +325,13 @@ public class LevelScreen2 extends ScreenAdapter
         {
             tempguy.setVel(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE));
             getVel = false;
-            getT = true;
+            getT = true; //add confirm here(press velocity confirm button?)
         }
     }
 
     public void ChooseT()
     {
-        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth());
+        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
         Message = "Drag slider\npress confirm \nfor SpawnTime\n" + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
@@ -396,7 +348,7 @@ public class LevelScreen2 extends ScreenAdapter
         if (in.justTouched() && Taccept.contains(touchpoint))
         {
             if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
-            tempguy.setTime2spawn(tempt2s); //number between 0 and 1
+            tempguy.setTime2spawn(tempt2s);
             if (!getD) {
                 spawnables.add(tempguy);
                 Message = tempguy.toString();
@@ -405,8 +357,31 @@ public class LevelScreen2 extends ScreenAdapter
                 tempvel.setZero();
             }
             getT = false;
+            defaultstate = true;
         }
     }
+
+    public void adjustGlobalT()
+    {
+        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
+        Message = "Time:" + Float.toString(tempt2s);
+        touchpoint.set(in.getTouchpoint());
+        if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
+        if (gettingT && in.isTouched())
+        {
+            {Tknob.setX(touchpoint.x);}//clamp
+            if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
+            if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
+        }
+        if (gettingT && !in.isTouched())
+        {
+            gettingT = false;
+            globalTAdjust = false;
+            defaultstate = true;
+        }
+    }
+
+    public void updateTempt2s() {tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;}
 
     public void ChooseD()
     {
@@ -424,6 +399,84 @@ public class LevelScreen2 extends ScreenAdapter
             temppos.setZero();
             tempvel.setZero();
             getD = false;
+            defaultstate = true;
         }
+    }
+
+    public void draw() //fyotb
+    {
+        GL20 gl = Gdx.gl;
+        gl.glClearColor(1, 0, 0, 1);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gcam.update();
+        game.batch.setProjectionMatrix(gcam.combined);
+
+        game.batch.disableBlending();
+        game.batch.begin();
+        //draw background image here
+        game.batch.draw(Assets.LevelEditBg, 0, 0);
+        game.batch.draw(Assets.GameBackground, Options.screenWidth * .5f, Options.screenHeight * .5f);
+        game.batch.end();
+
+        game.batch.enableBlending();
+        game.batch.begin();
+        game.batch.draw(Assets.leveditDuck, ducks.getX(), ducks.getY());
+        game.batch.draw(Assets.leveditShark, sharks.getX(), sharks.getY());
+        game.batch.draw(Assets.leveditPad, lillies.getX(), lillies.getY());
+        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        for (Spawnable s: spawnables)
+        {
+            if (s.getTime2spawn() <= tempt2s)
+            {
+                float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
+                float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
+                if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark, render_X, render_Y);
+                if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck, render_X, render_Y);
+                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad, render_X, render_Y);
+            }
+        }
+        game.batch.draw(Assets.leveditTslider, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
+        game.batch.draw(Assets.leveditTknob, Tknob.getX(), Tknob.getY());
+        game.batch.draw(Assets.leveditTaccept, Taccept.getX(), Taccept.getY());
+        game.batch.draw(Assets.leveditDup, Dup.getX(), Dup.getY());
+        game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
+        game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
+        game.batch.draw(Assets.leveditTrash, trashbutt.getX(), trashbutt.getY());
+        game.batch.draw(Assets.leveditDup, TtimeUp.getX(), TtimeUp.getY());
+        game.batch.draw(Assets.leveditDdown, TtimeDown.getX(), TtimeDown.getY());
+        game.batch.draw(Assets.leveditDup, LivesUp.getX(), LivesUp.getY());
+        game.batch.draw(Assets.leveditDdown, LivesDown.getX(), LivesDown.getY());
+        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
+        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TtimeUp.getX() - 1.0f*TtimeUp.getWidth(), TtimeUp.getY());
+        Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
+        Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
+        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), Tslider.getX(), Tslider.getY() + 1.5f* Tknob.getHeight());
+        game.batch.end();
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+        //draw detection bounds here for debugging
+        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        shapeRenderer.rect(savebutt.getX(), savebutt.getY(), savebutt.getWidth(), savebutt.getHeight());
+        shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
+        shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
+        shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
+        shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
+        shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
+        shapeRenderer.rect(Taccept.getX(), Taccept.getY(), Taccept.getWidth(), Taccept.getHeight());
+        shapeRenderer.rect(Dup.getX(), Dup.getY(), Dup.getWidth(), Dup.getHeight());
+        shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
+        shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
+        shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
+        shapeRenderer.rect(TtimeUp.getX(), TtimeUp.getY(), TtimeUp.getWidth(), TtimeUp.getHeight());
+        shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
+        shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
+        shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
+        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(EDITOR_OFFSET));
+
+        shapeRenderer.end();
     }
 }

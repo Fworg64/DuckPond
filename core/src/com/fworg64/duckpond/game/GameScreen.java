@@ -30,6 +30,7 @@ import javafx.stage.Screen;
  */
 public class GameScreen extends ScreenAdapter
 {
+    public final static float TIME_TO_RUN_AFTER_GAMEOVER_LOSE = 3.0f;
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
     DuckPondGame game;
     OrthographicCamera gcam;
@@ -66,7 +67,8 @@ public class GameScreen extends ScreenAdapter
     private Rectangle GOVLevelSelection;
     private Rectangle GOLLevelSelection;
     private Rectangle GOLrestart;
-    //private Rectangle resetbutt;
+
+    private float gameoverRunTime;
 
 
     GameScreen(DuckPondGame game, String level)
@@ -130,6 +132,7 @@ public class GameScreen extends ScreenAdapter
         GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
         GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
 
+        gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
     }
 
     public void update(float delta)
@@ -197,9 +200,12 @@ public class GameScreen extends ScreenAdapter
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
                         world.ReloadLevel();
-                        showConfirmRestart = false;
-                        isPaused = false;
+                        clock = 0;
+                        gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
+                        isPaused = false;
+
+                        showConfirmRestart = false;
                     }
                     if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
                     {
@@ -215,8 +221,16 @@ public class GameScreen extends ScreenAdapter
                     if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
                     {
                         world.ReloadLevel();
+                        clock = 0;
+                        gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
                         isPaused = false;
+                    }
+                    if (gameoverRunTime>0)
+                    {
+                        clock+=delta;
+                        gameoverRunTime -=delta;
+                        world.update(delta, new Vector2(), new Vector2());
                     }
                     break;
                 case GMVICTORY:
@@ -240,8 +254,8 @@ public class GameScreen extends ScreenAdapter
         renderer.render(clock);
         game.batch.begin();
         game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
-        Assets.font.draw(game.batch, Integer.toString((int) world.time), .8f*Options.screenWidth, 1.0f*Options.screenHeight);
-        Assets.font.draw(game.batch, Integer.toString(world.lives), .8f*Options.screenWidth, .9f*Options.screenHeight);
+        Assets.font.draw(game.batch, Integer.toString((int) (world.time >0 ? world.time:0)), .8f*Options.screenWidth, 1.0f*Options.screenHeight);
+        Assets.font.draw(game.batch, Integer.toString(world.lives >0 ? world.lives: 0), .8f*Options.screenWidth, .9f*Options.screenHeight);
         //draw other HUD shtuf
         game.batch.end();
 
