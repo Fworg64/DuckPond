@@ -48,7 +48,24 @@ World/Gameplay
 -add victory conditions (if enough ducks are padded)(*)AFO
 -let ducks fall off the world (die) if they go to far away(*)AFO
 -implement spawn time mechanism(*)AFO
-
+_______________________________
+========================
+SOUND
+-Island music from http://freepd.com/Ragga/ (*)AFO
+-duck sound effects(*)AFO
+--death(*)AFO
+--padding
+-shark sounds(*)AFO
+--chomp noise(*)AFO
+______________________________
+========================
+TUTORIAL SCREEN
+-basic 30 sec level
+-pauses gameplay to highlight
+--swipe ducks to move them
+--avoid sharks and other ducks
+--guide all ducks to lilypad
+-is custom gamescreen class
 ____________________________
 =========================
 Level Selection Screen
@@ -85,16 +102,6 @@ Level Editor Screen
 --give the save button a graphic
 -autoincrement filename (how many levels should we save in preferences?
 -arrange interface
-
-_______________________________
-========================
-SOUND
--Island music from http://freepd.com/Ragga/ (*)AFO
--duck sound effects(*)AFO
---death(*)AFO
---padding
--shark sounds(*)AFO
---chomp noise(*)AFO
 
 -------------------
 add ads
