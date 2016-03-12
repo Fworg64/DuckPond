@@ -9,9 +9,14 @@ import com.badlogic.gdx.audio.Sound;
  */
 public class MusicAndSounds
 {
-    public Music mainmenuloop;
-    public Music gamemusic;
-    public Music currMusic;
+    private Music mainmenuloop;
+    private Music gamemusic;
+    private Music currMusic;
+    private Music gameOverMusic;
+    private Music victoryMusic;
+
+    public enum CurrSong {MAINMEU, GAME, GAMEOVER, VICTORY};
+    public CurrSong currSong;
 
     public Sound ducks;
     public Sound chomp;
@@ -32,7 +37,14 @@ public class MusicAndSounds
         gamemusic.setLooping(true);
         gamemusic.setVolume(musicVol);
 
+        gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\A_Turn_For_The_Worse.mp3"));
+        gameOverMusic.setVolume(musicVol);
+
+        victoryMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_ElectroIsland.mp3"));
+        victoryMusic.setVolume(musicVol);
+
         currMusic = mainmenuloop;
+        currSong = CurrSong.MAINMEU;
 
         ducks = Gdx.audio.newSound(Gdx.files.internal("SOUNDS\\ducks.mp3"));
         chomp = Gdx.audio.newSound(Gdx.files.internal("SOUNDS\\chomp.mp3"));
@@ -41,6 +53,7 @@ public class MusicAndSounds
     public void playMainMenu()
     {
         currMusic = mainmenuloop;
+        currSong = CurrSong.MAINMEU;
         mainmenuloop.setVolume(musicVol);
         if (!mainmenuloop.isPlaying())
         {
@@ -55,13 +68,15 @@ public class MusicAndSounds
         Gdx.app.debug(Float.toString(mainmenuloop.getVolume()), Float.toString(currMusic.getVolume()));
     }
 
-    public void loadGameMusicAndDisposeMMM()
+    public void playGameOverMusic()
     {
-        mainmenuloop.stop();
-        gamemusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_Atonal_Island.mp3"));
-        gamemusic.setLooping(true);
-        gamemusic.setVolume(musicVol);
-        currMusic = gamemusic;
+        gameOverMusic.setVolume(musicVol);
+        if (!gameOverMusic.isPlaying())
+        {
+            gameOverMusic.play();
+        }
+        currMusic = gameOverMusic;
+        currSong = CurrSong.GAMEOVER;
     }
 
     public void playGameMusic()
@@ -72,6 +87,18 @@ public class MusicAndSounds
             gamemusic.play();
         }
         currMusic = gamemusic;
+        currSong = CurrSong.GAME;
+    }
+
+    public void playVictoryMusic()
+    {
+        victoryMusic.setVolume(musicVol);
+        if (!victoryMusic.isPlaying())
+        {
+            victoryMusic.play();
+        }
+        currMusic = victoryMusic;
+        currSong = CurrSong.VICTORY;
     }
 
     public void pauseCurrMusic()

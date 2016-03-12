@@ -85,7 +85,7 @@ public class GameScreen extends ScreenAdapter
 
         in = new InputListener();
 
-        game.mas.loadGameMusicAndDisposeMMM();
+        game.mas.stopCurrMusic();
         game.mas.playGameMusic();
 
         touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
@@ -156,7 +156,6 @@ public class GameScreen extends ScreenAdapter
         if (isPaused ==false)
         {
             clock+=delta; //keep track of time
-            game.mas.playGameMusic();
 
             if (in.justTouched() && beingswiped ==false) //swipe is starting
             {
@@ -199,6 +198,7 @@ public class GameScreen extends ScreenAdapter
                     if (unpausebutt.contains(in.getTouchpoint()) && in.justTouched())
                     {
                         isPaused = false;
+                        game.mas.playGameMusic();
 
                         in.getTouchpoint();
                         menu = Menus.PLAYING;
@@ -213,6 +213,7 @@ public class GameScreen extends ScreenAdapter
                     }
                     if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
@@ -223,7 +224,7 @@ public class GameScreen extends ScreenAdapter
                         menu = Menus.PLAYING;
                         isPaused = false;
                         game.mas.stopCurrMusic();
-
+                        game.mas.playGameMusic();
                         showConfirmRestart = false;
                     }
                     if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
@@ -233,8 +234,11 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMLOSE:
+                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                    mas.playGameOverMusic();
                     if (GOLLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
@@ -244,6 +248,7 @@ public class GameScreen extends ScreenAdapter
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
                         game.mas.stopCurrMusic();
+                        game.mas.playGameMusic();
                         isPaused = false;
                     }
                     if (gameoverRunTime>0)
@@ -254,8 +259,11 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMVICTORY:
+                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                    mas.playVictoryMusic();
                     if (GOVLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     break;
