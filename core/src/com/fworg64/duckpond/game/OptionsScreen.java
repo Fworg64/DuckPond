@@ -130,12 +130,15 @@ public class OptionsScreen extends ScreenAdapter
             SfxSlider.setX(touchpoint.x);
             if (touchpoint.x < SLIDER_X) SfxSlider.setX(SLIDER_X);
             if (touchpoint.x > (SLIDER_X + SLIDER_W)) SfxSlider.setX(SLIDER_X +SLIDER_W);
+            Options.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_W);
+            game.mas.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_W);
         }
         if (slidingSfx && !in.isTouched())
         {
             slidingSfx = false;
             Options.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_W);
-            Gdx.app.debug("Volset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_W));
+            game.mas.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_W);
+            Gdx.app.debug("Sfxset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_W));
         }
     }
 

@@ -41,6 +41,8 @@ public class GameScreen extends ScreenAdapter
     Vector2 touchpoint;
     float clock;
 
+    MusicAndSounds mas;
+
     public World world;
     public World.WorldListener listener;
     public WorldRenderer renderer;
@@ -74,6 +76,7 @@ public class GameScreen extends ScreenAdapter
     GameScreen(DuckPondGame game, String level)
     {
         this.game = game;
+        this.mas = game.mas;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
@@ -104,6 +107,16 @@ public class GameScreen extends ScreenAdapter
                 isPaused = true;
                 menu = Menus.GMLOSE;
                 Gdx.app.debug("gamestate", "DEGEAT");
+            }
+
+            @Override
+            public void chompNoise() {
+                mas.playChomp();
+            }
+
+            @Override
+            public void duckDeathNoise() {
+                mas.playDucks();
             }
         }; //implement later... later is now! 2/21
 

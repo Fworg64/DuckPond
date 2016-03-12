@@ -64,6 +64,7 @@ public class Shark
     {
         state = State.EATING;
         clock =0;
+
     }
     public  String toString(){
         String s = "x: " + pos.x + " y: " + pos.y + " velocity: " + " velocity x: " + this.vel.x + " velocity y: " + this.vel.y + "\n";
