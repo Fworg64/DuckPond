@@ -25,8 +25,9 @@ public class World
         public void gameOverVictory();
         //game over lose
         public void gameOverLose();
-        //game over new world
-        //sound effects when we get to it
+
+        public void chompNoise();
+        public void duckDeathNoise();
     }
 
     public List<Duck> ducks;
@@ -160,7 +161,11 @@ public class World
         {
             Duck d = iterator.next();
             d.update(delta);
-            if (!worldBounds.contains(d.posv) && d.state == Duck.State.SWIMMING) {d.getEaten(); lives--;}
+            if (!worldBounds.contains(d.posv) && d.state == Duck.State.SWIMMING) {
+                d.getEaten();
+                lives--;
+                listener.duckDeathNoise();
+            }
             if (d.state == Duck.State.DEAD) {iterator.remove();} //safe way to clean dead ducks
             if (swipestart.cpy().sub(swipeend).len2()>1) Gdx.app.debug("Known Duck",d.pos.toString());
             if (d.pos.contains(swipestart) && swipestart.cpy().sub(swipeend).len2() > 1 && d.state == Duck.State.SWIMMING)
@@ -209,6 +214,8 @@ public class World
                     s.eatDuck(d);
                     d.getEaten();
                     lives -=1;
+                    listener.chompNoise();
+                    listener.duckDeathNoise();
                 }
                 for (Duckling dd: d.ducklings)
                 {
@@ -217,6 +224,8 @@ public class World
                         s.eatDuck(d);
                         d.getEaten();
                         lives-=1;
+                        listener.chompNoise();
+                        listener.duckDeathNoise();
                     }
                 }
             }
@@ -233,6 +242,7 @@ public class World
                 {
                     d.getEaten();
                     lives--;
+                    listener.duckDeathNoise();
                     if (d != dd)
                     {
                         dd.getEaten();
@@ -245,6 +255,7 @@ public class World
                     {
                         d.getEaten();
                         lives--;
+                        listener.duckDeathNoise();
                         if (d != dd)
                         {
                             dd.getEaten();

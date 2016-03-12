@@ -41,6 +41,8 @@ public class GameScreen extends ScreenAdapter
     Vector2 touchpoint;
     float clock;
 
+    MusicAndSounds mas;
+
     public World world;
     public World.WorldListener listener;
     public WorldRenderer renderer;
@@ -74,6 +76,7 @@ public class GameScreen extends ScreenAdapter
     GameScreen(DuckPondGame game, String level)
     {
         this.game = game;
+        this.mas = game.mas;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
@@ -81,6 +84,9 @@ public class GameScreen extends ScreenAdapter
         shapeRenderer.setProjectionMatrix(gcam.combined);
 
         in = new InputListener();
+
+        game.mas.stopCurrMusic();
+        game.mas.playGameMusic();
 
         touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
         clock =0;
@@ -101,6 +107,16 @@ public class GameScreen extends ScreenAdapter
                 isPaused = true;
                 menu = Menus.GMLOSE;
                 Gdx.app.debug("gamestate", "DEGEAT");
+            }
+
+            @Override
+            public void chompNoise() {
+                mas.playChomp();
+            }
+
+            @Override
+            public void duckDeathNoise() {
+                mas.playDucks();
             }
         }; //implement later... later is now! 2/21
 
@@ -175,12 +191,14 @@ public class GameScreen extends ScreenAdapter
         }
         else
         {
+            game.mas.pauseCurrMusic();
             switch (menu)
             {
                 case PAUSEMENU:
                     if (unpausebutt.contains(in.getTouchpoint()) && in.justTouched())
                     {
                         isPaused = false;
+                        game.mas.playGameMusic();
 
                         in.getTouchpoint();
                         menu = Menus.PLAYING;
@@ -195,6 +213,7 @@ public class GameScreen extends ScreenAdapter
                     }
                     if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
@@ -204,7 +223,8 @@ public class GameScreen extends ScreenAdapter
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
                         isPaused = false;
-
+                        game.mas.stopCurrMusic();
+                        game.mas.playGameMusic();
                         showConfirmRestart = false;
                     }
                     if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
@@ -214,8 +234,11 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMLOSE:
+                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                    mas.playGameOverMusic();
                     if (GOLLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
@@ -224,6 +247,8 @@ public class GameScreen extends ScreenAdapter
                         clock = 0;
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
+                        game.mas.stopCurrMusic();
+                        game.mas.playGameMusic();
                         isPaused = false;
                     }
                     if (gameoverRunTime>0)
@@ -234,8 +259,11 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMVICTORY:
+                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                    mas.playVictoryMusic();
                     if (GOVLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
                     {
+                        game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     break;

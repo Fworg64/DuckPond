@@ -24,22 +24,22 @@ public class DuckPondGame extends Game {
 	public static int spriteW = 48;
 	public static int spriteH = 48;
 
-	public static final String version = "v0.0.3a";
+	public static final String version = "v0.0.5a";
 
 	public SpriteBatch batch;
-
-	public String debug; //probably make a debug file too...
+    public MusicAndSounds mas;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load();
+        mas = new MusicAndSounds();
+        mas.playMainMenu();
 
 		Gdx.input.setCatchBackKey(true);
 
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		debug = "herpp";
 
 		setScreen(new MainMenuScreen(this));
 	}

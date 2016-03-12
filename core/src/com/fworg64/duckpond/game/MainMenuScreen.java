@@ -79,7 +79,6 @@ public class MainMenuScreen extends ScreenAdapter
         touchpoint = new Vector2();
         if (in.isBackPressed()) catchOtherBack = true;
         else catchOtherBack = false;
-
     }
 
     public int update() //FYOTB
