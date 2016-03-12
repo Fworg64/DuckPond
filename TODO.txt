@@ -1,4 +1,4 @@
-As of 3/6 (*) denotes completed
+As of 3/12 (*) denotes completed
 
 Need to add lilypad goal (*)AFO
 Add collision detection between pad and duck(*)AFO
@@ -89,12 +89,12 @@ Level Editor Screen
 _______________________________
 ========================
 SOUND
--Island music from http://freepd.com/Ragga/
--duck sound effects
---death
+-Island music from http://freepd.com/Ragga/ (*)AFO
+-duck sound effects(*)AFO
+--death(*)AFO
 --padding
--shark sounds
---chomp noise
+-shark sounds(*)AFO
+--chomp noise(*)AFO
 
 -------------------
 add ads
