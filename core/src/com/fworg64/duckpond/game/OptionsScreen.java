@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -83,6 +84,8 @@ public class OptionsScreen extends ScreenAdapter
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
     }
 
     public void update()

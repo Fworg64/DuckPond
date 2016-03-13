@@ -37,7 +37,7 @@ public class MusicAndSounds
         gamemusic.setLooping(true);
         gamemusic.setVolume(musicVol);
 
-        gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\A_Turn_For_The_Worse.mp3"));
+        gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\A_Turn_for_the_Worse.mp3"));
         gameOverMusic.setVolume(musicVol);
 
         victoryMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_ElectroIsland.mp3"));
