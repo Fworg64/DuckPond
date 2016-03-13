@@ -28,6 +28,13 @@ public class DuckPondGame extends Game {
 
 	public SpriteBatch batch;
     public MusicAndSounds mas;
+
+	public interface DuckPondGameAdStateListener
+	{
+		public void ShowBannerAd();
+		public void HideBannerAd();
+	}
+	public DuckPondGameAdStateListener adStateListener;
 	
 	@Override
 	public void create () {
@@ -42,6 +49,11 @@ public class DuckPondGame extends Game {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
 		setScreen(new MainMenuScreen(this));
+	}
+
+	public void setAdListener(DuckPondGameAdStateListener adStateListener)
+	{
+		this.adStateListener = adStateListener;
 	}
 
 	@Override

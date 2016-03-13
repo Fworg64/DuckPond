@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.fworg64.duckpond.game.DuckPondGame;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -18,10 +17,13 @@ import com.google.android.gms.ads.AdView;
 public class AndroidLauncher extends AndroidApplication {
 
     private AdView adView;
+    DuckPondGame game;
+    DuckPondGame.DuckPondGameAdStateListener adStateListener;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        game = new DuckPondGame();
 
 		RelativeLayout layout = new RelativeLayout(this);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -31,14 +33,12 @@ public class AndroidLauncher extends AndroidApplication {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
-        View gameView = initializeForView(new DuckPondGame(), config);
+        View gameView = initializeForView(game, config);
         layout.addView(gameView);
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.SMART_BANNER);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
 
         RelativeLayout.LayoutParams adParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -48,18 +48,48 @@ public class AndroidLauncher extends AndroidApplication {
 
         layout.addView(adView, adParams);
 
-        adView.loadAd(adRequestBuilder.build());
-
-        setContentView(layout);
-
-        adView.setAdListener(new AdListener()
-        {
-            public void onAdLoaded()
-            {
+        adView.setAdListener(new AdListener() {
+            public void onAdLoaded() {
                 Log.i("Ads", "onAdLoaded");
                 adView.bringToFront();
             }
         });
+
+        setContentView(layout);
+
+        adStateListener = new DuckPondGame.DuckPondGameAdStateListener() {
+            private boolean adIsShown = false;
+            AdRequest.Builder adRequestBuilder = new AdRequest.Builder().addTestDevice("5CDB4729D058AB52762E6860D99F5C8E");
+
+            @Override
+            public void ShowBannerAd() {
+                if (!adIsShown) {
+                    runOnUiThread(new Runnable() //run on ui thread
+                    {
+                        public void run() {
+                            adView.loadAd(adRequestBuilder.build());
+                        }
+                    });
+
+                }
+                adIsShown = true;
+            }
+
+            @Override
+            public void HideBannerAd() {
+                if (adIsShown) {
+                    runOnUiThread(new Runnable() //run on ui thread
+                    {
+                        public void run() {
+                            adView.destroy();
+                        }
+                    });
+                    adIsShown = false;
+                }
+            }
+        };
+
+        game.setAdListener(adStateListener);
 
 
 		//initialize(new DuckPondGame(), config);

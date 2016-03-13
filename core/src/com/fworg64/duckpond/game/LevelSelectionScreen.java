@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
@@ -53,6 +54,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         levelbutts[0] = new Rectangle(100f/640f * Options.screenWidth, 600f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts[1] = new Rectangle(250f/640f * Options.screenWidth, 450f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts[2] = new Rectangle(100f/640f * Options.screenWidth, 300f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
     }
 
     public void update()
