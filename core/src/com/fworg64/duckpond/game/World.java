@@ -284,7 +284,15 @@ public class World
     }
     private boolean Defeat()
     {
-        if (lives <=0 || time <=0) return true; //or something
-        else return false;
+        if (time<= 0)
+        {
+            for (Duck d: ducks)
+            {
+                if (d.state == Duck.State.SWIMMING) {d.getEaten(); lives--;}
+            }
+            return false;
+        }
+        if (lives <=0) return true;
+        return false;
     }
 }

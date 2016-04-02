@@ -113,6 +113,12 @@ public class MusicAndSounds
         currMusic.stop();
     }
 
+    public void pauseSfx(){ducks.pause();chomp.pause();}
+
+    public void resumeSfx(){ducks.resume();chomp.resume();}
+
+    public void stopSfx(){ducks.stop();chomp.stop();}
+
     public void playChomp()
     {
         chomp.play(sfxVol);
