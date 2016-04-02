@@ -73,7 +73,7 @@ public class Options
         screenHeight = DuckPondGame.highresScreenH;
         spriteWidth = DuckPondGame.highspriteW;
         spriteHeight = DuckPondGame.highspriteH;
-        GUIHeight = DuckPondGame.stdresScreenH - (int)(DuckPondGame.worldH * DuckPondGame.highresworldscaler);
+        GUIHeight = DuckPondGame.highresScreenH - (int)(DuckPondGame.worldH * DuckPondGame.highresworldscaler);
         GUIElementWidth = (int)(GUIHeight*.5f);
         GUIElementHeight = (int)(GUIHeight*.5f);
         prefs.putBoolean("highres", highres);

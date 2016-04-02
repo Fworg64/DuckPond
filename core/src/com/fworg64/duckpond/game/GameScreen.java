@@ -2,19 +2,12 @@ package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-
-import javafx.stage.Screen;
 
 /**
  * this is the actual gamescreen, no ads should go here
@@ -38,8 +31,9 @@ public class GameScreen extends ScreenAdapter
 
     ShapeRenderer shapeRenderer;
 
-    InputListener in;
-    Vector2 touchpoint;
+    InputListener screenIn;
+    Vector2 touchpointScreen;
+    Vector2 touchpointWorld;
     float clock;
 
     MusicAndSounds mas;
@@ -84,12 +78,13 @@ public class GameScreen extends ScreenAdapter
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
 
-        in = new InputListener();
+        screenIn = new InputListener(Options.screenWidth, Options.screenHeight);
 
         game.mas.stopCurrMusic();
         game.mas.playGameMusic();
 
-        touchpoint = new Vector2(); //input vector3, 3 for compatibilliyt
+        touchpointScreen = new Vector2();
+        touchpointWorld = new Vector2();
         clock =0;
 
         listener = new World.WorldListener() //interface object?
@@ -135,19 +130,39 @@ public class GameScreen extends ScreenAdapter
         swiperegistered = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
-        //swipedebug = "herp";
 
-        //resetbutt = new Rectangle(0, .9f*DuckPondGame.worldH, .1f*DuckPondGame.worldW, DuckPondGame.worldH);
-        HUDarea = new Rectangle(0, (1-.1f)*Options.screenHeight, Options.screenWidth, .1f*Options.screenHeight);
-        pausebutt = new Rectangle(0,DuckPondGame.worldH -.5f*HUDarea.getHeight(),(.3125f)*DuckPondGame.worldW, .1f*DuckPondGame.worldH);
-        unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
-        restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
-        exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
-        confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
-        confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
-        GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
-        GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
-        GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        if (Options.highres)
+        {
+            HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
+            pausebutt = new Rectangle(0,1920-241,241, 241);
+
+            unpausebutt = new Rectangle(115f/640f *DuckPondGame.highresScreenW, 350f/960f * DuckPondGame.highresScreenH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+            restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+            exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+
+            confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+            confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+
+            GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+            GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+            GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        }
+        else
+        {
+            HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
+            pausebutt = new Rectangle(0,960-93,93, 93);
+
+            unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+            restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+            exitbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 90f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
+
+            confirmYes = new Rectangle(115f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+            confirmNo = new Rectangle(350f/640f *DuckPondGame.worldW, 300f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 80f/915f *DuckPondGame.worldH);
+
+            GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+            GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+            GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+        }
 
         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
@@ -159,19 +174,30 @@ public class GameScreen extends ScreenAdapter
         {
             clock+=delta; //keep track of time
 
-            if (in.justTouched() && beingswiped ==false) //swipe is starting
+            if (screenIn.isTouched())
             {
-                touchpoint.set(in.getTouchpoint());
+                touchpointScreen.set(screenIn.getTouchpoint());
+                if (touchpointScreen.y < Options.screenHeight - Options.GUIHeight)
+                {
+                    //touched the world
+                    touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
+                                        touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
+                    Gdx.app.debug("ToCUH", touchpointWorld.toString());
+
+                }
+            }
+
+            if (screenIn.justTouched() && beingswiped ==false) //swipe is starting
+            {
                 //register swipe
                 beingswiped = true;
-                swipestart.set(touchpoint.x, touchpoint.y);
+                swipestart.set(touchpointWorld.x, touchpointWorld.y);
             }
-            else if (in.isTouched() && beingswiped ==true) //swipe in progess
+            else if (screenIn.isTouched() && beingswiped ==true) //swipe in progess
             {
-                touchpoint.set(in.getTouchpoint());
-                swipeend.set(touchpoint.x, touchpoint.y);
+                swipeend.set(touchpointWorld.x, touchpointWorld.y);
             }
-            else if ( !in.isTouched() && beingswiped ==true)//swipe is over
+            else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over
             {
                 beingswiped = false;
                 swiperegistered = true;
@@ -185,7 +211,7 @@ public class GameScreen extends ScreenAdapter
             }
             else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
-            if ((pausebutt.contains(in.getTouchpoint()) && in.justTouched()) || in.isBackPressed())
+            if ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed())
             {
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
@@ -197,28 +223,28 @@ public class GameScreen extends ScreenAdapter
             switch (menu)
             {
                 case PAUSEMENU:
-                    if (unpausebutt.contains(in.getTouchpoint()) && in.justTouched())
+                    if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         isPaused = false;
                         game.mas.playGameMusic();
 
-                        in.getTouchpoint();
+                        screenIn.getTouchpoint();
                         menu = Menus.PLAYING;
                     }
-                    if (exitbutt.contains(in.getTouchpoint()) && in.justTouched() && !(showConfirmRestart || showConfirmExit))
+                    if (exitbutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmRestart || showConfirmExit))
                     {
                         showConfirmExit = true;
                     }
-                    if (restartbutt.contains(in.getTouchpoint()) && in.justTouched() && !(showConfirmRestart || showConfirmExit))
+                    if (restartbutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmRestart || showConfirmExit))
                     {
                         showConfirmRestart = true;
                     }
-                    if (showConfirmExit == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
+                    if (showConfirmExit == true && confirmYes.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
-                    if (showConfirmRestart == true && confirmYes.contains(in.getTouchpoint()) && in.justTouched())
+                    if (showConfirmRestart == true && confirmYes.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         world.ReloadLevel();
                         clock = 0;
@@ -229,7 +255,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.playGameMusic();
                         showConfirmRestart = false;
                     }
-                    if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(in.getTouchpoint())&& in.justTouched())
+                    if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(screenIn.getTouchpoint())&& screenIn.justTouched())
                     {
                         showConfirmExit = false;
                         showConfirmRestart = false;
@@ -238,12 +264,12 @@ public class GameScreen extends ScreenAdapter
                 case GMLOSE:
                     if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                     mas.playGameOverMusic();
-                    if (GOLLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
+                    if (GOLLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
-                    if (GOLrestart.contains(in.getTouchpoint()) && in.justTouched())
+                    if (GOLrestart.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         world.ReloadLevel();
                         clock = 0;
@@ -263,7 +289,7 @@ public class GameScreen extends ScreenAdapter
                 case GMVICTORY:
                     if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                     mas.playVictoryMusic();
-                    if (GOVLevelSelection.contains(in.getTouchpoint()) && in.justTouched())
+                    if (GOVLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         game.mas.stopCurrMusic();
                         game.setScreen(new LevelSelectionScreen(game));
@@ -282,8 +308,9 @@ public class GameScreen extends ScreenAdapter
         game.batch.setProjectionMatrix(gcam.combined);
 
         renderer.render(clock);
+        game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
+        game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY());
         Assets.font.draw(game.batch, Integer.toString((int) (world.time >0 ? world.time:0)), .8f*Options.screenWidth, 1.0f*Options.screenHeight);
         Assets.font.draw(game.batch, Integer.toString(world.lives >0 ? world.lives: 0), .8f*Options.screenWidth, .9f*Options.screenHeight);
         //draw other HUD shtuf
@@ -296,15 +323,15 @@ public class GameScreen extends ScreenAdapter
             switch (menu)
             {
                 case PAUSEMENU:
-                    game.batch.draw(Assets.PauseMenu, 0,0,Options.screenWidth, Options.screenHeight);
-                    if (showConfirmExit) game.batch.draw(Assets.ShowConfirmExit, 0, 0, Options.screenWidth, Options.screenHeight);
-                    if (showConfirmRestart) game.batch.draw(Assets.ShowConfirmRestart, 0, 0, Options.screenWidth, Options.screenHeight);
+                    game.batch.draw(Assets.PauseMenu, 0,0);
+                    if (showConfirmExit) game.batch.draw(Assets.ShowConfirmExit, 0, 0);
+                    if (showConfirmRestart) game.batch.draw(Assets.ShowConfirmRestart, 0, 0);
                     break;
                 case GMLOSE:
-                    game.batch.draw(Assets.Defeat, 0,0,Options.screenWidth, Options.screenHeight);
+                    game.batch.draw(Assets.Defeat, 0,0);
                     break;
                 case GMVICTORY:
-                    game.batch.draw(Assets.Victory, 0,0,Options.screenWidth, Options.screenHeight);
+                    game.batch.draw(Assets.Victory, 0,0);
                     break;
             }
             game.batch.end();
@@ -313,6 +340,7 @@ public class GameScreen extends ScreenAdapter
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
+        shapeRenderer.rect(HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
         if (isPaused)
         {
             shapeRenderer.rect(unpausebutt.getX(), unpausebutt.getY(), unpausebutt.getWidth(), unpausebutt.getHeight());

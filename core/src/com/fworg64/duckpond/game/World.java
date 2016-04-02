@@ -117,7 +117,7 @@ public class World
         for(Iterator<String> iterator = toBeLoaded.iterator(); iterator.hasNext();)
         {
             String code = iterator.next();
-            Gdx.app.debug("loading", code);
+            //Gdx.app.debug("loading", code);
             String[] codelet = code.split(" ");
             if (Float.parseFloat(codelet[0]) <=clock)
             {

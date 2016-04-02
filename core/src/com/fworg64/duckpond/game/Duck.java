@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Duck
 {
     public static final float rotConst = .03f; //constant for adjusting rotation speed
-    public static final float ducklingDistConst = 2000;
+    public static final float ducklingDistConst = 4000;
     public enum State {SWIMMING, PADDING, PAD, EATEN, DEAD}; //mainly used for animation
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
 

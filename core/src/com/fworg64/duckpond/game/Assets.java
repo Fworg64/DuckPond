@@ -58,6 +58,9 @@ public class Assets
 
     public static Texture GameBackground;
     public static Texture HUD;
+    public static Texture HUDMute;
+    public static Texture HUDUnmute;
+    public static Texture HUDlives;
 
     public static Texture PauseMenu;
     public static Texture ShowConfirmRestart;
@@ -121,18 +124,23 @@ public class Assets
         OptionsMenuReturnPressed = new Texture(Gdx.files.internal(res + "options\\returnoscuro.png"));
         OptionsMenuCreditsPressed = new Texture(Gdx.files.internal(res + "options\\creditsoscuro.png"));
 
-        GameBackground = new Texture(Gdx.files.internal(res + "gbkgnd.png"));
-        HUD = new Texture(Gdx.files.internal(res + "HUD.png"));
+        GameBackground = new Texture(Gdx.files.internal(res + "gamescreen\\gbkgnd.png"));
+
+        HUD = new Texture(Gdx.files.internal(res + "gamescreen\\barrita.png"));
+        HUDMute = new Texture(Gdx.files.internal(res + "gamescreen\\mute.png"));
+        HUDUnmute = new Texture(Gdx.files.internal(res + "gamescreen\\unmute.png"));
+        HUDlives = new Texture(Gdx.files.internal(res + "gamescreen\\lives.png"));
+
 
         LevelSelectionBackground = new Texture(Gdx.files.internal(res + "LevelSelectionBckgnd.png"));
 
-        PauseMenu = new Texture(Gdx.files.internal(res + "pause.png"));
-        ShowConfirmExit = new Texture(Gdx.files.internal(res + "exitconfirm.png"));
-        ShowConfirmRestart = new Texture(Gdx.files.internal(res + "restartconfirm.png"));
-        Victory = new Texture(Gdx.files.internal(res + "victory.png"));
-        Defeat = new Texture(Gdx.files.internal(res + "defeat.png"));
+        PauseMenu = new Texture(Gdx.files.internal(res + "gamescreen\\pause.png"));
+        ShowConfirmExit = new Texture(Gdx.files.internal(res + "gamescreen\\exitconfirm.png"));
+        ShowConfirmRestart = new Texture(Gdx.files.internal(res + "gamescreen\\restartconfirm.png"));
+        Victory = new Texture(Gdx.files.internal(res + "gamescreen\\victory.png"));
+        Defeat = new Texture(Gdx.files.internal(res + "gamescreen\\defeat.png"));
 
-        duck = new Texture(Gdx.files.internal(res + "duck.png"));
+        duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
         duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
         duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
@@ -153,12 +161,12 @@ public class Assets
         duckPadFrames = new Array<TextureRegion>(duckPad);
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
 
-        lily = new Texture(Gdx.files.internal(res + "lily.png"));
+        lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
         lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
 
-        shark = new Texture(Gdx.files.internal(res + "shark.png"));
+        shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
         sharkSwim = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
         sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};

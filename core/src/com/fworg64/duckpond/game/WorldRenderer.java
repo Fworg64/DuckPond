@@ -43,7 +43,7 @@ public class WorldRenderer
     private void renderBackground() {
         batch.disableBlending();
         batch.begin();
-        batch.draw(Assets.GameBackground, 0, 0, Options.screenWidth, Options.screenHeight);
+        batch.draw(Assets.GameBackground, 0, 0);
         batch.end();
     }
 
@@ -53,7 +53,7 @@ public class WorldRenderer
         batch.begin();
         if (!Options.highres)
         {
-            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY());
             for (Duck fred: world.ducks)
             {
                 fred.sprite.draw(batch);
@@ -63,23 +63,23 @@ public class WorldRenderer
                     f.sprite.draw(batch);
                 }
             }
-            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY(), Options.spriteWidth, Options.spriteHeight);
+            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX(), sam.pos.getY());
         }
         else
         {
-            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX()*2, laura.pos.getY()*2);
+            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX()*DuckPondGame.highresworldscaler, laura.pos.getY()*DuckPondGame.highresworldscaler);
             for (Duck fred: world.ducks)
             {
-                fred.sprite.setPosition(fred.pos.getX() *2, fred.pos.getY() *2);
+                fred.sprite.setPosition(fred.pos.getX() *DuckPondGame.highresworldscaler, fred.pos.getY() *DuckPondGame.highresworldscaler);
                 fred.sprite.draw(batch);
                 for (Duckling f: fred.ducklings)
                 {
                     f.sprite.setScale(.5f);
-                    f.sprite.setPosition(f.pos.getX()*2,f.pos.getY()*2);
+                    f.sprite.setPosition(f.pos.getX()*DuckPondGame.highresworldscaler,f.pos.getY()*DuckPondGame.highresworldscaler);
                     f.sprite.draw(batch);
                 }
             }
-            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX()*2, sam.pos.getY()*2);
+            for (Shark sam: world.sharks) batch.draw(sam.currAnim.getKeyFrame(sam.clock), sam.pos.getX()*DuckPondGame.highresworldscaler, sam.pos.getY()*DuckPondGame.highresworldscaler);
         }
         batch.end();
     }
@@ -103,16 +103,16 @@ public class WorldRenderer
         }
         else
         {
-            for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x*2, laura.col.y*2, 2*laura.col.radius);
+            for (Lily laura: world.pads) shapeRenderer.circle(laura.col.x*DuckPondGame.highresworldscaler, laura.col.y*DuckPondGame.highresworldscaler, DuckPondGame.highresworldscaler*laura.col.radius);
             for (Duck fred: world.ducks)
             {
-                shapeRenderer.circle(fred.col.x*2, fred.col.y*2, 2*fred.col.radius);
+                shapeRenderer.circle(fred.col.x*DuckPondGame.highresworldscaler, fred.col.y*DuckPondGame.highresworldscaler, DuckPondGame.highresworldscaler*fred.col.radius);
                 for (Duckling f: fred.ducklings)
                 {
-                    shapeRenderer.circle(f.col.x*2, f.col.y*2, f.col.radius*2);
+                    shapeRenderer.circle(f.col.x*DuckPondGame.highresworldscaler, f.col.y*DuckPondGame.highresworldscaler, f.col.radius*DuckPondGame.highresworldscaler);
                 }
             }
-            for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x*2, sam.col.y*2, 2*sam.col.radius);
+            for (Shark sam: world.sharks) shapeRenderer.circle(sam.col.x*DuckPondGame.highresworldscaler, sam.col.y*DuckPondGame.highresworldscaler, DuckPondGame.highresworldscaler*sam.col.radius);
         }
         shapeRenderer.end();
     }
