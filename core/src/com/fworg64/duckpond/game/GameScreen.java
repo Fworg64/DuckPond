@@ -55,6 +55,7 @@ public class GameScreen extends ScreenAdapter
 
     private Rectangle HUDarea;
     private Rectangle pausebutt;
+    private Rectangle livesarea;
     private Rectangle unpausebutt;
     private Rectangle exitbutt; //goes to level selectionscreen
     private Rectangle restartbutt;
@@ -135,6 +136,7 @@ public class GameScreen extends ScreenAdapter
         {
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,1920-241,241, 241);
+            livesarea = new Rectangle(399, Options.screenHeight-Options.GUIHeight,216, 152 );
 
             unpausebutt = new Rectangle(115f/640f *DuckPondGame.highresScreenW, 350f/960f * DuckPondGame.highresScreenH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
             restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
@@ -151,6 +153,7 @@ public class GameScreen extends ScreenAdapter
         {
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,960-93,93, 93);
+            livesarea = new Rectangle(407,Options.screenHeight-Options.GUIHeight,74 , 42 );
 
             unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
             restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
@@ -312,7 +315,17 @@ public class GameScreen extends ScreenAdapter
         game.batch.begin();
         game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY());
         Assets.font.draw(game.batch, Integer.toString((int) (world.time >0 ? world.time:0)), .8f*Options.screenWidth, 1.0f*Options.screenHeight);
-        Assets.font.draw(game.batch, Integer.toString(world.lives >0 ? world.lives: 0), .8f*Options.screenWidth, .9f*Options.screenHeight);
+        switch (world.lives)
+        {
+            case 3:
+                game.batch.draw(Assets.HUDlives,livesarea.getX() + 2*livesarea.getWidth(), livesarea.getY());
+            case 2:
+                game.batch.draw(Assets.HUDlives,livesarea.getX() + livesarea.getWidth(), livesarea.getY());
+            case 1:
+                game.batch.draw(Assets.HUDlives, livesarea.getX(), livesarea.getY());
+            case 0:
+                break;
+        }
         //draw other HUD shtuf
         game.batch.end();
 
