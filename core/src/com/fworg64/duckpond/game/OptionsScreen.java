@@ -25,7 +25,9 @@ public class OptionsScreen extends ScreenAdapter
     int RES_S;
     int SLIDER_X;
     int SLIDER_Y;
+    int SLIDER_H;
     int SLIDER_W;
+    int SLIDER_L;
     int SLIDER_S;
 
     Rectangle SaveReturn;
@@ -33,8 +35,10 @@ public class OptionsScreen extends ScreenAdapter
     Rectangle HighRes;
     Rectangle MusicSlider;
     Rectangle SfxSlider;
-    Rectangle PremiumButt;
     Rectangle CreditsButt;
+
+    boolean returnPressed;
+    boolean creditsPressed;
 
     boolean slidingMusic;
     boolean slidingSfx;
@@ -50,19 +54,47 @@ public class OptionsScreen extends ScreenAdapter
 
     public OptionsScreen (DuckPondGame game)
     {
-        OPTEXIT_X = (int)(.135f * Options.screenWidth); //bottom left corner of saveandexit button for options
-        OPTEXIT_Y = (int)(.62f * Options.screenHeight); //bottom left corner of saveandexit button for options
-        OPTWIDTH = (int)(.33f * Options.screenWidth); // width of options exit buttons
-        OPTHEIGHT = (int)(.094f * Options.screenHeight); //height of exit buttons
-        RES_X = (int)(62./320. * Options.screenWidth);//bottom left corner of lowres tickbox X
-        RES_Y = (int)(224./480. * Options.screenHeight);//bottom left corner of lowres tickbox Y
-        RES_W = Options.GUIWidth;
-        RES_H = Options.GUIHeight;
-        RES_S = (int)(130./320. * Options.screenWidth);
-        SLIDER_X = (int)(62f/320f * Options.screenWidth);
-        SLIDER_Y = (int)(200f/480f * Options.screenHeight);
-        SLIDER_W = (int)(130f/320f * Options.screenWidth);
-        SLIDER_S = (int)(50f/320f * Options.screenHeight);
+        if (Options.highres)
+        {
+            OPTEXIT_X = (int)(50f/1080f * Options.screenWidth); //bottom left corner of saveandexit button for options
+            OPTEXIT_Y = (int)((1-610f/1920f) * Options.screenHeight); //bottom left corner of saveandexit button for options
+            OPTWIDTH = 303;
+            OPTHEIGHT = 115;
+            RES_X = (int)(113f/1080 * Options.screenWidth);//bottom left corner of lowres tickbox X
+            RES_Y = (int)((1-902f/1920) * Options.screenHeight);//bottom left corner of lowres tickbox Y
+            RES_W = (int)((93f/1080f) * Options.screenWidth);
+            RES_H = RES_W;
+            RES_S = (int)(565f/1080f * Options.screenWidth);
+            SLIDER_X = (int)(297f/1080f * Options.screenWidth);
+            SLIDER_Y = (int)((1-1260f/1920f) * Options.screenHeight);
+            SLIDER_W =54;
+            SLIDER_H =110;
+            SLIDER_L = (int)(445f/1080f * Options.screenWidth);
+            SLIDER_S = (int)(276f/1920f * Options.screenHeight);
+            CreditsButt = new Rectangle(288, 1920-1761, 563, 170);
+        }
+        else
+        {
+            OPTEXIT_X = (int)(23f/640f * Options.screenWidth); //bottom left corner of saveandexit button for options
+            OPTEXIT_Y = (int)((1-307f/960f) * Options.screenHeight); //bottom left corner of saveandexit button for options
+            OPTWIDTH = 173;
+            OPTHEIGHT = 64;
+            RES_X = (int)(55f/640f * Options.screenWidth);//bottom left corner of lowres tickbox X
+            RES_Y = (int)((1-443f/960f) * Options.screenHeight);//bottom left corner of lowres tickbox Y
+            RES_W = (int)((63f/640f) * Options.screenWidth);
+            RES_H = RES_W;
+            RES_S = (int)(322f/640f * Options.screenWidth);
+            SLIDER_X = (int)(160f/640f * Options.screenWidth);
+            SLIDER_Y = (int)((1-642f/960f) * Options.screenHeight);
+            SLIDER_W =31;
+            SLIDER_H =55;
+            SLIDER_L = (int)(250f/640f * Options.screenWidth);
+            SLIDER_S = (int)(156f/960f * Options.screenHeight);
+            CreditsButt = new Rectangle(176, 960-918, 307, 93);
+        }
+
+        returnPressed = false;
+        creditsPressed = false;
 
         slidingMusic = false;
         slidingSfx = false;
@@ -79,8 +111,8 @@ public class OptionsScreen extends ScreenAdapter
         SaveReturn = new Rectangle(OPTEXIT_X,OPTEXIT_Y,OPTWIDTH, OPTHEIGHT);
         StdRes = new Rectangle(RES_X, RES_Y, RES_W, RES_H);
         HighRes = new Rectangle(RES_X + RES_S, RES_Y, RES_W, RES_H);
-        MusicSlider = new Rectangle(SLIDER_X + (Options.getMusicVol() * SLIDER_W), SLIDER_Y, Options.GUIWidth, Options.GUIHeight);
-        SfxSlider = new Rectangle(SLIDER_X + (Options.getSfxVol() * SLIDER_W), SLIDER_Y-SLIDER_S, Options.GUIWidth, Options.GUIHeight);
+        MusicSlider = new Rectangle(SLIDER_X + (Options.getMusicVol() * SLIDER_L), SLIDER_Y, SLIDER_W, SLIDER_H);
+        SfxSlider = new Rectangle(SLIDER_X + (Options.getSfxVol() * SLIDER_L), SLIDER_Y-SLIDER_S, SLIDER_W, SLIDER_H);
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
@@ -93,11 +125,20 @@ public class OptionsScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if ((SaveReturn.contains(touchpoint) && in.justTouched()) || in.isBackPressed())
+        if (SaveReturn.contains(touchpoint) && in.justTouched()) returnPressed = true;
+        if (returnPressed && !SaveReturn.contains(touchpoint)) returnPressed = false;
+        if (returnPressed && !in.isTouched() || in.isBackPressed())
         {
             Options.save();
             game.setScreen(new MainMenuScreen(game));
         }
+        if (CreditsButt.contains(touchpoint) && in.justTouched()) creditsPressed = true;
+        if (creditsPressed && !CreditsButt.contains(touchpoint)) creditsPressed = false;
+        if (creditsPressed && !in.isTouched())
+        {
+            //display credits
+        }
+
         if (StdRes.contains(touchpoint) && in.justTouched() && Options.highres)
         {
             Options.setStdres();
@@ -111,18 +152,18 @@ public class OptionsScreen extends ScreenAdapter
         }
         if (slidingMusic && in.isTouched())
         {
-            MusicSlider.setX(touchpoint.x);
-            if (touchpoint.x < SLIDER_X) {MusicSlider.setX(SLIDER_X);}
-            if (touchpoint.x > (SLIDER_X + SLIDER_W)) {MusicSlider.setX(SLIDER_X + SLIDER_W);}
-            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_W);
-            game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X)/SLIDER_W);
+            MusicSlider.setX(touchpoint.x -MusicSlider.getWidth()*.5f);
+            if (touchpoint.x -MusicSlider.getWidth()*.5f< SLIDER_X) {MusicSlider.setX(SLIDER_X);}
+            if (touchpoint.x -MusicSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) {MusicSlider.setX(SLIDER_X + SLIDER_L);}
+            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
+            game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X)/SLIDER_L);
         }
         if (slidingMusic && !in.isTouched())
         {
             slidingMusic = false;
-            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_W);
-            game.mas.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_W);
-            Gdx.app.debug("Volset", Float.toString((MusicSlider.getX()-SLIDER_X)/SLIDER_W));
+            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
+            game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X) / SLIDER_L);
+            Gdx.app.debug("Volset", Float.toString((MusicSlider.getX() - SLIDER_X) / SLIDER_L));
         }
         if (SfxSlider.contains(touchpoint) && in.justTouched() && !slidingSfx)
         {
@@ -130,25 +171,25 @@ public class OptionsScreen extends ScreenAdapter
         }
         if (slidingSfx && in.isTouched())
         {
-            SfxSlider.setX(touchpoint.x);
-            if (touchpoint.x < SLIDER_X) SfxSlider.setX(SLIDER_X);
-            if (touchpoint.x > (SLIDER_X + SLIDER_W)) SfxSlider.setX(SLIDER_X +SLIDER_W);
-            Options.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_W);
-            game.mas.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_W);
+            SfxSlider.setX(touchpoint.x- SfxSlider.getWidth()*.5f);
+            if (touchpoint.x - SfxSlider.getWidth()*.5f< SLIDER_X) SfxSlider.setX(SLIDER_X);
+            if (touchpoint.x - SfxSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) SfxSlider.setX(SLIDER_X +SLIDER_L);
+            Options.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
+            game.mas.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
         }
         if (slidingSfx && !in.isTouched())
         {
             slidingSfx = false;
-            Options.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_W);
-            game.mas.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_W);
-            Gdx.app.debug("Sfxset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_W));
+            Options.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
+            game.mas.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
+            Gdx.app.debug("Sfxset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_L));
         }
     }
 
     public void draw()
     {
         GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 0, 0, 1);
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
@@ -156,10 +197,12 @@ public class OptionsScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(Assets.OptionsMenu, 0, 0);
-        if (!Options.highres) game.batch.draw(Assets.check, RES_X, RES_Y);
-        else game.batch.draw(Assets.check, RES_X + RES_S, RES_Y);
-        game.batch.draw(Assets.slideball, MusicSlider.getX(), MusicSlider.getY());
-        game.batch.draw(Assets.slideball, SfxSlider.getX(), SfxSlider.getY());
+        if (!Options.highres) game.batch.draw(Assets.OptionsMenuCheckMark, RES_X, RES_Y);
+        else game.batch.draw(Assets.OptionsMenuCheckMark, RES_X + RES_S, RES_Y);
+        if (returnPressed) game.batch.draw(Assets.OptionsMenuReturnPressed, SaveReturn.getX(), SaveReturn.getY());
+        if (creditsPressed) game.batch.draw(Assets.OptionsMenuCreditsPressed, CreditsButt.getX(), CreditsButt.getY());
+        game.batch.draw(slidingMusic ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, MusicSlider.getX(), MusicSlider.getY());
+        game.batch.draw(slidingSfx ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, SfxSlider.getX(), SfxSlider.getY());
         game.batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

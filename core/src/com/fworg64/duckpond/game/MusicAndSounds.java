@@ -23,6 +23,7 @@ public class MusicAndSounds
 
     public float musicVol;
     public float sfxVol;
+    public boolean isMuted;
 
     public MusicAndSounds()
     {
@@ -38,6 +39,7 @@ public class MusicAndSounds
         gamemusic.setVolume(musicVol);
 
         gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\A_Turn_for_the_Worse.mp3"));
+        gameOverMusic.setLooping(true);
         gameOverMusic.setVolume(musicVol);
 
         victoryMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_ElectroIsland.mp3"));
@@ -125,4 +127,8 @@ public class MusicAndSounds
     {
         sfxVol = sfxVol1;
     }
+
+    public void mute() {setMusicVol(0); setSfxVol(0); isMuted = true;}
+
+    public void unmute() {setMusicVol(Options.getMusicVol()); setSfxVol(Options.getSfxVol()); isMuted = false;}
 }

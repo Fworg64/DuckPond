@@ -40,7 +40,7 @@ public class Duckling
 
     public Duckling(int x, int y, int pointsbehind)
     {
-        pos = new Rectangle(x,y, DuckPondGame.spriteW/2, DuckPondGame.spriteH/2);
+        pos = new Rectangle(x,y, DuckPondGame.objWandH/2, DuckPondGame.objWandH/2);
         col = new Circle(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight(), pos.getWidth()*.33f);
         posv = new Vector2(pos.getX(), pos.getY());
         vel = new Vector2();
@@ -105,7 +105,7 @@ public class Duckling
         if (state == State.PAD)
         {
             currAnim = padAnim;
-            if (vel.len() * clock >= DuckPondGame.spriteW*.7f) vel.setZero();
+            if (vel.len() * clock >= DuckPondGame.objWandH*.7f) vel.setZero();
         }
         if (state == State.EATEN)
         {

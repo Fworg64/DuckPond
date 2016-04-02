@@ -28,14 +28,22 @@ public class MainMenuScreen extends ScreenAdapter
 {
     int PLAY_X;
     int PLAY_Y;
+    int PLAY_W;
+    int PLAY_H;
     int LEVEL_X;
     int LEVEL_Y;
+    int LEVEL_W;
+    int LEVEL_H;
     int OPTIONS_X;
     int OPTIONS_Y;
+    int OPTIONS_W;
+    int OPTIONS_H;
     int EXIT_X;
     int EXIT_Y;
-    int BUTT_W;
-    int BUTT_H;
+    int EXIT_W;
+    int EXIT_H;
+    int TITTLE_X;
+    int TITTLE_Y;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -45,24 +53,56 @@ public class MainMenuScreen extends ScreenAdapter
     Vector2 touchpoint;
     boolean catchOtherBack;
 
-    Rectangle playbutt; //more buttons later
+    Rectangle playbutt;
     Rectangle optionbutt;
     Rectangle exitbutt;
     Rectangle leveleditbutt;
 
+    boolean playPressed;
+    boolean optionsPressed;
+    boolean leveleditPressed;
+    boolean exitPressed;
+
     public MainMenuScreen (DuckPondGame game)
     {
-        PLAY_X = (int)(.309f* Options.screenWidth);
-        PLAY_Y = (int)(.41f* Options.screenHeight);
-        LEVEL_X = (int)(.1f* Options.screenWidth);
-        LEVEL_Y = (int)(.253f* Options.screenHeight);
-        OPTIONS_X = (int)(.5f* Options.screenWidth);
-        OPTIONS_Y = (int)(.253f* Options.screenHeight);
-        EXIT_X = (int)(.309f* Options.screenWidth);
-        EXIT_Y = (int)(.134f* Options.screenHeight);
-        BUTT_W = (int)(.35f*Options.screenWidth);
-        BUTT_H = (int)(.09f*Options.screenHeight);
-        
+        if (Options.highres)
+        {
+            PLAY_X = (int)(220f/1080f* Options.screenWidth);
+            PLAY_Y = (int)((1- 1226f/1920f)* Options.screenHeight);
+            LEVEL_X = (int)(427f/1080f* Options.screenWidth);
+            LEVEL_Y = (int)((1- 1562f/1920f)* Options.screenHeight);
+            OPTIONS_X = (int)(80f/1080f* Options.screenWidth);
+            OPTIONS_Y = (int)((1- 1665f/1920f)* Options.screenHeight);
+            EXIT_X = (int)(820/1080f* Options.screenWidth);
+            EXIT_Y = (int)((1- 1692f/1920f)* Options.screenHeight);
+            TITTLE_X = (int)(60f/1080f * Options.screenWidth);
+            TITTLE_Y = (int)((1- 882f/1920f) * Options.screenHeight);
+        }
+        else
+        {
+            PLAY_X = (int)(130f/640f* Options.screenWidth);
+            PLAY_Y = (int)((1- 684f/960f)* Options.screenHeight);
+            LEVEL_X = (int)(258f/640f* Options.screenWidth);
+            LEVEL_Y = (int)((1-846f/960f)* Options.screenHeight);
+            OPTIONS_X = (int)(50f/640f* Options.screenWidth);
+            OPTIONS_Y = (int)((1-875f/960f)* Options.screenHeight);
+            EXIT_X = (int)(478f/640f* Options.screenWidth);
+            EXIT_Y = (int)((1-888f/960f)* Options.screenHeight);
+            TITTLE_X = (int)(60f/640f * Options.screenWidth);
+            TITTLE_Y = (int)((1- 500f/960f) * Options.screenHeight);
+        }
+
+        PLAY_W = (int)(380f/640f * Options.screenWidth);
+        PLAY_H = (int)(114f/960f * Options.screenHeight);
+        LEVEL_W = (int)(165f/640f * Options.screenWidth);
+        LEVEL_H = (int)(156f/960f * Options.screenHeight);
+        OPTIONS_W = (int)(154f/640f * Options.screenWidth);
+        OPTIONS_H = (int)(63f/960f * Options.screenHeight);
+        EXIT_W = (int)(91f/640f * Options.screenWidth);
+        EXIT_H = (int)(62f/960f * Options.screenHeight);
+
+
+
         this.game = game;
         Assets.load();
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -71,10 +111,15 @@ public class MainMenuScreen extends ScreenAdapter
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
 
-        playbutt = new Rectangle(PLAY_X, PLAY_Y, BUTT_W, BUTT_H);
-        optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, BUTT_W, BUTT_H);
-        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, BUTT_W, BUTT_H);
-        exitbutt = new Rectangle(EXIT_X, EXIT_Y, BUTT_W, BUTT_H);
+        playbutt = new Rectangle(PLAY_X, PLAY_Y, PLAY_W, PLAY_H);
+        optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H);
+        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
+        exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
+
+        playPressed = false;
+        leveleditPressed = false;
+        optionsPressed = false;
+        exitPressed = false;
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
@@ -89,22 +134,30 @@ public class MainMenuScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (playbutt.contains(touchpoint) && in.justTouched())
+        if (playbutt.contains(touchpoint) && in.justTouched()) playPressed = true;
+        if (playPressed && !playbutt.contains(touchpoint)) playPressed = false;
+        if (playPressed && !in.isTouched())
         {
             game.setScreen(new LevelSelectionScreen(game));
             return 2;
         }
-        if (leveleditbutt.contains(touchpoint) && in.justTouched())
+        if (leveleditbutt.contains(touchpoint) && in.justTouched()) leveleditPressed = true;
+        if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
+        if (leveleditPressed && !in.isTouched())
         {
             game.setScreen(new LevelScreen2(game));
             return 1;
         }
-        if (optionbutt.contains(touchpoint) && in.justTouched())
+        if (optionbutt.contains(touchpoint) && in.justTouched()) optionsPressed = true;
+        if (optionsPressed && !optionbutt.contains(touchpoint)) optionsPressed = false;
+        if (optionsPressed && !in.isTouched())
         {
             game.setScreen(new OptionsScreen(game));
             return 1;
         }
-        if (exitbutt.contains(touchpoint) && in.justTouched())
+        if (exitbutt.contains(touchpoint) && in.justTouched()) exitPressed = true;
+        if (exitPressed && !exitbutt.contains(touchpoint)) exitPressed = false;
+        if (exitPressed && !in.isTouched())
         {
             Gdx.app.exit();
         }
@@ -118,20 +171,21 @@ public class MainMenuScreen extends ScreenAdapter
 
     public void draw() //fyotb
     {
+        //background 46b4d6: .27451, .70588, .83922
         GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 0, 0, 1);
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        game.batch.disableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.MainMenuBackground, 0, 0);
-        game.batch.end();
-
         game.batch.enableBlending();
         game.batch.begin();
-        Assets.font.draw(game.batch, DuckPondGame.version, 0, Options.GUIHeight);
+        game.batch.draw(Assets.MainMenuTitle, TITTLE_X, TITTLE_Y);
+        game.batch.draw(playPressed ? Assets.MainMenuPlayPressed : Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
+        game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
+        game.batch.draw(optionsPressed ? Assets.MainMenuOptionsPressed : Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
+        game.batch.draw(exitPressed ? Assets.MainMenuExitPressed : Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
+        Assets.font.draw(game.batch, DuckPondGame.version, 0, 100);
         game.batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
