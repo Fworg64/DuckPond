@@ -239,10 +239,12 @@ public class GameScreen extends ScreenAdapter
             switch (menu)
             {
                 case PAUSEMENU:
+                    game.mas.pauseSfx();
                     if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmExit || showConfirmRestart))
                     {
                         isPaused = false;
                         game.mas.playGameMusic();
+                        game.mas.resumeSfx();
 
                         screenIn.getTouchpoint();
                         menu = Menus.PLAYING;
@@ -258,6 +260,7 @@ public class GameScreen extends ScreenAdapter
                     if (showConfirmExit == true && confirmYes.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         game.mas.stopCurrMusic();
+                        game.mas.stopSfx();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (showConfirmRestart == true && confirmYes.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
@@ -268,6 +271,7 @@ public class GameScreen extends ScreenAdapter
                         menu = Menus.PLAYING;
                         isPaused = false;
                         game.mas.stopCurrMusic();
+                        game.mas.stopSfx();
                         game.mas.playGameMusic();
                         showConfirmRestart = false;
                     }
@@ -283,6 +287,7 @@ public class GameScreen extends ScreenAdapter
                     if (GOLLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         mas.stopCurrMusic();
+                        mas.stopSfx();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     if (GOLrestart.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
@@ -292,6 +297,7 @@ public class GameScreen extends ScreenAdapter
                         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
                         menu = Menus.PLAYING;
                         game.mas.stopCurrMusic();
+                        game.mas.stopSfx();
                         game.mas.playGameMusic();
                         isPaused = false;
                     }
@@ -308,6 +314,7 @@ public class GameScreen extends ScreenAdapter
                     if (GOVLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         game.mas.stopCurrMusic();
+                        game.mas.stopSfx();
                         game.setScreen(new LevelSelectionScreen(game));
                     }
                     break;
