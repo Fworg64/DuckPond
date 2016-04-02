@@ -13,8 +13,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.fworg64.duckpond.game.DuckPondGame;
 
 public class HtmlLauncher extends GwtApplication {
-        static final int WIDTH = 320;
-        static final int HEIGHT = 480;
+        static final int WIDTH = 640;
+        static final int HEIGHT = 960;
         static HtmlLauncher instance;
 
         @Override

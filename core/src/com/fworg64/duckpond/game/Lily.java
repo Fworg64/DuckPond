@@ -21,7 +21,7 @@ public class Lily
 
     public Lily(float x, float y)
     {
-        pos = new Rectangle(x, y, DuckPondGame.spriteW,DuckPondGame.spriteH);
+        pos = new Rectangle(x, y, DuckPondGame.objWandH,DuckPondGame.objWandH);
         col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .5f* pos.getHeight(), .5f* pos.getWidth());
 
         padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);

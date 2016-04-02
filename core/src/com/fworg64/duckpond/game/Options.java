@@ -21,7 +21,8 @@ public class Options
     public static int screenHeight;
     public static int spriteWidth; //implied by screen width
     public static int spriteHeight;
-    public static int GUIWidth;
+    public static int GUIElementWidth;
+    public static int GUIElementHeight;
     public static int GUIHeight;
 
     private static Preferences prefs;
@@ -55,24 +56,26 @@ public class Options
     public static void setStdres()
     {
         highres = false;
-        screenWidth = DuckPondGame.worldW;
-        screenHeight = DuckPondGame.worldH;
-        spriteWidth = DuckPondGame.spriteW;
-        spriteHeight = DuckPondGame.spriteH;
-        GUIWidth = 32;
-        GUIHeight = 32;
+        screenWidth = DuckPondGame.stdresScreenW;
+        screenHeight = DuckPondGame.stdresScreenH;
+        spriteWidth = DuckPondGame.stdspriteW;
+        spriteHeight = DuckPondGame.stdspriteH;
+        GUIHeight = DuckPondGame.stdresScreenH - DuckPondGame.worldH; //96
+        GUIElementWidth = (int)(GUIHeight*.5f);
+        GUIElementHeight = (int)(GUIHeight*.5f);
         prefs.putBoolean("highres", highres);
     }
 
     public static void setHighres()
     {
         highres = true;
-        screenWidth = 2*DuckPondGame.worldW;
-        screenHeight = 2*DuckPondGame.worldH;
-        spriteWidth = 2*DuckPondGame.spriteW;
-        spriteHeight = 2*DuckPondGame.spriteH;
-        GUIWidth = 64;
-        GUIHeight = 64;
+        screenWidth = DuckPondGame.highresScreenW;
+        screenHeight = DuckPondGame.highresScreenH;
+        spriteWidth = DuckPondGame.highspriteW;
+        spriteHeight = DuckPondGame.highspriteH;
+        GUIHeight = DuckPondGame.stdresScreenH - (int)(DuckPondGame.worldH * DuckPondGame.highresworldscaler);
+        GUIElementWidth = (int)(GUIHeight*.5f);
+        GUIElementHeight = (int)(GUIHeight*.5f);
         prefs.putBoolean("highres", highres);
     }
 

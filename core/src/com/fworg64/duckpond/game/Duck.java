@@ -47,7 +47,7 @@ public class Duck
     Direction dir;
 
     public Duck(float x, float y, float vx, float vy, int numDuc) {
-        pos = new Rectangle(x, y, DuckPondGame.spriteW, DuckPondGame.spriteH); //make this random for default constructor
+        pos = new Rectangle(x, y, DuckPondGame.objWandH, DuckPondGame.objWandH); //make this random for default constructor
         col = new Circle(pos.getX() + .5f * pos.getWidth(), pos.getY() + .5f * pos.getHeight(), .4f * pos.getWidth()); //this needs moved to just the base
 
         dtheta = 0; //1 if rotating CCW, -1 for CW, 0 for no rotation
@@ -88,7 +88,7 @@ public class Duck
         }
         if (state == State.PADDING)
         {
-            if (vel.len() * clock >= DuckPondGame.spriteW*1.0f) {vel.setZero(); state = State.PAD;}
+            if (vel.len() * clock >= DuckPondGame.objWandH*1.0f) {vel.setZero(); state = State.PAD;}
         }
 
         posv.add(vel.cpy().scl(delta)); //nother vector for good measure

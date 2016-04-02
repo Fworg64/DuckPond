@@ -81,8 +81,8 @@ public class LevelScreen2 extends ScreenAdapter
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
-        gcam = new OrthographicCamera(2 * Options.screenWidth, 2* Options.screenHeight); //let us place things outside the map
-        gcam.position.set(Options.screenWidth, Options.screenHeight, 0); //give ourselves a nice little camera //centered since its doubled
+        gcam = new OrthographicCamera(Options.screenWidth,Options.screenHeight); //let us place things outside the map
+        gcam.position.set(Options.screenWidth*.5f, Options.screenHeight*.5f, 0); //give ourselves a nice little camera //centered since its doubled
 
         if (Gdx.app.getType() != Application.ApplicationType.WebGL) dafile = Gdx.files.local("LEVELS\\test.txt");
         
@@ -95,9 +95,9 @@ public class LevelScreen2 extends ScreenAdapter
         lives = 3;
         time = 60;
 
-        ducks = new Rectangle(400f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
-        sharks = new Rectangle(200f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
-        lillies = new Rectangle(300f/640f * 2*Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
+        ducks = new Rectangle(400f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
+        sharks = new Rectangle(200f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
+        lillies = new Rectangle(300f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
         savebutt = new Rectangle(SAVE_X, SAVE_Y, SAVE_W, SAVE_H);
@@ -105,17 +105,17 @@ public class LevelScreen2 extends ScreenAdapter
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
         Message = "heerp";
-        Tknob = new Rectangle(100f/640f * 2*Options.screenWidth, .9f* 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Tslider = new Rectangle(100f/640f * 2*Options.screenWidth, .9f* 2*Options.screenHeight, 440f/640f * 2*Options.screenWidth, Options.spriteHeight);
-        Taccept = new Rectangle(540f/640f * 2*Options.screenWidth, .8f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Dup = new Rectangle(540f/640f * 2*Options.screenWidth, .7f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Ddown = new Rectangle(540f/640f * 2*Options.screenWidth, .6f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Daccept = new Rectangle(540f/640f * 2*Options.screenWidth, .5f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        trashbutt = new Rectangle(540f/640f * 2*Options.screenWidth, .25f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        TtimeUp = new Rectangle(400f/640f * 2*Options.screenWidth, .15f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        TtimeDown = new Rectangle(400f/640f * 2*Options.screenWidth, .075f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        LivesUp = new Rectangle(500f/640f * 2*Options.screenWidth, .15f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        LivesDown = new Rectangle(500f/640f * 2*Options.screenWidth, .074f * 2*Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Tknob = new Rectangle(100f/640f     * Options.screenWidth, .9f*    Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Tslider = new Rectangle(100f/640f   * Options.screenWidth, .9f*    Options.screenHeight, 440f/640f *Options.screenWidth, Options.spriteHeight);
+        Taccept = new Rectangle(540f/640f   * Options.screenWidth, .8f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Dup = new Rectangle(540f/640f       * Options.screenWidth, .7f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Ddown = new Rectangle(540f/640f     * Options.screenWidth, .6f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Daccept = new Rectangle(540f/640f   * Options.screenWidth, .5f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        trashbutt = new Rectangle(540f/640f * Options.screenWidth, .25f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        TtimeUp = new Rectangle(400f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        TtimeDown = new Rectangle(400f/640f * Options.screenWidth, .075f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        LivesUp = new Rectangle(500f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        LivesDown = new Rectangle(500f/640f * Options.screenWidth, .074f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
 
         defaultstate = true;
         getD = false;

@@ -19,10 +19,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 
 public class DuckPondGame extends Game {
-	public static int worldH = 480;
-	public static int worldW = 320;
-	public static int spriteW = 48;
-	public static int spriteH = 48;
+	public static int worldH = 864;
+	public static int worldW = 640;
+	public static int objWandH = 96;
+	public static float highresworldscaler = 1.6875f;
+
+	public static int stdspriteW = 96;
+	public static int stdspriteH = 96;
+	public static int highspriteW = 162;
+	public static int highspriteH = 162;
+
+	public static int stdresScreenW = 640;
+	public static int stdresScreenH = 960;
+	public static int highresScreenW = 1080;
+	public static int highresScreenH = 1920;
 
 	public static final String version = "v0.0.7a";
 
@@ -35,7 +45,15 @@ public class DuckPondGame extends Game {
 		public void HideBannerAd();
 	}
 	public DuckPondGameAdStateListener adStateListener;
-	
+
+//	public interface DuckPondGameResolutionListener
+//	{
+//		public void showHighResWindow();
+//		public void showStdResWindow();
+//	}
+//	public DuckPondGameResolutionListener resolutionListener;
+//
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -55,6 +73,11 @@ public class DuckPondGame extends Game {
 	{
 		this.adStateListener = adStateListener;
 	}
+
+//	public void setResolutionListener(DuckPondGameResolutionListener resolutionListener)
+//	{
+//		this.resolutionListener = resolutionListener;
+//	}
 
 	@Override
 	public void render () {
