@@ -49,6 +49,7 @@ public class GameScreen extends ScreenAdapter
     String swipedebug;
 
     private boolean isPaused;
+    private boolean isMuted;
     private boolean showConfirmRestart;
     private boolean showConfirmExit;
     Menus menu;
@@ -56,6 +57,8 @@ public class GameScreen extends ScreenAdapter
     private Rectangle HUDarea;
     private Rectangle pausebutt;
     private Rectangle livesarea;
+    private Rectangle mutebutt;
+
     private Rectangle unpausebutt;
     private Rectangle exitbutt; //goes to level selectionscreen
     private Rectangle restartbutt;
@@ -74,7 +77,7 @@ public class GameScreen extends ScreenAdapter
         this.game = game;
         this.mas = game.mas;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
-        gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
+        gcam.position.set(Options.screenWidth *.5f, Options.screenHeight *.5f, 0); //give ourselves a nice little camera
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
@@ -118,6 +121,8 @@ public class GameScreen extends ScreenAdapter
         }; //implement later... later is now! 2/21
 
         isPaused = false;
+        isMuted = game.mas.isMuted;
+
         showConfirmRestart = false;
         showConfirmExit = false;
         menu = Menus.PLAYING;
@@ -137,6 +142,7 @@ public class GameScreen extends ScreenAdapter
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,1920-241,241, 241);
             livesarea = new Rectangle(399, Options.screenHeight-Options.GUIHeight,216, 152 );
+            mutebutt = new Rectangle(305, 1920-214, 133, 158);
 
             unpausebutt = new Rectangle(115f/640f *DuckPondGame.highresScreenW, 350f/960f * DuckPondGame.highresScreenH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
             restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
@@ -154,6 +160,7 @@ public class GameScreen extends ScreenAdapter
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,960-93,93, 93);
             livesarea = new Rectangle(407,Options.screenHeight-Options.GUIHeight,74 , 42 );
+            mutebutt = new Rectangle(117, 960-73, 42, 48);
 
             unpausebutt = new Rectangle(115f/640f *DuckPondGame.worldW, 350f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
             restartbutt = new Rectangle(115f/640f *DuckPondGame.worldW, 220f/960f * DuckPondGame.worldH, 415f/640f * DuckPondGame.worldW, 120f/915f *DuckPondGame.worldH);
@@ -219,6 +226,12 @@ public class GameScreen extends ScreenAdapter
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
             }
+            if (mutebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
+            {
+                isMuted = !isMuted;
+                if (isMuted) game.mas.mute();
+                else game.mas.unmute();
+            }
         }
         else
         {
@@ -226,7 +239,7 @@ public class GameScreen extends ScreenAdapter
             switch (menu)
             {
                 case PAUSEMENU:
-                    if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
+                    if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmExit || showConfirmRestart))
                     {
                         isPaused = false;
                         game.mas.playGameMusic();
@@ -326,6 +339,7 @@ public class GameScreen extends ScreenAdapter
             case 0:
                 break;
         }
+        game.batch.draw(isMuted ? Assets.HUDMute : Assets.HUDUnmute, mutebutt.getX(), mutebutt.getY());
         //draw other HUD shtuf
         game.batch.end();
 
