@@ -57,8 +57,9 @@ SOUND
 --padding
 -shark sounds(*)AFO
 --chomp noise(*)AFO
--Need to decrease size of GAMEOVER songs
+-Need to decrease size of GAMEOVER songs(*)AFO
 --20 sec loop?
+-Need to decrease size of VICTORY song
 _______________________________
 ========================
 ADS
@@ -66,6 +67,7 @@ ADS
 -able to call HideBannerAd() from game.adlisterner or something(*)AFO
 -also ShowBannerAd()(*)AFO
 -Framework is extensible should we decide to add intersitials(*)AFO
+-need to call HideBannerAd() on resume if neccresarrryey
 ______________________________
 ========================
 TUTORIAL SCREEN
