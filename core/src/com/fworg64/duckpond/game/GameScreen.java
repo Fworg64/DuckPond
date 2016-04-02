@@ -180,6 +180,12 @@ public class GameScreen extends ScreenAdapter
 
     public void update(float delta)
     {
+        if (mutebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
+        {
+            isMuted = !isMuted;
+            if (isMuted) game.mas.mute();
+            else game.mas.unmute();
+        }
         if (isPaused ==false)
         {
             clock+=delta; //keep track of time
@@ -218,20 +224,14 @@ public class GameScreen extends ScreenAdapter
                 world.update(delta, swipestart, swipeend);
                 swiperegistered = false;
                 Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
-            }
-            else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
+            } else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
             if ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed())
             {
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
             }
-            if (mutebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
-            {
-                isMuted = !isMuted;
-                if (isMuted) game.mas.mute();
-                else game.mas.unmute();
-            }
+
         }
         else
         {
