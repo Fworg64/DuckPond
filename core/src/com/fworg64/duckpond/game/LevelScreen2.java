@@ -16,17 +16,17 @@ import com.badlogic.gdx.utils.Array;
  */
 public class LevelScreen2 extends ScreenAdapter
 {
-    public static final int EXIT_X = 1;//bottom left corner of button
-    public static final int EXIT_Y = 1;
-    public static final int EXIT_W = (int)(.1f * 2*DuckPondGame.worldW); //not exact yet
-    public static final int EXIT_H = (int)(.1f * 2*DuckPondGame.worldH);
+    public static final int EXIT_X = 732;//bottom left corner of button
+    public static final int EXIT_Y = 1920-136;
+    public static final int EXIT_W = 300; //not exact yet
+    public static final int EXIT_H = 110;
 
-    public static final int SAVE_X = (int)(.01f * 2*DuckPondGame.worldW);
-    public static final int SAVE_Y = (int)(.9f * 2*DuckPondGame.worldH);
-    public static final int SAVE_W = (int)(.1f * 2*DuckPondGame.worldW); //not exact yet
-    public static final int SAVE_H = (int)(.1f * 2*DuckPondGame.worldH);
+    public static final int SAVE_X = 24;
+    public static final int SAVE_Y = 1920-136;
+    public static final int SAVE_W = 300; //not exact yet
+    public static final int SAVE_H = 110;
 
-    public static final Vector2 EDITOR_OFFSET = new Vector2(160,240);
+    public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .35f;
     
     DuckPondGame game; //from example
@@ -73,6 +73,8 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle sharks;
     Rectangle lillies;
 
+    Rectangle playarea;
+
     private ShapeRenderer shapeRenderer;
 
     public LevelScreen2(DuckPondGame game)
@@ -81,8 +83,8 @@ public class LevelScreen2 extends ScreenAdapter
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
-        gcam = new OrthographicCamera(Options.screenWidth,Options.screenHeight); //let us place things outside the map
-        gcam.position.set(Options.screenWidth*.5f, Options.screenHeight*.5f, 0); //give ourselves a nice little camera //centered since its doubled
+        gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
+        gcam.position.set(DuckPondGame.highresScreenW*.5f, DuckPondGame.highresScreenH*.5f, 0); //high res mode but assets at stdres for zoomout
 
         if (Gdx.app.getType() != Application.ApplicationType.WebGL) dafile = Gdx.files.local("LEVELS\\test.txt");
         
@@ -95,9 +97,9 @@ public class LevelScreen2 extends ScreenAdapter
         lives = 3;
         time = 60;
 
-        ducks = new Rectangle(400f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
-        sharks = new Rectangle(200f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
-        lillies = new Rectangle(300f/640f * Options.screenWidth,0,Options.spriteWidth,Options.spriteHeight);
+        ducks = new Rectangle(60, 1920 - 1641, 96, 96);
+        sharks = new Rectangle(200, 1920 - 1641, 96, 96);
+        lillies = new Rectangle(350, 1920-1641, 96, 96);
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
         savebutt = new Rectangle(SAVE_X, SAVE_Y, SAVE_W, SAVE_H);
@@ -105,13 +107,13 @@ public class LevelScreen2 extends ScreenAdapter
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
         Message = "heerp";
-        Tknob = new Rectangle(100f/640f     * Options.screenWidth, .9f*    Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Tslider = new Rectangle(100f/640f   * Options.screenWidth, .9f*    Options.screenHeight, 440f/640f *Options.screenWidth, Options.spriteHeight);
+        Tknob = new Rectangle(22,1920-1800, 96, 96);
+        Tslider = new Rectangle(0, 0, 790, 1920-1777);
         Taccept = new Rectangle(540f/640f   * Options.screenWidth, .8f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Dup = new Rectangle(540f/640f       * Options.screenWidth, .7f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Ddown = new Rectangle(540f/640f     * Options.screenWidth, .6f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Daccept = new Rectangle(540f/640f   * Options.screenWidth, .5f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        trashbutt = new Rectangle(540f/640f * Options.screenWidth, .25f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        trashbutt = new Rectangle(794,1920-1746, 250, 100);
         TtimeUp = new Rectangle(400f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         TtimeDown = new Rectangle(400f/640f * Options.screenWidth, .075f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         LivesUp = new Rectangle(500f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
@@ -408,7 +410,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void draw() //fyotb
     {
         GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 0, 0, 1);
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
@@ -416,40 +418,36 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.disableBlending();
         game.batch.begin();
         //draw background image here
-        game.batch.draw(Assets.LevelEditBg, 0, 0);
-        game.batch.draw(Assets.GameBackground, Options.screenWidth * .5f, Options.screenHeight * .5f);
+        game.batch.draw(Assets.LevelEditUpperArea, 0, 1920-308);
+        game.batch.draw(Assets.LevelEditLowerArea, 0, 0);
+        game.batch.draw(Assets.LevelEditOutsidePlacement, 0, 308);
+        game.batch.draw(Assets.LevelEditGameplayArea, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
         game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(Assets.leveditDuck, ducks.getX(), ducks.getY());
-        game.batch.draw(Assets.leveditShark, sharks.getX(), sharks.getY());
-        game.batch.draw(Assets.leveditPad, lillies.getX(), lillies.getY());
-        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
+        game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
+        game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
+        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.LevelEditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.LevelEditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
         for (Spawnable s: spawnables)
         {
             if (s.getTime2spawn() <= tempt2s)
             {
                 float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
                 float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
-                if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.leveditShark, render_X, render_Y);
-                if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.leveditDuck, render_X, render_Y);
-                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.leveditPad, render_X, render_Y);
+                if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.LevelEditShark, render_X, render_Y);
+                if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.LevelEditDuck, render_X, render_Y);
+                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily, render_X, render_Y);
             }
         }
-        game.batch.draw(Assets.leveditTslider, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        game.batch.draw(Assets.leveditTknob, Tknob.getX(), Tknob.getY());
-        game.batch.draw(Assets.leveditTaccept, Taccept.getX(), Taccept.getY());
-        game.batch.draw(Assets.leveditDup, Dup.getX(), Dup.getY());
-        game.batch.draw(Assets.leveditDdown, Ddown.getX(), Ddown.getY());
-        game.batch.draw(Assets.leveditDaccept, Daccept.getX(), Daccept.getY());
-        game.batch.draw(Assets.leveditTrash, trashbutt.getX(), trashbutt.getY());
-        game.batch.draw(Assets.leveditDup, TtimeUp.getX(), TtimeUp.getY());
-        game.batch.draw(Assets.leveditDdown, TtimeDown.getX(), TtimeDown.getY());
-        game.batch.draw(Assets.leveditDup, LivesUp.getX(), LivesUp.getY());
-        game.batch.draw(Assets.leveditDdown, LivesDown.getX(), LivesDown.getY());
+        game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
+        game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
+
+        game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
+
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
         Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TtimeUp.getX() - 1.0f*TtimeUp.getWidth(), TtimeUp.getY());
         Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());

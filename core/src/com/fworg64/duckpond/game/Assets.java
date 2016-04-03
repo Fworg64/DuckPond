@@ -23,19 +23,22 @@ public class Assets
 {
     public static BitmapFont font;
 
-    public static Texture LevelEditBg;
-    private static Texture LevelEditPartSheet;
-    private static TextureRegion[][] LevelEditParts;
-    public static TextureRegion leveditDuck;
-    public static TextureRegion leveditShark;
-    public static TextureRegion leveditPad;
-    public static TextureRegion leveditTknob;
-    public static TextureRegion leveditTslider;
-    public static TextureRegion leveditDup;
-    public static TextureRegion leveditDdown;
-    public static TextureRegion leveditTaccept;
-    public static TextureRegion leveditDaccept;
-    public static TextureRegion leveditTrash;
+    public static Texture LevelEditClock;
+    public static Texture LevelEditConfirm;
+    public static Texture LevelEditDuck;
+    public static Texture LevelEditExit;
+    public static Texture LevelEditGameplayArea;
+    public static Texture LevelEditHUDToggle;
+    public static Texture LevelEditHUDArea;
+    public static Texture LevelEditLily;
+    public static Texture LevelEditLOAD;
+    public static Texture LevelEditLowerArea;
+    public static Texture LevelEditOutsidePlacement;
+    public static Texture LevelEditRemoveItem;
+    public static Texture LevelEditSave;
+    public static Texture LevelEditShark;
+    public static Texture LevelEditTimeBar;
+    public static Texture LevelEditUpperArea;
 
     public static Texture LevelSelectionBackground;
 
@@ -179,20 +182,22 @@ public class Assets
     public static void levelEditLoad()
     {
         font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
-        LevelEditBg = new Texture(Gdx.files.internal("leveledit\\LevelEditBackground.png"));
-        GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
-        LevelEditPartSheet = new Texture(Gdx.files.internal("leveledit\\leveledit.png"));
-        LevelEditParts = TextureRegion.split(LevelEditPartSheet, 48, 48);
-        leveditDuck = LevelEditParts[0][0];
-        leveditShark = LevelEditParts[0][1];
-        leveditPad = LevelEditParts[0][2];
-        leveditTknob = LevelEditParts[0][3];
-        leveditTslider = LevelEditParts[0][4];
-        leveditDup = LevelEditParts[1][0];
-        leveditDdown = LevelEditParts[1][1];
-        leveditTaccept = LevelEditParts[1][2];
-        leveditDaccept = LevelEditParts[1][3];
-        leveditTrash = LevelEditParts[1][4];
+        LevelEditClock = new Texture(Gdx.files.internal("leveledit\\CLOCK.png"));
+        LevelEditConfirm = new Texture(Gdx.files.internal("leveledit\\CONFRIM.png"));
+        LevelEditDuck = new Texture(Gdx.files.internal("leveledit\\duck.png"));
+        LevelEditExit = new Texture(Gdx.files.internal("leveledit\\EXIT.png"));
+        LevelEditGameplayArea = new Texture(Gdx.files.internal("leveledit\\gameplayarea.png"));
+        LevelEditHUDToggle = new Texture(Gdx.files.internal("leveledit\\hudtoggle.png"));
+        LevelEditHUDArea = new Texture(Gdx.files.internal("leveledit\\hudarea.png"));
+        LevelEditLily = new Texture(Gdx.files.internal("leveledit\\lily.png"));
+        LevelEditLOAD = new Texture(Gdx.files.internal("leveledit\\LOAD.png"));
+        LevelEditLowerArea = new Texture(Gdx.files.internal("leveledit\\lowerarea.png"));
+        LevelEditOutsidePlacement = new Texture(Gdx.files.internal("leveledit\\outsideplacement.png"));
+        LevelEditRemoveItem = new Texture(Gdx.files.internal("leveledit\\REMOVEITEM.png"));
+        LevelEditSave = new Texture(Gdx.files.internal("leveledit\\SAVE.png"));
+        LevelEditShark = new Texture(Gdx.files.internal("leveledit\\shark.png"));
+        LevelEditTimeBar = new Texture(Gdx.files.internal("leveledit\\timebar.png"));
+        LevelEditUpperArea = new Texture(Gdx.files.internal("leveledit\\upperarea.png"));
 
     }
 }
