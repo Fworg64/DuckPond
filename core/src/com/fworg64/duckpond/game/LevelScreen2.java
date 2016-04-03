@@ -42,6 +42,7 @@ public class LevelScreen2 extends ScreenAdapter
     boolean getD;
     boolean choiceDestroy;
     boolean globalTAdjust;
+    boolean ready2confirm;
 
     boolean wasHighres;
     Rectangle exitbutt;
@@ -60,10 +61,9 @@ public class LevelScreen2 extends ScreenAdapter
     String Message;
     Rectangle Tknob;
     Rectangle Tslider;
-    Rectangle Taccept;
+    Rectangle Confirm;
     Rectangle Dup;
     Rectangle Ddown;
-    Rectangle Daccept;
     Rectangle TtimeUp;
     Rectangle TtimeDown;
     Rectangle LivesUp;
@@ -74,6 +74,7 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle lillies;
 
     Rectangle playarea;
+    Rectangle placementarea;
 
     private ShapeRenderer shapeRenderer;
 
@@ -109,15 +110,16 @@ public class LevelScreen2 extends ScreenAdapter
         Message = "heerp";
         Tknob = new Rectangle(22,1920-1800, 96, 96);
         Tslider = new Rectangle(0, 0, 790, 1920-1777);
-        Taccept = new Rectangle(540f/640f   * Options.screenWidth, .8f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        Confirm = new Rectangle(810, 1920 - 1886, 300, 110);
         Dup = new Rectangle(540f/640f       * Options.screenWidth, .7f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         Ddown = new Rectangle(540f/640f     * Options.screenWidth, .6f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        Daccept = new Rectangle(540f/640f   * Options.screenWidth, .5f   * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         trashbutt = new Rectangle(794,1920-1746, 250, 100);
         TtimeUp = new Rectangle(400f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         TtimeDown = new Rectangle(400f/640f * Options.screenWidth, .075f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         LivesUp = new Rectangle(500f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
         LivesDown = new Rectangle(500f/640f * Options.screenWidth, .074f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
+        playarea = new Rectangle(EDITOR_OFFSET.x, EDITOR_OFFSET.y, DuckPondGame.worldW, DuckPondGame.worldH);
+        placementarea = new Rectangle(0, 308, 1080, 1304);
 
         defaultstate = true;
         getD = false;
@@ -127,6 +129,7 @@ public class LevelScreen2 extends ScreenAdapter
         getPos = false;
         choiceDestroy = false;
         globalTAdjust = false;
+        ready2confirm = false;
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -283,7 +286,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseActor()
     {
-        Message = "Choose a character\nDrag to Position";
+        Message = "Choose an object to place";
         if (in.justTouched() && ducks.contains(touchpoint)) {
             tempguy.setObjtype("Duck");
             getPos = true;
@@ -303,22 +306,49 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChoosePos()
     {
-        //Message = "Drag to position";
+        Message = "Drag to position";
         touchpoint.set(in.getTouchpoint());
-        if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
-            tempguy.setPos(touchpoint.cpy().sub(EDITOR_OFFSET));
+        if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")&& placementarea.contains(touchpoint)) {
+            float tempx;
+            if (touchpoint.x -DuckPondGame.objWandH *.5f <= 0) {tempx = DuckPondGame.objWandH *.5f;}
+            else if (touchpoint.x +DuckPondGame.objWandH *.5f >= placementarea.getWidth()) {tempx = placementarea.getWidth() - DuckPondGame.objWandH *.5f;}
+            else tempx = touchpoint.x;
+            float tempy;
+            if (touchpoint.y -DuckPondGame.objWandH *.5f <= placementarea.getY()) tempy = DuckPondGame.objWandH *.5f + placementarea.getY();
+            else if (touchpoint.y +DuckPondGame.objWandH *.5f >= placementarea.getHeight() + placementarea.getY()) tempy = placementarea.getHeight()+placementarea.getY() - DuckPondGame.objWandH *.5f;
+            else tempy = touchpoint.y;
+
+            tempguy.setPos(new Vector2(tempx - .5f * DuckPondGame.objWandH, tempy - .5f * DuckPondGame.objWandH).sub(EDITOR_OFFSET));
             Message = tempguy.getPos().toString();
         }
         if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
+            Rectangle tempprint = new Rectangle(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y +EDITOR_OFFSET.y, DuckPondGame.objWandH, DuckPondGame.objWandH);
+            
+            if ((tempguy.getObjtype().equals("Duck") || tempguy.getObjtype().equals("Shark")) && tempprint.overlaps(playarea))
+            {
+                Message = "Sharks and ducks must start outside viewing area";
+            }
+            else if ((tempguy.getObjtype().equals("Lily")) && !playarea.contains(tempprint))
+            {
+                Message = "Lilies must be placed in play area";
+            }
+            else {
+                ready2confirm = true;
+                Message = "Press confirm when ready";
+            }
+        }
+        if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
+        {
             getVel = true;
             if (tempguy.getObjtype().equals("Lily")) {getVel = false; getT = true;}
             getPos = false;
+            ready2confirm = false;
         }
     }
 
     public void ChooseVel()
     {
-        Message = "Set Velocity by \nreleasing click \nnext to char";
+        Message = "Set Velocity by releasing touch";
         temppos.set(tempguy.getPos());
         if (in.isTouched()) {
             touchpoint.set(in.getTouchpoint());
@@ -327,16 +357,22 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (!in.isTouched() && !tempvel.isZero()) //vel was set
         {
+            ready2confirm = true;
+            Message = "Press confirm when ready";
+        }
+        if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
+        {
             tempguy.setVel(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE));
             getVel = false;
-            getT = true; //add confirm here(press velocity confirm button?)
+            getT = true;
+            ready2confirm = false;
         }
     }
 
     public void ChooseT()
     {
         tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
-        Message = "Drag slider\npress confirm \nfor SpawnTime\n" + Float.toString(tempt2s);
+        Message = "Drag slider and press confirm for SpawnTime: " + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
@@ -349,7 +385,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             gettingT = false;
         }
-        if (in.justTouched() && Taccept.contains(touchpoint))
+        if (in.justTouched() && Confirm.contains(touchpoint))
         {
             if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
             tempguy.setTime2spawn(tempt2s);
@@ -389,12 +425,12 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseD()
     {
-        if (tempducks ==0) Message = "Use arrows to \nadjust #ducklings\n (0 now)";
+        if (tempducks ==0) Message = "Use arrows to adjust #ducklings: (0 now)";
         else Message = Integer.toString(tempducks) + " ducklings";
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched() && Dup.contains(touchpoint) && tempducks<15) tempducks++;
         if (in.justTouched() && Ddown.contains(touchpoint) && tempducks>0) tempducks--;
-        if (in.justTouched() && Daccept.contains(touchpoint))
+        if (in.justTouched() && Confirm.contains(touchpoint))
         {
             tempguy.setNumducks(tempducks);
             spawnables.add(tempguy);
@@ -452,7 +488,7 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TtimeUp.getX() - 1.0f*TtimeUp.getWidth(), TtimeUp.getY());
         Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f*LivesUp.getWidth(), LivesUp.getY());
         Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
-        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), Tslider.getX(), Tslider.getY() + 1.5f* Tknob.getHeight());
+        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), Tslider.getX(), Tslider.getY() + 1.5f * Tknob.getHeight());
         game.batch.end();
 
 
@@ -466,10 +502,9 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
         shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
         shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        shapeRenderer.rect(Taccept.getX(), Taccept.getY(), Taccept.getWidth(), Taccept.getHeight());
+        shapeRenderer.rect(Confirm.getX(), Confirm.getY(), Confirm.getWidth(), Confirm.getHeight());
         shapeRenderer.rect(Dup.getX(), Dup.getY(), Dup.getWidth(), Dup.getHeight());
         shapeRenderer.rect(Ddown.getX(), Ddown.getY(), Ddown.getWidth(), Ddown.getHeight());
-        shapeRenderer.rect(Daccept.getX(), Daccept.getY(), Daccept.getWidth(), Daccept.getHeight());
         shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
         shapeRenderer.rect(TtimeUp.getX(), TtimeUp.getY(), TtimeUp.getWidth(), TtimeUp.getHeight());
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
