@@ -27,7 +27,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_H = 110;
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
-    public static final float VELOCITY_INPUT_SCALE = .35f;
+    public static final float VELOCITY_INPUT_SCALE = .7f;
     
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -323,7 +323,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
             Rectangle tempprint = new Rectangle(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y +EDITOR_OFFSET.y, DuckPondGame.objWandH, DuckPondGame.objWandH);
-            
+
             if ((tempguy.getObjtype().equals("Duck") || tempguy.getObjtype().equals("Shark")) && tempprint.overlaps(playarea))
             {
                 Message = "Sharks and ducks must start outside viewing area";
@@ -348,12 +348,12 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseVel()
     {
-        Message = "Set Velocity by releasing touch";
-        temppos.set(tempguy.getPos());
-        if (in.isTouched()) {
-            touchpoint.set(in.getTouchpoint());
-            tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET));
-            Message = tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).toString() + "\nSpeed:" + Float.toString(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE).len());
+        Message = "Drag arrow to set Velocity";
+        temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
+        touchpoint.set(in.getTouchpoint());
+        if (in.isTouched() && placementarea.contains(touchpoint)) {
+            tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 200));
+            Message = tempvel.toString() + "\nSpeed:" + Float.toString(tempvel.len());
         }
         if (!in.isTouched() && !tempvel.isZero()) //vel was set
         {
@@ -362,7 +362,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
         {
-            tempguy.setVel(tempvel.cpy().sub(temppos).scl(VELOCITY_INPUT_SCALE));
+            tempguy.setVel(tempvel.cpy());
             getVel = false;
             getT = true;
             ready2confirm = false;
@@ -510,7 +510,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(EDITOR_OFFSET));
+        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(temppos).add(EDITOR_OFFSET));
 
         shapeRenderer.end();
     }
