@@ -27,10 +27,44 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_W = 300; //not exact yet
     public static final int SAVE_H = 110;
 
+    public static final int LOWER_AREA_HEIGHT = 308;
+    public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
+
+    public static final int CHARACTER_BUTTON_X = 55;
+    public static final int CHARACTER_BUTTON_Y = 1920 -1737;
+    public static final int CHARACTER_BUTTON_S = 150;
+    public static final int TRASH_AND_CONFIRM_X = 800;
+    public static final int CONFIRM_Y = 50;
+
+    public static final int LOWER_AREA_BUTTON_W = 250;
+    public static final int LOWER_AREA_BUTTON_H = 100;
+
+    public static final int TSLIDER_X = 100;
+    public static final int TSLIDER_W = 650;
+    public static final int TSLIDER_H = 20;
+    public static final int TSLIDER_Y = CONFIRM_Y + LOWER_AREA_BUTTON_H/2 - TSLIDER_H/2;
+    public static final int TKNOB_W = 96;
+    public static final int TKNOB_H = 96;
+
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_X = 515;
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_Y = 1920-1750;
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_W = 96;
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_H = 60;
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_XS = 150;
+    public static final int LEVEL_TIME_AND_LIVES_BUTTON_YS = 80;
+
+    public static final int LIVES_DISPLAY_X = 700;
+    public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
+    public static final int LIVES_DISPLAY_S = 125;
+
+    public static final int TIME_DISPLAY_X = 700;
+    public static final int TIME_DISPLAY_Y = 1780;
+
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .7f;
     public static final float SPRITE_ALPHA_BEFORE_SPAWN = .2f;
     public static final int MAX_DUCKLINGS = 10;
+    public static final int MAX_LIVES =3;
     
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -77,6 +111,8 @@ public class LevelScreen2 extends ScreenAdapter
 
     Rectangle playarea;
     Rectangle placementarea;
+    Rectangle upperarea;
+    Rectangle lowerarea;
 
     Sprite duckSprite;
     Sprite sharkSprite;
@@ -103,9 +139,12 @@ public class LevelScreen2 extends ScreenAdapter
         lives = 3;
         time = 60;
 
-        ducks = new Rectangle(60, 1920 - 1641, 96, 96);
-        sharks = new Rectangle(200, 1920 - 1641, 96, 96);
-        lillies = new Rectangle(350, 1920-1641, 96, 96);
+        playarea = new Rectangle(EDITOR_OFFSET.x, EDITOR_OFFSET.y, DuckPondGame.worldW, DuckPondGame.worldH);
+        lowerarea = new Rectangle(0, 0, DuckPondGame.highresScreenW, LOWER_AREA_HEIGHT);
+        placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.worldW + 4*DuckPondGame.objWandH, DuckPondGame.worldH + 4*DuckPondGame.objWandH);
+        ducks = new Rectangle(CHARACTER_BUTTON_X, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
+        sharks = new Rectangle(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
+        lillies = new Rectangle(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
 
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
         savebutt = new Rectangle(SAVE_X, SAVE_Y, SAVE_W, SAVE_H);
@@ -113,18 +152,16 @@ public class LevelScreen2 extends ScreenAdapter
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
         Message = "heerp";
-        Tknob = new Rectangle(22,1920-1800, 96, 96);
-        Tslider = new Rectangle(0, 0, 790, 1920-1777);
-        Confirm = new Rectangle(810, 1920 - 1886, 300, 110);
+        Tknob = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
+        Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
+        Confirm = new Rectangle(TRASH_AND_CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
         ducklingNumber = new Rectangle[10];
         for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(918, 1920-400 - 96 *i,96, 96 );}
-        trashbutt = new Rectangle(794,1920-1746, 250, 100);
-        TtimeUp = new Rectangle(400f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        TtimeDown = new Rectangle(400f/640f * Options.screenWidth, .075f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        LivesUp = new Rectangle(500f/640f   * Options.screenWidth, .15f  * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        LivesDown = new Rectangle(500f/640f * Options.screenWidth, .074f * Options.screenHeight, Options.spriteWidth, Options.spriteHeight);
-        playarea = new Rectangle(EDITOR_OFFSET.x, EDITOR_OFFSET.y, DuckPondGame.worldW, DuckPondGame.worldH);
-        placementarea = new Rectangle(0, 308, 1080, 1304);
+        trashbutt = new Rectangle(TRASH_AND_CONFIRM_X,CHARACTER_BUTTON_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
+        TtimeUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
+        TtimeDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
+        LivesUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X +LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
+        LivesDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X + LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
 
         defaultstate = true;
         getD = false;
@@ -165,7 +202,7 @@ public class LevelScreen2 extends ScreenAdapter
             }
             if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
             if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
-            if (LivesUp.contains(touchpoint) && lives <5) lives++;
+            if (LivesUp.contains(touchpoint) && lives <MAX_LIVES) lives++;
             if (LivesDown.contains(touchpoint) && lives >1) lives--;
             if (Tknob.contains(touchpoint) && defaultstate)
             {
@@ -374,15 +411,13 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseT()
     {
-        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
+        updateTempt2s();
         Message = "Drag slider and press confirm for SpawnTime: " + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
         {
-            {Tknob.setX(touchpoint.x);}//clamp
-            if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
-            if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
+            slideKnob();
         }
         if (gettingT && !in.isTouched())
         {
@@ -408,15 +443,13 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void adjustGlobalT()
     {
-        tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;
+        updateTempt2s();
         Message = "Time:" + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
         {
-            {Tknob.setX(touchpoint.x);}//clamp
-            if (touchpoint.x < Tslider.x) {Tknob.setX(Tslider.x);}
-            if (touchpoint.x > (Tslider.x +Tslider.getWidth())) {Tknob.setX(Tslider.x +Tslider.getWidth());}
+            slideKnob();
         }
         if (gettingT && !in.isTouched())
         {
@@ -426,7 +459,14 @@ public class LevelScreen2 extends ScreenAdapter
         }
     }
 
-    public void updateTempt2s() {tempt2s = ((Tknob.getX()-Tslider.getX())/Tslider.getWidth()) * time;}
+    public void updateTempt2s() {tempt2s = ((Tknob.getX()+Tknob.getWidth()*.5f-Tslider.getX())/Tslider.getWidth()) * time;}
+
+    public void slideKnob()
+    {
+        Tknob.setX(touchpoint.x - Tknob.getWidth() *.5f);
+        if (touchpoint.x< Tslider.x) Tknob.setX(Tslider.x - Tknob.getWidth()*.5f);
+        if (touchpoint.x> (Tslider.x +Tslider.getWidth())) Tknob.setX(Tslider.x +Tslider.getWidth() - Tknob.getWidth()*.5f);
+    }
 
     public void ChooseD()
     {
@@ -469,11 +509,13 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditLowerArea, 0, 0);
         game.batch.draw(Assets.LevelEditOutsidePlacement, 0, 308);
         game.batch.draw(Assets.LevelEditGameplayArea, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
-        game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
         game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
+        game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
+        game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
+        game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
         game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
         game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
         game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
@@ -513,12 +555,21 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
 
         game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
+        switch (lives)
+        {
+            case 3:
+                game.batch.draw(Assets.LevelEditLives,LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+            case 2:
+                game.batch.draw(Assets.LevelEditLives,LIVES_DISPLAY_X + LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+            case 1:
+                game.batch.draw(Assets.LevelEditLives, LIVES_DISPLAY_X, LIVES_DISPLAY_Y);
+            case 0:
+                break;
+        }
 
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
-        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TtimeUp.getX() - 1.0f*TtimeUp.getWidth(), TtimeUp.getY());
-        Assets.font.draw(game.batch, "Lives: " + Integer.toString(lives), LivesUp.getX() - .5f * LivesUp.getWidth(), LivesUp.getY());
-        Assets.font.draw(game.batch, "Save", savebutt.getX(), savebutt.getY() + .5f * savebutt.getHeight());
-        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), Tslider.getX(), Tslider.getY() + 1.5f * Tknob.getHeight());
+        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TIME_DISPLAY_X, TIME_DISPLAY_Y);
+        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), TIME_DISPLAY_X, TIME_DISPLAY_Y - 60);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i+1), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         game.batch.end();
 

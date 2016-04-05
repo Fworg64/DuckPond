@@ -39,6 +39,7 @@ public class Assets
     public static Texture LevelEditShark;
     public static Texture LevelEditTimeBar;
     public static Texture LevelEditUpperArea;
+    public static Texture LevelEditLives;
 
     public static Texture LevelSelectionBackground;
 
@@ -192,6 +193,7 @@ public class Assets
         LevelEditLily = new Texture(Gdx.files.internal("leveledit\\lily.png"));
         LevelEditLOAD = new Texture(Gdx.files.internal("leveledit\\LOAD.png"));
         LevelEditLowerArea = new Texture(Gdx.files.internal("leveledit\\lowerarea.png"));
+        LevelEditLives = new Texture(Gdx.files.internal("leveledit\\lives.png"));
         LevelEditOutsidePlacement = new Texture(Gdx.files.internal("leveledit\\outsideplacement.png"));
         LevelEditRemoveItem = new Texture(Gdx.files.internal("leveledit\\REMOVEITEM.png"));
         LevelEditSave = new Texture(Gdx.files.internal("leveledit\\SAVE.png"));
