@@ -276,8 +276,8 @@ public class LevelScreen2 extends ScreenAdapter
             tInput.showKeyboard();
             tempChar = tInput.pollChar();
             if (tempChar != '\0') filename += tempChar;
-            
-            Message = filename;
+
+            Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
             if (tInput.enterJustPressed())
             {
@@ -398,7 +398,7 @@ public class LevelScreen2 extends ScreenAdapter
             }
             else {
                 ready2confirm = true;
-                Message = "Press confirm when ready";
+                Message = "Press confirm when you like the position";
             }
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
@@ -422,7 +422,7 @@ public class LevelScreen2 extends ScreenAdapter
         if (!in.isTouched() && !tempvel.isZero()) //vel was set
         {
             ready2confirm = true;
-            Message = "Press confirm when ready";
+            Message = "Press confirm when Velocity is set";
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
         {
@@ -438,6 +438,7 @@ public class LevelScreen2 extends ScreenAdapter
         updateTempt2s();
         Message = "Drag slider and press confirm for SpawnTime: " + Float.toString(tempt2s);
         touchpoint.set(in.getTouchpoint());
+        if (!in.isTouched()) ready2confirm = true;
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
         {
