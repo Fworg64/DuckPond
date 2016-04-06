@@ -17,15 +17,11 @@ import com.badlogic.gdx.utils.Array;
  */
 public class LevelScreen2 extends ScreenAdapter
 {
-    public static final int EXIT_X = 732;//bottom left corner of button
-    public static final int EXIT_Y = 1920-136;
-    public static final int EXIT_W = 300; //not exact yet
-    public static final int EXIT_H = 110;
-
-    public static final int SAVE_X = 24;
-    public static final int SAVE_Y = 1920-136;
-    public static final int SAVE_W = 300; //not exact yet
-    public static final int SAVE_H = 110;
+    public static final int TOPBUTTONS_X = 90;
+    public static final int TOPBUTTONS_Y = 1920-136;
+    public static final int TOPBUTTONS_W = 200;
+    public static final int TOPBUTTONS_H = 110;
+    public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
@@ -67,10 +63,11 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int MAX_LIVES =3;
     
     DuckPondGame game; //from example
+    TextInput tInput;
     OrthographicCamera gcam; //camera
-    FileHandle dafile;
     InputListener in;
     Vector2 touchpoint;
+
     boolean defaultstate;
     boolean getPos;
     boolean getVel;
@@ -80,11 +77,12 @@ public class LevelScreen2 extends ScreenAdapter
     boolean choiceDestroy;
     boolean globalTAdjust;
     boolean ready2confirm;
+    boolean savefile;
 
     boolean wasHighres;
     Rectangle exitbutt;
+    Rectangle loadbutt;
     Rectangle savebutt;
-    Rectangle trashbutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -99,6 +97,7 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle Tknob;
     Rectangle Tslider;
     Rectangle Confirm;
+    Rectangle trashbutt;
     Rectangle[] ducklingNumber;
     Rectangle TtimeUp;
     Rectangle TtimeDown;
@@ -117,6 +116,10 @@ public class LevelScreen2 extends ScreenAdapter
     Sprite duckSprite;
     Sprite sharkSprite;
 
+    FileHandle customDIR;
+    FileHandle currfile;
+    String filename;
+
     private ShapeRenderer shapeRenderer;
 
     public LevelScreen2(DuckPondGame game)
@@ -125,10 +128,11 @@ public class LevelScreen2 extends ScreenAdapter
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
+        tInput = new TextInput();
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
-        gcam.position.set(DuckPondGame.highresScreenW*.5f, DuckPondGame.highresScreenH*.5f, 0); //high res mode but assets at stdres for zoomout
+        gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
 
-        if (Gdx.app.getType() != Application.ApplicationType.WebGL) dafile = Gdx.files.local("LEVELS\\test.txt");
+        if (Gdx.app.getType() != Application.ApplicationType.WebGL) customDIR = Gdx.files.local("LEVELS\\CUSTOM\\");
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
@@ -146,8 +150,9 @@ public class LevelScreen2 extends ScreenAdapter
         sharks = new Rectangle(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
         lillies = new Rectangle(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
 
-        exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
-        savebutt = new Rectangle(SAVE_X, SAVE_Y, SAVE_W, SAVE_H);
+        exitbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
+        loadbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
+        savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -172,6 +177,9 @@ public class LevelScreen2 extends ScreenAdapter
         choiceDestroy = false;
         globalTAdjust = false;
         ready2confirm = false;
+        savefile = false;
+
+        filename ="";
 
         duckSprite = new Sprite(Assets.LevelEditDuck);
         sharkSprite = new Sprite(Assets.LevelEditShark);
@@ -189,7 +197,15 @@ public class LevelScreen2 extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
-            if (savebutt.contains(touchpoint)) return 2;
+            if (savebutt.contains(touchpoint))
+            {
+                if (defaultstate == true)
+                {
+                    savefile = true;
+                    defaultstate = false;
+                }
+
+            }
             if (trashbutt.contains(touchpoint))
             {
                 if (defaultstate){
@@ -226,6 +242,8 @@ public class LevelScreen2 extends ScreenAdapter
         {ChooseD();}
         if (globalTAdjust)
         {adjustGlobalT();}
+        if (savefile)
+        {savefile();}
 
         return 0;
     }
@@ -245,27 +263,37 @@ public class LevelScreen2 extends ScreenAdapter
                 else Options.setStdres();
                 game.setScreen(new MainMenuScreen(game));
                 break;
-            case 2:
-                Gdx.app.debug("screenstate", "save");
-                savefile();
-                break;
-
         }
         draw();
     }
 
-    public int savefile()
+    public void savefile()
     {
+        //get a name
+        char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            dafile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
-            for (Spawnable s: spawnables)
-            {
-                dafile.writeString(s.toString() + '\n', true);
-            }
+            tInput.showKeyboard();
+            tempChar = tInput.pollChar();
+            if (tempChar != '\0') filename += tempChar;
+            
+            Message = filename;
 
-            Options.setCustom1(dafile.readString());
-            Options.save();
+            if (tInput.enterJustPressed())
+            {
+                if (!filename.isEmpty())
+                {
+                    currfile = Gdx.files.local(customDIR.path() + '\\' + filename);
+                    currfile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
+                    for (Spawnable s : spawnables) {
+                        currfile.writeString(s.toString() + '\n', true);
+                    }
+                }
+
+                savefile = false;
+                defaultstate = true;
+                tInput.hideKeyboard();
+            }
         }
         else
         {
@@ -278,10 +306,6 @@ public class LevelScreen2 extends ScreenAdapter
             Options.setCustom1(temp);
             Options.save();
         }
-
-        Message = "file saved.\n" + Integer.toString(spawnables.size);
-
-        return 0;
     }
 
     public void DestroyCurrent()
@@ -515,6 +539,7 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.begin();
         game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
         game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
+        game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
         game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
         game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
         game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
@@ -578,6 +603,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         //draw detection bounds here for debugging
         shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
+        shapeRenderer.rect(loadbutt.getX(), loadbutt.getY(), loadbutt.getWidth(), loadbutt.getHeight());
         shapeRenderer.rect(savebutt.getX(), savebutt.getY(), savebutt.getWidth(), savebutt.getHeight());
         shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
         shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
