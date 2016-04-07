@@ -50,10 +50,11 @@ public class LevelSelectionScreen extends ScreenAdapter
         mainMenubutt = new Rectangle(10f/640f * Options.screenWidth, 800f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
 
         customlevelbutt = new Rectangle(100f/640f * Options.screenWidth, 150f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
-        levelbutts = new Rectangle[3];
+        levelbutts = new Rectangle[4];
         levelbutts[0] = new Rectangle(100f/640f * Options.screenWidth, 600f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts[1] = new Rectangle(250f/640f * Options.screenWidth, 450f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
         levelbutts[2] = new Rectangle(100f/640f * Options.screenWidth, 300f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
+        levelbutts[3] = new Rectangle(250f/640f * Options.screenWidth, 150f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
     }
