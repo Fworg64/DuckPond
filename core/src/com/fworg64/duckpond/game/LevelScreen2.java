@@ -82,7 +82,6 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int MAX_LIVES =3;
     
     DuckPondGame game; //from example
-    TextInput tInput;
     OrthographicCamera gcam; //camera
     InputListener in;
     Vector2 touchpoint;
@@ -150,7 +149,6 @@ public class LevelScreen2 extends ScreenAdapter
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
-        tInput = new TextInput();
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
 
@@ -314,13 +312,14 @@ public class LevelScreen2 extends ScreenAdapter
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            tInput.showKeyboard();
-            tempChar = tInput.pollChar();
+            in.showKeyboard();
+            tempChar = in.pollChar();
             if (tempChar != '\0') filename += tempChar;
+            else if (in.backspaceJustPressed() && filename.length() >0) filename = filename.substring(0, filename.length() -1);
 
             Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
-            if (tInput.enterJustPressed())
+            if (in.enterJustPressed())
             {
                 if (!filename.isEmpty())
                 {
@@ -333,7 +332,7 @@ public class LevelScreen2 extends ScreenAdapter
 
                 savefile = false;
                 defaultstate = true;
-                tInput.hideKeyboard();
+                in.hideKeyboard();
             }
         }
         else
