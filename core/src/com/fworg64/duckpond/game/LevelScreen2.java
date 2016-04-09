@@ -191,7 +191,6 @@ public class LevelScreen2 extends ScreenAdapter
             for (int j=0; j<LEVEL_LOAD_R;j++)
             {
                 loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
-                Gdx.app.debug(Integer.toString(i*(LEVEL_LOAD_R) + j), loadlevelbuttons[i*LEVEL_LOAD_C + j].toString());
             }
         }
         trashbutt = new Rectangle(TRASH_AND_CONFIRM_X,CHARACTER_BUTTON_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
