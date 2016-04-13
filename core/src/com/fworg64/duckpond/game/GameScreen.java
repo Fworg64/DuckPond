@@ -70,6 +70,7 @@ public class GameScreen extends ScreenAdapter
     private Rectangle GOLrestart;
 
     private float gameoverRunTime;
+    private boolean GAMEOVERMUSICFLAG;
 
 
     GameScreen(DuckPondGame game, String level)
@@ -77,7 +78,7 @@ public class GameScreen extends ScreenAdapter
         this.game = game;
         this.mas = game.mas;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
-        gcam.position.set(Options.screenWidth *.5f, Options.screenHeight *.5f, 0); //give ourselves a nice little camera
+        gcam.position.set(Options.screenWidth * .5f, Options.screenHeight * .5f, 0); //give ourselves a nice little camera
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
@@ -122,6 +123,7 @@ public class GameScreen extends ScreenAdapter
 
         isPaused = false;
         isMuted = game.mas.isMuted;
+        GAMEOVERMUSICFLAG = true;
 
         showConfirmRestart = false;
         showConfirmExit = false;
@@ -274,6 +276,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopSfx();
                         game.mas.playGameMusic();
                         showConfirmRestart = false;
+                        GAMEOVERMUSICFLAG = true;
                     }
                     if ((showConfirmExit || showConfirmRestart) && confirmNo.contains(screenIn.getTouchpoint())&& screenIn.justTouched())
                     {
@@ -282,8 +285,13 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMLOSE:
-                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
-                    mas.playGameOverMusic();
+                    if (GAMEOVERMUSICFLAG)
+                    {
+                        if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                        mas.playGameOverMusic();
+                        GAMEOVERMUSICFLAG = false;
+                    }
+
                     if (GOLLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         mas.stopCurrMusic();
@@ -309,10 +317,14 @@ public class GameScreen extends ScreenAdapter
                     }
                     break;
                 case GMVICTORY:
-                    if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
-                    mas.playVictoryMusic();
-                    if (GOVLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
+                    if (GAMEOVERMUSICFLAG)
                     {
+                        if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
+                        mas.playVictoryMusic();
+                        GAMEOVERMUSICFLAG = false;
+                    }
+
+                    if (GOVLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) {
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
                         game.setScreen(new LevelSelectionScreen(game));
