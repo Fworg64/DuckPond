@@ -28,6 +28,11 @@ public class LevelSelectionScreen extends ScreenAdapter
     public final static int LEVEL_LOAD_R =3;
     public final static int LEVEL_LOAD_C =2;
 
+    int LEVEL_X;
+    int LEVEL_Y;
+    int LEVEL_W;
+    int LEVEL_H;
+
     public int UP_ONE_X;
     public int UP_ONE_Y;
     public int UP_ONE_W;
@@ -58,8 +63,11 @@ public class LevelSelectionScreen extends ScreenAdapter
     Rectangle upone;
     Rectangle pageleftbutt;
     Rectangle pagerightbutt;
+    Rectangle leveleditbutt;
 
     Rectangle mainMenubutt;
+
+    boolean leveleditPressed;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -71,6 +79,9 @@ public class LevelSelectionScreen extends ScreenAdapter
             LEVEL_LOAD_H = 200;
             LEVEL_LOAD_XS = 300;
             LEVEL_LOAD_YS = 300;
+
+            LEVEL_X = (int)(800f/1080f* Options.screenWidth);
+            LEVEL_Y = (int)((1- 1762f/1920f)* Options.screenHeight);
 
             UP_ONE_X = 700;
             UP_ONE_Y = 1920 - 1500;
@@ -92,6 +103,8 @@ public class LevelSelectionScreen extends ScreenAdapter
             LEVEL_LOAD_H = 100;
             LEVEL_LOAD_XS = 150;
             LEVEL_LOAD_YS = 150;
+            LEVEL_X = (int)(500f/640f* Options.screenWidth);
+            LEVEL_Y = (int)((1-846f/960f)* Options.screenHeight);
             UP_ONE_X = 400;
             UP_ONE_Y = 960 - 700;
             UP_ONE_W = 100;
@@ -104,6 +117,9 @@ public class LevelSelectionScreen extends ScreenAdapter
             PAGE_W = 100;
             PAGE_H = 100;
         }
+
+        LEVEL_W = (int)(165f/640f * Options.screenWidth);
+        LEVEL_H = (int)(156f/960f * Options.screenHeight);
 
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -137,6 +153,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         upone = new Rectangle(UP_ONE_X, UP_ONE_Y, UP_ONE_W, UP_ONE_H);
         pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y, PAGE_W, PAGE_H);
         pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y, PAGE_W, PAGE_H);
+        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
+        leveleditPressed = false;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
     }
@@ -166,7 +184,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (Gdx.app.getType() != Application.ApplicationType.WebGL)
             {
-                levelDir = Gdx.files.internal("LEVELS\\" + CUSTOM_FOLDER_NAME);
+                levelDir = Gdx.files.local("LEVELS\\" + CUSTOM_FOLDER_NAME);
                 levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
             }
             else game.setScreen(new GameScreen(game, Options.getCustom1()));
@@ -200,6 +218,12 @@ public class LevelSelectionScreen extends ScreenAdapter
                 levels.remove(0);
             }
         }
+        if (leveleditbutt.contains(touchpoint) && in.justTouched()) leveleditPressed = true;
+        if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
+        if (leveleditPressed && !in.isTouched())
+        {
+            game.setScreen(new LevelScreen2(game));
+        }
     }
 
     public void draw()
@@ -216,6 +240,7 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.batch.enableBlending();
         game.batch.begin();
+        game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
         Assets.font.draw(game.batch, "Return to MainMenu", mainMenubutt.getX(), mainMenubutt.getY());
         Assets.font.draw(game.batch, "Custom Level", customlevelbutt.getX(), customlevelbutt.getY());
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++) Assets.font.draw(game.batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY());
@@ -229,6 +254,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         shapeRenderer.rect(upone.getX(), upone.getY(), upone.getWidth(), upone.getHeight());
         shapeRenderer.rect(pageleftbutt.getX(), pageleftbutt.getY(), pageleftbutt.getWidth(), pageleftbutt.getHeight());
         shapeRenderer.rect(pagerightbutt.getX(), pagerightbutt.getY(), pagerightbutt.getWidth(), pagerightbutt.getHeight());
+        shapeRenderer.rect(leveleditbutt.getX(), leveleditbutt.getY(), leveleditbutt.getWidth(), leveleditbutt.getHeight());
         shapeRenderer.end();
     }
 

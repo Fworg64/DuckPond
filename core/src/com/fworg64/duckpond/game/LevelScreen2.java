@@ -299,7 +299,7 @@ public class LevelScreen2 extends ScreenAdapter
                 Options.loadOptions();
                 if (wasHighres) Options.setHighres();
                 else Options.setStdres();
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(new LevelSelectionScreen(game));
                 break;
         }
         draw();
@@ -360,6 +360,9 @@ public class LevelScreen2 extends ScreenAdapter
         if (buttpressed >=0 && buttpressed <loadlevelbuttons.length)
         {
             //button pressed, load corresponidng file
+            //first clear current file
+
+            spawnables = new Array<Spawnable>();
             if (buttpressed < customfiles.length)
             {
                 String levelstring = customfiles[buttpressed].readString();
