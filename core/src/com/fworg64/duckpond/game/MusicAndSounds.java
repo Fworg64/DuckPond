@@ -43,6 +43,7 @@ public class MusicAndSounds
         gameOverMusic.setVolume(musicVol);
 
         victoryMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_ElectroIsland.mp3"));
+        gameOverMusic.setLooping(true);
         victoryMusic.setVolume(musicVol);
 
         currMusic = mainmenuloop;
