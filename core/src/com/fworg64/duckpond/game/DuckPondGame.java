@@ -34,7 +34,7 @@ public class DuckPondGame extends Game {
 	public static int highresScreenW = 1080;
 	public static int highresScreenH = 1920;
 
-	public static final String version = "v0.0.7a";
+	public static final String version = "v0.0.9a";
 
 	public SpriteBatch batch;
     public MusicAndSounds mas;

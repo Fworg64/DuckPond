@@ -30,10 +30,6 @@ public class MainMenuScreen extends ScreenAdapter
     int PLAY_Y;
     int PLAY_W;
     int PLAY_H;
-    int LEVEL_X;
-    int LEVEL_Y;
-    int LEVEL_W;
-    int LEVEL_H;
     int OPTIONS_X;
     int OPTIONS_Y;
     int OPTIONS_W;
@@ -56,11 +52,9 @@ public class MainMenuScreen extends ScreenAdapter
     Rectangle playbutt;
     Rectangle optionbutt;
     Rectangle exitbutt;
-    Rectangle leveleditbutt;
 
     boolean playPressed;
     boolean optionsPressed;
-    boolean leveleditPressed;
     boolean exitPressed;
 
     public MainMenuScreen (DuckPondGame game)
@@ -69,8 +63,6 @@ public class MainMenuScreen extends ScreenAdapter
         {
             PLAY_X = (int)(220f/1080f* Options.screenWidth);
             PLAY_Y = (int)((1- 1226f/1920f)* Options.screenHeight);
-            LEVEL_X = (int)(427f/1080f* Options.screenWidth);
-            LEVEL_Y = (int)((1- 1562f/1920f)* Options.screenHeight);
             OPTIONS_X = (int)(80f/1080f* Options.screenWidth);
             OPTIONS_Y = (int)((1- 1665f/1920f)* Options.screenHeight);
             EXIT_X = (int)(820/1080f* Options.screenWidth);
@@ -82,8 +74,6 @@ public class MainMenuScreen extends ScreenAdapter
         {
             PLAY_X = (int)(130f/640f* Options.screenWidth);
             PLAY_Y = (int)((1- 684f/960f)* Options.screenHeight);
-            LEVEL_X = (int)(258f/640f* Options.screenWidth);
-            LEVEL_Y = (int)((1-846f/960f)* Options.screenHeight);
             OPTIONS_X = (int)(50f/640f* Options.screenWidth);
             OPTIONS_Y = (int)((1-875f/960f)* Options.screenHeight);
             EXIT_X = (int)(478f/640f* Options.screenWidth);
@@ -94,8 +84,6 @@ public class MainMenuScreen extends ScreenAdapter
 
         PLAY_W = (int)(380f/640f * Options.screenWidth);
         PLAY_H = (int)(114f/960f * Options.screenHeight);
-        LEVEL_W = (int)(165f/640f * Options.screenWidth);
-        LEVEL_H = (int)(156f/960f * Options.screenHeight);
         OPTIONS_W = (int)(154f/640f * Options.screenWidth);
         OPTIONS_H = (int)(63f/960f * Options.screenHeight);
         EXIT_W = (int)(91f/640f * Options.screenWidth);
@@ -113,11 +101,9 @@ public class MainMenuScreen extends ScreenAdapter
 
         playbutt = new Rectangle(PLAY_X, PLAY_Y, PLAY_W, PLAY_H);
         optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H);
-        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
         exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
 
         playPressed = false;
-        leveleditPressed = false;
         optionsPressed = false;
         exitPressed = false;
 
@@ -140,13 +126,6 @@ public class MainMenuScreen extends ScreenAdapter
         {
             game.setScreen(new LevelSelectionScreen(game));
             return 2;
-        }
-        if (leveleditbutt.contains(touchpoint) && in.justTouched()) leveleditPressed = true;
-        if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
-        if (leveleditPressed && !in.isTouched())
-        {
-            game.setScreen(new LevelScreen2(game));
-            return 1;
         }
         if (optionbutt.contains(touchpoint) && in.justTouched()) optionsPressed = true;
         if (optionsPressed && !optionbutt.contains(touchpoint)) optionsPressed = false;
@@ -182,7 +161,6 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.begin();
         game.batch.draw(Assets.MainMenuTitle, TITTLE_X, TITTLE_Y);
         game.batch.draw(playPressed ? Assets.MainMenuPlayPressed : Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
-        game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
         game.batch.draw(optionsPressed ? Assets.MainMenuOptionsPressed : Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
         game.batch.draw(exitPressed ? Assets.MainMenuExitPressed : Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
         Assets.font.draw(game.batch, DuckPondGame.version, 0, 100);
@@ -191,7 +169,6 @@ public class MainMenuScreen extends ScreenAdapter
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(playbutt.getX(), playbutt.getY(), playbutt.getWidth(), playbutt.getHeight());
-        shapeRenderer.rect(leveleditbutt.getX(), leveleditbutt.getY(), leveleditbutt.getWidth(), leveleditbutt.getHeight());
         shapeRenderer.rect(optionbutt.getX(), optionbutt.getY(), optionbutt.getWidth(), optionbutt.getHeight());
         shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
         shapeRenderer.end();

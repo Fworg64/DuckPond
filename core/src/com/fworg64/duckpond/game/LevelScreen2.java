@@ -82,7 +82,6 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int MAX_LIVES =3;
     
     DuckPondGame game; //from example
-    TextInput tInput;
     OrthographicCamera gcam; //camera
     InputListener in;
     Vector2 touchpoint;
@@ -150,7 +149,6 @@ public class LevelScreen2 extends ScreenAdapter
         Options.setStdres();
         Assets.levelEditLoad();
         this.game = game;
-        tInput = new TextInput();
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
 
@@ -186,14 +184,13 @@ public class LevelScreen2 extends ScreenAdapter
         Tknob = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
         Confirm = new Rectangle(TRASH_AND_CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
-        ducklingNumber = new Rectangle[MAX_DUCKLINGS +1];
+        ducklingNumber = new Rectangle[MAX_DUCKLINGS];
         for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H );}
         loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
             for (int j=0; j<LEVEL_LOAD_R;j++)
             {
                 loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
-                Gdx.app.debug(Integer.toString(i*(LEVEL_LOAD_R) + j), loadlevelbuttons[i*LEVEL_LOAD_C + j].toString());
             }
         }
         trashbutt = new Rectangle(TRASH_AND_CONFIRM_X,CHARACTER_BUTTON_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
@@ -302,7 +299,7 @@ public class LevelScreen2 extends ScreenAdapter
                 Options.loadOptions();
                 if (wasHighres) Options.setHighres();
                 else Options.setStdres();
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(new LevelSelectionScreen(game));
                 break;
         }
         draw();
@@ -314,13 +311,14 @@ public class LevelScreen2 extends ScreenAdapter
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            tInput.showKeyboard();
-            tempChar = tInput.pollChar();
+            in.showKeyboard();
+            tempChar = in.pollChar();
             if (tempChar != '\0') filename += tempChar;
+            else if (in.backspaceJustPressed() && filename.length() >0) filename = filename.substring(0, filename.length() -1);
 
             Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
-            if (tInput.enterJustPressed())
+            if (in.enterJustPressed())
             {
                 if (!filename.isEmpty())
                 {
@@ -333,7 +331,7 @@ public class LevelScreen2 extends ScreenAdapter
 
                 savefile = false;
                 defaultstate = true;
-                tInput.hideKeyboard();
+                in.hideKeyboard();
             }
         }
         else
@@ -362,6 +360,9 @@ public class LevelScreen2 extends ScreenAdapter
         if (buttpressed >=0 && buttpressed <loadlevelbuttons.length)
         {
             //button pressed, load corresponidng file
+            //first clear current file
+
+            spawnables = new Array<Spawnable>();
             if (buttpressed < customfiles.length)
             {
                 String levelstring = customfiles[buttpressed].readString();
