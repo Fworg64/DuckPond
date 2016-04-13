@@ -64,7 +64,6 @@ public class GameScreen extends ScreenAdapter
     private Rectangle restartbutt;
     private Rectangle confirmYes;
     private Rectangle confirmNo;
-    private Rectangle GOVnextLevel;
     private Rectangle GOVLevelSelection;
     private Rectangle GOLLevelSelection;
     private Rectangle GOLrestart;
@@ -237,11 +236,13 @@ public class GameScreen extends ScreenAdapter
         }
         else
         {
-            game.mas.pauseCurrMusic();
+            //game.mas.pauseCurrMusic();
             switch (menu)
             {
                 case PAUSEMENU:
                     game.mas.pauseSfx();
+                    game.mas.pauseCurrMusic();
+                    Gdx.app.debug("PAUSE","MENU");
                     if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmExit || showConfirmRestart))
                     {
                         isPaused = false;
@@ -287,6 +288,7 @@ public class GameScreen extends ScreenAdapter
                 case GMLOSE:
                     if (GAMEOVERMUSICFLAG)
                     {
+                        Gdx.app.debug("MUSIC", "STOPCURR + PLAY GO");
                         if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                         mas.playGameOverMusic();
                         GAMEOVERMUSICFLAG = false;
@@ -308,6 +310,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopSfx();
                         game.mas.playGameMusic();
                         isPaused = false;
+                        GAMEOVERMUSICFLAG = true;
                     }
                     if (gameoverRunTime>0)
                     {
@@ -319,6 +322,7 @@ public class GameScreen extends ScreenAdapter
                 case GMVICTORY:
                     if (GAMEOVERMUSICFLAG)
                     {
+                        Gdx.app.debug("MUSIC", "STOPCURR + PLAY VICT");
                         if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                         mas.playVictoryMusic();
                         GAMEOVERMUSICFLAG = false;

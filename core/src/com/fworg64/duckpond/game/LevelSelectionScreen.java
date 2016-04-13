@@ -156,7 +156,11 @@ public class LevelSelectionScreen extends ScreenAdapter
         leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
         leveleditPressed = false;
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
+        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        {
+            Gdx.app.debug("AD","LEVELSELETCSHOW");
+            this.game.adStateListener.ShowBannerAd();
+        }
     }
 
     public void update()
