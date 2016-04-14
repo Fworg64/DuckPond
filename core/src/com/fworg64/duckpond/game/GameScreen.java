@@ -199,7 +199,7 @@ public class GameScreen extends ScreenAdapter
                     //touched the world
                     touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
                                         touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
-                    Gdx.app.debug("ToCUH", touchpointWorld.toString());
+                    //Gdx.app.debug("ToCUH", touchpointWorld.toString());
 
                 }
             }
@@ -209,22 +209,30 @@ public class GameScreen extends ScreenAdapter
                 //register swipe
                 beingswiped = true;
                 swipestart.set(touchpointWorld.x, touchpointWorld.y);
+                Gdx.app.debug("SWIPESTART",swipestart.toString());
             }
             else if (screenIn.isTouched() && beingswiped ==true) //swipe in progess
             {
                 swipeend.set(touchpointWorld.x, touchpointWorld.y);
+                if (swipeend.cpy().sub(swipestart).len() >=Options.spriteWidth*.7)
+                {
+                    Gdx.app.debug("SWIPECUT", swipestart.toString() + '\n' + swipeend.toString());
+                    beingswiped = false;
+                    swiperegistered = true;
+                }
             }
             else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over
             {
                 beingswiped = false;
                 swiperegistered = true;
+                Gdx.app.debug("SWIPEEND", swipeend.toString());
             }
 
             if (swiperegistered)
             {
                 world.update(delta, swipestart, swipeend);
                 swiperegistered = false;
-                Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
+                Gdx.app.debug("Swipe Registered", swipestart.toString() + '\n' + swipeend.toString() + '\n' + Float.toString(swipeend.cpy().sub(swipestart).len2()));
             } else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
             if ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed())
@@ -242,7 +250,6 @@ public class GameScreen extends ScreenAdapter
                 case PAUSEMENU:
                     game.mas.pauseSfx();
                     game.mas.pauseCurrMusic();
-                    Gdx.app.debug("PAUSE","MENU");
                     if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmExit || showConfirmRestart))
                     {
                         isPaused = false;
@@ -288,7 +295,6 @@ public class GameScreen extends ScreenAdapter
                 case GMLOSE:
                     if (GAMEOVERMUSICFLAG)
                     {
-                        Gdx.app.debug("MUSIC", "STOPCURR + PLAY GO");
                         if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                         mas.playGameOverMusic();
                         GAMEOVERMUSICFLAG = false;

@@ -80,40 +80,40 @@ public class LevelSelectionScreen extends ScreenAdapter
             LEVEL_LOAD_XS = 300;
             LEVEL_LOAD_YS = 300;
 
-            LEVEL_X = (int)(800f/1080f* Options.screenWidth);
-            LEVEL_Y = (int)((1- 1762f/1920f)* Options.screenHeight);
+            LEVEL_X = 700;
+            LEVEL_Y = 200;
 
-            UP_ONE_X = 700;
-            UP_ONE_Y = 1920 - 1500;
+            UP_ONE_X = 600;
+            UP_ONE_Y = 1920 - 1600;
             UP_ONE_W = 200;
             UP_ONE_H = 200;
 
             PAGE_RIGHT_X = 650;
-            PAGE_RIGHT_Y = 1920 - 1700;
+            PAGE_RIGHT_Y = 1920 - 1600;
             PAGE_LEFT_X = 50;
-            PAGE_LEFT_Y = 1920 - 1700;
+            PAGE_LEFT_Y = 1920 - 1600;
             PAGE_W = 200;
             PAGE_H = 200;
         }
         else
         {
-            LEVEL_LOAD_X = 100;
-            LEVEL_LOAD_Y = 960 -250;
+            LEVEL_LOAD_X = 150;
+            LEVEL_LOAD_Y = 960 -300;
             LEVEL_LOAD_W = 100;
             LEVEL_LOAD_H = 100;
             LEVEL_LOAD_XS = 150;
             LEVEL_LOAD_YS = 150;
-            LEVEL_X = (int)(500f/640f* Options.screenWidth);
-            LEVEL_Y = (int)((1-846f/960f)* Options.screenHeight);
+            LEVEL_X = 500;
+            LEVEL_Y = 200;
             UP_ONE_X = 400;
-            UP_ONE_Y = 960 - 700;
+            UP_ONE_Y = 160;
             UP_ONE_W = 100;
             UP_ONE_H = 100;
 
-            PAGE_RIGHT_X = 400;
-            PAGE_RIGHT_Y = 960 - 800;
-            PAGE_LEFT_X = 300;
-            PAGE_LEFT_Y = 960 -800;
+            PAGE_RIGHT_X = 200;
+            PAGE_RIGHT_Y = 160;
+            PAGE_LEFT_X = 20;
+            PAGE_LEFT_Y = 160;
             PAGE_W = 100;
             PAGE_H = 100;
         }
@@ -247,6 +247,9 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
         Assets.font.draw(game.batch, "Return to MainMenu", mainMenubutt.getX(), mainMenubutt.getY());
         Assets.font.draw(game.batch, "Custom Level", customlevelbutt.getX(), customlevelbutt.getY());
+        Assets.font.draw(game.batch, "PageLeft", pageleftbutt.getX(), pageleftbutt.getY());
+        Assets.font.draw(game.batch, "Pageright", pagerightbutt.getX(), pagerightbutt.getY());
+        Assets.font.draw(game.batch, "Up1", upone.getX(), upone.getY());
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++) Assets.font.draw(game.batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY());
         game.batch.end();
 
