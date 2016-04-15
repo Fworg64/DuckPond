@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 public class GameScreen extends ScreenAdapter
 {
     public final static float TIME_TO_RUN_AFTER_GAMEOVER_LOSE = 3.0f;
+    public final static float SWYPE_FADE_TIME = .5f;
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
     DuckPondGame game;
     OrthographicCamera gcam;
@@ -46,7 +47,9 @@ public class GameScreen extends ScreenAdapter
     public boolean swiperegistered;
     public Vector2 swipestart;
     public Vector2 swipeend;
-    String swipedebug;
+    public Vector2[] swipedraw;
+    boolean drawswipe;
+    float timeswipedrawn;
 
     private boolean isPaused;
     private boolean isMuted;
@@ -137,6 +140,9 @@ public class GameScreen extends ScreenAdapter
         swiperegistered = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
+        swipedraw = new Vector2[4];
+        drawswipe = false;
+        timeswipedrawn =0;
 
         if (Options.highres)
         {
@@ -209,19 +215,34 @@ public class GameScreen extends ScreenAdapter
                 //register swipe
                 beingswiped = true;
                 swipestart.set(touchpointWorld.x, touchpointWorld.y);
-                Gdx.app.debug("SWIPESTART",swipestart.toString());
+                Gdx.app.debug("SWIPESTART", swipestart.toString());
             }
             else if (screenIn.isTouched() && beingswiped ==true) //swipe in progess
             {
                 swipeend.set(touchpointWorld.x, touchpointWorld.y);
-                if (swipeend.cpy().sub(swipestart).len() >=Options.spriteWidth*.7)
+                if (swipeend.cpy().sub(swipestart).len() >=Options.spriteWidth*.7) //swipe over, long enough
                 {
                     Gdx.app.debug("SWIPECUT", swipestart.toString() + '\n' + swipeend.toString());
                     beingswiped = false;
                     swiperegistered = true;
                 }
+                swipedraw[0] = swipestart.cpy();
+                swipedraw[3] = swipeend.cpy();
+                Vector2 tmp = swipestart.cpy().lerp(swipeend, .875f); // point between begining and end
+                Vector2 othertmp = tmp.cpy().sub(swipeend); //one of the wings, ish
+                swipedraw[1] = new Vector2(tmp.x - othertmp.y, tmp.y + othertmp.x);
+                swipedraw[2] = new Vector2(tmp.x + othertmp.y, tmp.y - othertmp.x);
+                if (Options.highres)
+                {
+                    for (int i=0;i<swipedraw.length;i++)
+                    {
+                        swipedraw[i].scl(DuckPondGame.highresworldscaler);
+                    }
+                }
+                drawswipe = true;
+                timeswipedrawn =0;
             }
-            else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over
+            else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over, user terminated
             {
                 beingswiped = false;
                 swiperegistered = true;
@@ -344,7 +365,7 @@ public class GameScreen extends ScreenAdapter
         }
     }
 
-    public void draw()
+    public void draw(float delta)
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(1, 0, 0, 1);
@@ -393,6 +414,22 @@ public class GameScreen extends ScreenAdapter
             game.batch.end();
         }
 
+        if (drawswipe)
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(.2f, .5f, .5f, (1f - (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME)));
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[1].x, swipedraw[1].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[2].x, swipedraw[2].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.end();
+            timeswipedrawn +=delta;
+            if (timeswipedrawn >= SWYPE_FADE_TIME)
+            {
+                drawswipe = false;
+                timeswipedrawn =0;
+            }
+        }
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
@@ -426,6 +463,6 @@ public class GameScreen extends ScreenAdapter
     public void render (float delta)
     {
         update(delta);
-        draw();
+        draw(delta);
     }
 }
