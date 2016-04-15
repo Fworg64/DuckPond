@@ -26,6 +26,7 @@ public class GameScreen extends ScreenAdapter
 {
     public final static float TIME_TO_RUN_AFTER_GAMEOVER_LOSE = 3.0f;
     public final static float SWYPE_FADE_TIME = .5f;
+    public final static float SWYPE_ARROW_SCALE = 1.6f;
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
     DuckPondGame game;
     OrthographicCamera gcam;
@@ -232,13 +233,15 @@ public class GameScreen extends ScreenAdapter
                 Vector2 othertmp = tmp.cpy().sub(swipeend); //one of the wings, ish
                 swipedraw[1] = new Vector2(tmp.x - othertmp.y, tmp.y + othertmp.x);
                 swipedraw[2] = new Vector2(tmp.x + othertmp.y, tmp.y - othertmp.x);
-                if (Options.highres)
-                {
-                    for (int i=0;i<swipedraw.length;i++)
+                Vector2 thirdtemp = swipedraw[0].cpy().scl(SWYPE_ARROW_SCALE).sub(swipestart);
+                if (Options.highres) swipedraw[0].scl(SWYPE_ARROW_SCALE);
+                for (int i=1;i<swipedraw.length;i++)
                     {
-                        swipedraw[i].scl(DuckPondGame.highresworldscaler);
+                        swipedraw[i].scl(SWYPE_ARROW_SCALE);
+                        if (!Options.highres) swipedraw[i].sub(thirdtemp);
                     }
-                }
+
+
                 drawswipe = true;
                 timeswipedrawn =0;
             }

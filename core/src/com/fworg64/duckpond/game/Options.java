@@ -42,6 +42,7 @@ public class Options
                     "0.0 Duck (-62.0,-16.0) (44.1,56.0) 7\n" +
                     "0.0 Shark (38.0,512.0) (14.7,-44.8) 0\n" +
                     "0.0 Lily (134.0,16.0) (0.0,0.0) 0\n");
+            prefs.flush();
         }
         isDefault = prefs.getBoolean("isDefault");
         sfxVol = prefs.getFloat("sfxVol");
