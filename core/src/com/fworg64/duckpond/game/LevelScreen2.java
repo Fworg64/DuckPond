@@ -596,7 +596,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             if (in.justTouched() && ducklingNumber[i].contains(touchpoint))
             {
-                tempducks = i+1;
+                tempducks = i;
                 ready2confirm = true;
             }
         }
@@ -690,7 +690,7 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
         Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TIME_DISPLAY_X, TIME_DISPLAY_Y);
         Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), TIME_DISPLAY_X, TIME_DISPLAY_Y - 60);
-        if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i+1), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
+        if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
             if (i<customfiles.length) Assets.font.draw(game.batch, customfiles[i].name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
         }

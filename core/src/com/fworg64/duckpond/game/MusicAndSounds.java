@@ -43,6 +43,7 @@ public class MusicAndSounds
         gameOverMusic.setVolume(musicVol);
 
         victoryMusic = Gdx.audio.newMusic(Gdx.files.internal("SOUNDS\\Ragga_ElectroIsland.mp3"));
+        gameOverMusic.setLooping(true);
         victoryMusic.setVolume(musicVol);
 
         currMusic = mainmenuloop;
@@ -84,10 +85,7 @@ public class MusicAndSounds
     public void playGameMusic()
     {
         gamemusic.setVolume(musicVol);
-        if (!gamemusic.isPlaying())
-        {
-            gamemusic.play();
-        }
+        gamemusic.play();
         currMusic = gamemusic;
         currSong = CurrSong.GAME;
     }
@@ -95,10 +93,7 @@ public class MusicAndSounds
     public void playVictoryMusic()
     {
         victoryMusic.setVolume(musicVol);
-        if (!victoryMusic.isPlaying())
-        {
-            victoryMusic.play();
-        }
+        victoryMusic.play();
         currMusic = victoryMusic;
         currSong = CurrSong.VICTORY;
     }

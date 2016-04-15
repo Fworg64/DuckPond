@@ -59,7 +59,8 @@ public class AndroidLauncher extends AndroidApplication {
 
         adStateListener = new DuckPondGame.DuckPondGameAdStateListener() {
             private boolean adIsShown = false;
-            AdRequest.Builder adRequestBuilder = new AdRequest.Builder().addTestDevice("5CDB4729D058AB52762E6860D99F5C8E");
+            //AdRequest.Builder adRequestBuilder = new AdRequest.Builder().addTestDevice("5CDB4729D058AB52762E6860D99F5C8E"); //poor turbo
+            AdRequest.Builder adRequestBuilder = new AdRequest.Builder().addTestDevice("2B6AEF8CC87F54F168BF638279B53CFD");
 
             @Override
             public void ShowBannerAd() {

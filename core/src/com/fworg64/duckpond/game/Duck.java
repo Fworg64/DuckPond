@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class Duck
 {
-    public static final float rotConst = .03f; //constant for adjusting rotation speed
+    public static final float rotConst = .020f; //constant for adjusting rotation speed
     public static final float ducklingDistConst = 4000;
     public enum State {SWIMMING, PADDING, PAD, EATEN, DEAD}; //mainly used for animation
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
@@ -82,8 +82,8 @@ public class Duck
         if (dtheta !=0)
         {
             vel.rotate(dtheta * rotConst * vel.len()); //velocity is constant-ish in magnitude
-            if (vel.dot(flickedinto) / (vel.len()*flickedinto.len()) > .9997) dtheta =0; //if the vectors are close enough in angle, no more turning
-            //A dot B = mag(A)*mag(B)*cos(T) : the .9998 gives us +/- 1.40 deg of indifference (cos^-1())
+            if (vel.dot(flickedinto) / (vel.len()*flickedinto.len()) > .9993) dtheta =0; //if the vectors are close enough in angle, no more turning
+            //A dot B = mag(A)*mag(B)*cos(T) : the .9997 gives us +/- 1.40 deg of indifference (cos^-1())
             //if the .999X is too close to 1, the duck gets confused...
         }
         if (state == State.PADDING)

@@ -25,6 +25,8 @@ import com.badlogic.gdx.math.Vector2;
 public class GameScreen extends ScreenAdapter
 {
     public final static float TIME_TO_RUN_AFTER_GAMEOVER_LOSE = 3.0f;
+    public final static float SWYPE_FADE_TIME = .5f;
+    public final static float SWYPE_ARROW_SCALE = 1.6f;
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
     DuckPondGame game;
     OrthographicCamera gcam;
@@ -46,7 +48,9 @@ public class GameScreen extends ScreenAdapter
     public boolean swiperegistered;
     public Vector2 swipestart;
     public Vector2 swipeend;
-    String swipedebug;
+    public Vector2[] swipedraw;
+    boolean drawswipe;
+    float timeswipedrawn;
 
     private boolean isPaused;
     private boolean isMuted;
@@ -64,7 +68,6 @@ public class GameScreen extends ScreenAdapter
     private Rectangle restartbutt;
     private Rectangle confirmYes;
     private Rectangle confirmNo;
-    private Rectangle GOVnextLevel;
     private Rectangle GOVLevelSelection;
     private Rectangle GOLLevelSelection;
     private Rectangle GOLrestart;
@@ -138,6 +141,9 @@ public class GameScreen extends ScreenAdapter
         swiperegistered = false;
         swipestart = new Vector2();
         swipeend = new Vector2();
+        swipedraw = new Vector2[4];
+        drawswipe = false;
+        timeswipedrawn =0;
 
         if (Options.highres)
         {
@@ -200,7 +206,7 @@ public class GameScreen extends ScreenAdapter
                     //touched the world
                     touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
                                         touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
-                    Gdx.app.debug("ToCUH", touchpointWorld.toString());
+                    //Gdx.app.debug("ToCUH", touchpointWorld.toString());
 
                 }
             }
@@ -210,22 +216,47 @@ public class GameScreen extends ScreenAdapter
                 //register swipe
                 beingswiped = true;
                 swipestart.set(touchpointWorld.x, touchpointWorld.y);
+                Gdx.app.debug("SWIPESTART", swipestart.toString());
             }
             else if (screenIn.isTouched() && beingswiped ==true) //swipe in progess
             {
                 swipeend.set(touchpointWorld.x, touchpointWorld.y);
+                if (swipeend.cpy().sub(swipestart).len() >=Options.spriteWidth*.7) //swipe over, long enough
+                {
+                    Gdx.app.debug("SWIPECUT", swipestart.toString() + '\n' + swipeend.toString());
+                    beingswiped = false;
+                    swiperegistered = true;
+                }
+                swipedraw[0] = swipestart.cpy();
+                swipedraw[3] = swipeend.cpy();
+                Vector2 tmp = swipestart.cpy().lerp(swipeend, .875f); // point between begining and end
+                Vector2 othertmp = tmp.cpy().sub(swipeend); //one of the wings, ish
+                swipedraw[1] = new Vector2(tmp.x - othertmp.y, tmp.y + othertmp.x);
+                swipedraw[2] = new Vector2(tmp.x + othertmp.y, tmp.y - othertmp.x);
+                Vector2 thirdtemp = swipedraw[0].cpy().scl(SWYPE_ARROW_SCALE).sub(swipestart);
+                if (Options.highres) swipedraw[0].scl(SWYPE_ARROW_SCALE);
+                for (int i=1;i<swipedraw.length;i++)
+                    {
+                        swipedraw[i].scl(SWYPE_ARROW_SCALE);
+                        if (!Options.highres) swipedraw[i].sub(thirdtemp);
+                    }
+
+
+                drawswipe = true;
+                timeswipedrawn =0;
             }
-            else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over
+            else if ( !screenIn.isTouched() && beingswiped ==true)//swipe is over, user terminated
             {
                 beingswiped = false;
                 swiperegistered = true;
+                Gdx.app.debug("SWIPEEND", swipeend.toString());
             }
 
             if (swiperegistered)
             {
                 world.update(delta, swipestart, swipeend);
                 swiperegistered = false;
-                Gdx.app.debug("Swipe Registered",swipestart.toString() + '\n'+swipeend.toString());
+                Gdx.app.debug("Swipe Registered", swipestart.toString() + '\n' + swipeend.toString() + '\n' + Float.toString(swipeend.cpy().sub(swipestart).len2()));
             } else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
             if ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed())
@@ -237,11 +268,12 @@ public class GameScreen extends ScreenAdapter
         }
         else
         {
-            game.mas.pauseCurrMusic();
+            //game.mas.pauseCurrMusic();
             switch (menu)
             {
                 case PAUSEMENU:
                     game.mas.pauseSfx();
+                    game.mas.pauseCurrMusic();
                     if (unpausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched() && !(showConfirmExit || showConfirmRestart))
                     {
                         isPaused = false;
@@ -308,6 +340,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopSfx();
                         game.mas.playGameMusic();
                         isPaused = false;
+                        GAMEOVERMUSICFLAG = true;
                     }
                     if (gameoverRunTime>0)
                     {
@@ -319,6 +352,7 @@ public class GameScreen extends ScreenAdapter
                 case GMVICTORY:
                     if (GAMEOVERMUSICFLAG)
                     {
+                        Gdx.app.debug("MUSIC", "STOPCURR + PLAY VICT");
                         if (mas.currSong == MusicAndSounds.CurrSong.GAME) mas.stopCurrMusic();
                         mas.playVictoryMusic();
                         GAMEOVERMUSICFLAG = false;
@@ -334,7 +368,7 @@ public class GameScreen extends ScreenAdapter
         }
     }
 
-    public void draw()
+    public void draw(float delta)
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(1, 0, 0, 1);
@@ -383,6 +417,22 @@ public class GameScreen extends ScreenAdapter
             game.batch.end();
         }
 
+        if (drawswipe)
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(.2f, .5f, .5f, (1f - (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME)));
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[1].x, swipedraw[1].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[2].x, swipedraw[2].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.end();
+            timeswipedrawn +=delta;
+            if (timeswipedrawn >= SWYPE_FADE_TIME)
+            {
+                drawswipe = false;
+                timeswipedrawn =0;
+            }
+        }
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
@@ -416,6 +466,6 @@ public class GameScreen extends ScreenAdapter
     public void render (float delta)
     {
         update(delta);
-        draw();
+        draw(delta);
     }
 }
