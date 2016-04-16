@@ -68,9 +68,9 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_TIME_AND_LIVES_BUTTON_XS = 150;
     public static final int LEVEL_TIME_AND_LIVES_BUTTON_YS = 80;
 
-    public static final int LIVES_DISPLAY_X = 700;
+    public static final int LIVES_DISPLAY_X = 725;
     public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
-    public static final int LIVES_DISPLAY_S = 125;
+    public static final int LIVES_DISPLAY_S = 106;
 
     public static final int TIME_DISPLAY_X = 700;
     public static final int TIME_DISPLAY_Y = 1780;
@@ -169,7 +169,7 @@ public class LevelScreen2 extends ScreenAdapter
 
         playarea = new Rectangle(EDITOR_OFFSET.x, EDITOR_OFFSET.y, DuckPondGame.worldW, DuckPondGame.worldH);
         lowerarea = new Rectangle(0, 0, DuckPondGame.highresScreenW, LOWER_AREA_HEIGHT);
-        placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.worldW + 4*DuckPondGame.objWandH, DuckPondGame.worldH + 4*DuckPondGame.objWandH);
+        placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.highresScreenW, DuckPondGame.highresScreenH-LOWER_AREA_HEIGHT-UPPER_AREA_HEIGHT);
         ducks = new Rectangle(CHARACTER_BUTTON_X, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
         sharks = new Rectangle(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
         lillies = new Rectangle(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
@@ -621,13 +621,10 @@ public class LevelScreen2 extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        game.batch.disableBlending();
+        game.batch.enableBlending();
         game.batch.begin();
         //draw background image here
-        game.batch.draw(Assets.LevelEditUpperArea, 0, 1920-308);
-        game.batch.draw(Assets.LevelEditLowerArea, 0, 0);
-        game.batch.draw(Assets.LevelEditOutsidePlacement, 0, 308);
-        game.batch.draw(Assets.LevelEditGameplayArea, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
+        game.batch.draw(Assets.LevelEditMapa, 0, 0);
         game.batch.end();
 
         game.batch.enableBlending();
