@@ -60,8 +60,8 @@ public class Spawnable
     public void setNumducks(int n) {numducks = n;}
     public void setObjtype(String s) {objtype = s;}
     public String getObjtype() {return objtype;}
-    public Vector2 getVel() {return vel;}
-    public Vector2 getPos() {return pos;}
+    public Vector2 getVel() {return vel.cpy();}
+    public Vector2 getPos() {return pos.cpy();}
     public float getTime2spawn() {return time2spawn;}
     public String toString()
     {

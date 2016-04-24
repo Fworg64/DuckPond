@@ -7,6 +7,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.FloatFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -424,8 +425,8 @@ public class LevelScreen2 extends ScreenAdapter
         {
             for (Spawnable s: spawnables)
             {
-                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn()) *time;
-                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn()) *time;
+                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
+                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
                     if (touchpoint.x<(del_X + Options.spriteWidth) && touchpoint.x > del_X) //x matches
                     {
                         if (touchpoint.y<(del_Y + Options.spriteHeight) && touchpoint.y > del_Y)//y matches
