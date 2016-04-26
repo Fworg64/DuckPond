@@ -614,7 +614,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
     }
 
-    public void draw() //fyotb
+    public void draw()
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(.27451f, .70588f, .83922f, 1);
@@ -666,7 +666,6 @@ public class LevelScreen2 extends ScreenAdapter
                     duckSprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
                     duckSprite.draw(game.batch);
                 }
-                //if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily, render_X, render_Y);
             }
         }
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());

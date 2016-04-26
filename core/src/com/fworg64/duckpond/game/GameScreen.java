@@ -75,6 +75,7 @@ public class GameScreen extends ScreenAdapter
     private float gameoverRunTime;
     private boolean GAMEOVERMUSICFLAG;
 
+    private boolean saydegeat;
 
     GameScreen(DuckPondGame game, String level)
     {
@@ -95,6 +96,8 @@ public class GameScreen extends ScreenAdapter
         touchpointWorld = new Vector2();
         clock =0;
 
+        saydegeat = true;
+
         listener = new World.WorldListener() //interface object?
         {
             @Override
@@ -110,7 +113,7 @@ public class GameScreen extends ScreenAdapter
             {
                 isPaused = true;
                 menu = Menus.GMLOSE;
-                Gdx.app.debug("gamestate", "DEGEAT");
+                if (saydegeat) {Gdx.app.debug("gamestate", "DEGEAT");saydegeat = false;}
             }
 
             @Override

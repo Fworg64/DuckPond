@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class Duck
 {
     public static final float rotConst = .020f; //constant for adjusting rotation speed
-    public static final float ducklingDistConst = 4000;
     public enum State {SWIMMING, PADDING, PAD, EATEN, DEAD}; //mainly used for animation
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
 
@@ -60,7 +59,7 @@ public class Duck
         ducklings = new ArrayList<Duckling>(numDuc);
         for (int i = 0; i < numDuc; i++)
         {
-            ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY()), (int)(ducklingDistConst / vel.len())));
+            ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY())));
         }
 
         swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
@@ -103,7 +102,7 @@ public class Duck
         {
             if (i==0) ducklings.get(i).follow(this.posv);
             else ducklings.get(i).follow(ducklings.get(i-1).posv);
-            ducklings.get(i).update(delta); //while were iterating...
+            ducklings.get(i).update(delta); //while we're iterating...
         }
     }
 
