@@ -35,12 +35,6 @@ public class Duck
 
     ArrayList<Duckling> ducklings;
 
-    private Animation swimUpAnim;
-    private Animation swimSideRightAnim;
-    private Animation swimSideLeftAnim;
-    private Animation swimDownAnim;
-    private Animation padAnim;
-    private Animation eatenAnim;
     public Animation currAnim;
     public Sprite sprite;
     Direction dir;
@@ -62,13 +56,7 @@ public class Duck
             ducklings.add(new Duckling((int)(pos.getX()),(int)(pos.getY())));
         }
 
-        swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
-        swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
-        swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
-        swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
-        padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
-        eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
-        currAnim = swimUpAnim;
+        currAnim = Assets.swimUpAnim;
         dir = Direction.UP;
         sprite = new Sprite(currAnim.getKeyFrame(clock));
 
@@ -136,18 +124,18 @@ public class Duck
         if (state == State.SWIMMING)
         {
 
-            if (ang >=45 && ang <135) {currAnim = swimUpAnim; dir = Direction.UP;}
-            else if (ang >=135 &&  ang <225) {currAnim = swimSideLeftAnim; dir = Direction.LEFT;}
-            else if (ang >=225 && ang <315) {currAnim = swimDownAnim; dir = Direction.DOWN;}
-            else {currAnim = swimSideRightAnim; dir = Direction.RIGHT;}
+            if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
         }
         if (state == State.PAD)
         {
-            currAnim = padAnim;
+            currAnim = Assets.padAnim;
         }
         if (state == State.EATEN)
         {
-            currAnim = eatenAnim;
+            currAnim = Assets.eatenAnim;
             if (currAnim.isAnimationFinished(clock))
             {
                 state = State.DEAD;

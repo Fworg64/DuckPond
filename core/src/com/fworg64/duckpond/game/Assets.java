@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -83,6 +84,12 @@ public class Assets
     public static Array<TextureRegion> duckSwimSideLeftFrames;
     public static Array<TextureRegion> duckPadFrames;
     public static Array<TextureRegion> duckEatenFrames;
+    public static Animation swimUpAnim;
+    public static Animation swimSideRightAnim;
+    public static Animation swimSideLeftAnim;
+    public static Animation swimDownAnim;
+    public static Animation padAnim;
+    public static Animation eatenAnim;
 
     private static Texture shark;
     private static TextureRegion[][] sharkframes;
@@ -90,11 +97,15 @@ public class Assets
     private static TextureRegion[] sharkEat;
     public static Array<TextureRegion> sharkSwimFrames;
     public static Array<TextureRegion> sharkEatFrames;
+    public static Animation eatAnim;
+    public static Animation swimAnim;
 
     private static Texture lily;
     private static TextureRegion[][] lilyframes;
     private static TextureRegion[] lilyRot;
     public static Array<TextureRegion> lilyRotFrames;
+    public static Animation padRot;
+
 
     static String res;
 
@@ -184,11 +195,18 @@ public class Assets
         }
         duckPadFrames = new Array<TextureRegion>(duckPad);
         duckEatenFrames = new Array<TextureRegion>(duckEaten);
+        swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
+        padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
+        eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
 
         lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
         lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
+        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
 
         shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
@@ -196,6 +214,8 @@ public class Assets
         sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
         sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
         sharkEatFrames = new Array<TextureRegion>(sharkEat);
+        swimAnim = new Animation(.2f, Assets.sharkSwimFrames, Animation.PlayMode.LOOP);
+        eatAnim = new Animation(.2f, Assets.sharkEatFrames, Animation.PlayMode.NORMAL);
 
     }
     public static void dispose_gamescreen()

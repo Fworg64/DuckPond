@@ -53,7 +53,7 @@ public class WorldRenderer
         batch.begin();
         if (!Options.highres)
         {
-            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY());
+            for (Lily laura: world.pads) batch.draw(Assets.padRot.getKeyFrame(clock), laura.pos.getX(), laura.pos.getY());
             for (Duck fred: world.ducks)
             {
                 fred.sprite.draw(batch);
@@ -67,7 +67,7 @@ public class WorldRenderer
         }
         else
         {
-            for (Lily laura: world.pads) batch.draw(laura.padRot.getKeyFrame(clock), laura.pos.getX()*DuckPondGame.highresworldscaler, laura.pos.getY()*DuckPondGame.highresworldscaler);
+            for (Lily laura: world.pads) batch.draw(Assets.padRot.getKeyFrame(clock), laura.pos.getX()*DuckPondGame.highresworldscaler, laura.pos.getY()*DuckPondGame.highresworldscaler);
             for (Duck fred: world.ducks)
             {
                 fred.sprite.setPosition(fred.pos.getX() *DuckPondGame.highresworldscaler, fred.pos.getY() *DuckPondGame.highresworldscaler);

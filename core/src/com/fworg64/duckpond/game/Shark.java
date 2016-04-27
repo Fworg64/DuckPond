@@ -23,8 +23,6 @@ public class Shark
     Vector2 vel;
     Vector2 posv;
 
-    private Animation eatAnim;
-    private Animation swimAnim;
     public Animation currAnim;
 
     public Shark (float x, float y, float xv, float yv)
@@ -37,9 +35,7 @@ public class Shark
         vel = new Vector2(xv,yv);
         col = new Circle(pos.getX() + .5f* pos.getWidth(),pos.getY() + .5f*pos.getHeight(), .3f* pos.getWidth());
 
-        swimAnim = new Animation(.2f, Assets.sharkSwimFrames, Animation.PlayMode.LOOP);
-        eatAnim = new Animation(.2f, Assets.sharkEatFrames, Animation.PlayMode.NORMAL);
-        currAnim = swimAnim;
+        currAnim = Assets.swimAnim;
     }
 
     public void update(float delta)
@@ -51,11 +47,11 @@ public class Shark
 
         if (state == State.EATING)
         {
-            currAnim = eatAnim;
+            currAnim = Assets.eatAnim;
             if (currAnim.isAnimationFinished(clock))
             {
                 state = State.SWIMMING;
-                currAnim = swimAnim;
+                currAnim = Assets.swimAnim;
             }
         }
     }
