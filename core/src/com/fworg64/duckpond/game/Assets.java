@@ -101,22 +101,34 @@ public class Assets
 
 
 
-    public static void load()
+    public static void load_mainmenu()
     {
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
-
         MainMenuTitle = new Texture(Gdx.files.internal(res + "mainmenu\\title.png"));
         MainMenuPlay = new Texture(Gdx.files.internal(res + "mainmenu\\play.png"));
         MainMenuPlayPressed = new Texture(Gdx.files.internal(res + "mainmenu\\playpressed.png"));
-        MainMenuLevelEditor = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditor.png"));
-        MainMenuLevelEditorPressed = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditorpressed.png"));
         MainMenuOptions = new Texture(Gdx.files.internal(res + "mainmenu\\options.png"));
         MainMenuOptionsPressed = new Texture(Gdx.files.internal(res + "mainmenu\\optionspressed.png"));
         MainMenuExit = new Texture(Gdx.files.internal(res + "mainmenu\\exit.png"));
         MainMenuExitPressed = new Texture(Gdx.files.internal(res + "mainmenu\\exitpressed.png"));
+    }
+    public static void dispose_mainmenu()
+    {
+        MainMenuTitle.dispose();
+        MainMenuPlay.dispose();
+        MainMenuPlayPressed.dispose();
+        MainMenuOptions.dispose();
+        MainMenuOptionsPressed.dispose();
+        MainMenuExit.dispose();
+        MainMenuExitPressed.dispose();
+    }
+
+    public static void load_options()
+    {
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
 
         OptionsMenu = new Texture(Gdx.files.internal(res + "options\\options.png"));
         OptionsMenuSlider = new Texture(Gdx.files.internal(res + "options\\cuadrado.png"));
@@ -124,6 +136,21 @@ public class Assets
         OptionsMenuCheckMark = new Texture(Gdx.files.internal(res + "options\\checkmark.png"));
         OptionsMenuReturnPressed = new Texture(Gdx.files.internal(res + "options\\returnoscuro.png"));
         OptionsMenuCreditsPressed = new Texture(Gdx.files.internal(res + "options\\creditsoscuro.png"));
+    }
+    public static void dispose_options()
+    {
+        OptionsMenu.dispose();
+        OptionsMenuSlider.dispose();
+        OptionsMenuSliderPressed.dispose();
+        OptionsMenuCheckMark.dispose();
+        OptionsMenuReturnPressed.dispose();
+        OptionsMenuCreditsPressed.dispose();
+    }
+
+    public static void load_gamescreen()
+    {
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
 
         GameBackground = new Texture(Gdx.files.internal(res + "gamescreen\\gbkgnd.png"));
 
@@ -131,10 +158,6 @@ public class Assets
         HUDMute = new Texture(Gdx.files.internal(res + "gamescreen\\mute.png"));
         HUDUnmute = new Texture(Gdx.files.internal(res + "gamescreen\\unmute.png"));
         HUDlives = new Texture(Gdx.files.internal(res + "gamescreen\\lives.png"));
-
-
-        LevelSelectionBackground = new Texture(Gdx.files.internal(res + "LevelSelectionBckgnd.png"));
-
         PauseMenu = new Texture(Gdx.files.internal(res + "gamescreen\\pause.png"));
         ShowConfirmExit = new Texture(Gdx.files.internal(res + "gamescreen\\exitconfirm.png"));
         ShowConfirmRestart = new Texture(Gdx.files.internal(res + "gamescreen\\restartconfirm.png"));
@@ -174,11 +197,61 @@ public class Assets
         sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
         sharkEatFrames = new Array<TextureRegion>(sharkEat);
 
-        //no need to dispose of things if we just keep everything in memory the whole time hehe
+    }
+    public static void dispose_gamescreen()
+    {
+        GameBackground.dispose();
+        HUD.dispose();
+        HUDMute.dispose();
+        HUDUnmute.dispose();
+        HUDlives.dispose();
+        PauseMenu.dispose();
+        ShowConfirmExit.dispose();
+        ShowConfirmRestart.dispose();
+        Victory.dispose();
+        Defeat.dispose();
+
+        duck.dispose();
+        lily.dispose();
+        shark.dispose();
+        //not sure what happens to the texture regions... dont touch them after this.
     }
 
-    public static void levelEditLoad()
+    public static void load_levelscreen()
     {
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
+
+        LevelSelectionBackground = new Texture(Gdx.files.internal(res + "LevelSelectionBckgnd.png"));
+        MainMenuLevelEditor = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditor.png"));
+        MainMenuLevelEditorPressed = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditorpressed.png"));
+
+
+    }
+    public static void dispose_levelscreen()
+    {
+        LevelSelectionBackground.dispose();
+        MainMenuLevelEditor.dispose();
+        MainMenuLevelEditorPressed.dispose();
+    }
+
+    public static void load_font()
+    {
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
+
+        font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
+        //no need to dispose of things if we just keep everything in memory the whole time hehe
+    }
+    public static void dispose_font()
+    {
+        font.dispose();
+    }
+
+    public static void load_leveledit()
+    {
+        res = "stdres\\";
+
         font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
         LevelEditMapa = new Texture(Gdx.files.internal("leveledit\\mapa.png"));
         LevelEditClock = new Texture(Gdx.files.internal("leveledit\\RELOJ.png"));
@@ -196,5 +269,21 @@ public class Assets
         LevelEditFlechaDer = new TextureRegion(LevelEditFlechaIzq);
         LevelEditFlechaDer.flip(true, false);
 
+    }
+    public static void dispose_leveledit()
+    {
+        LevelEditMapa.dispose();
+        LevelEditClock.dispose();
+        LevelEditConfirm.dispose();
+        LevelEditDuck.dispose();
+        LevelEditExit.dispose();
+        LevelEditLily.dispose();
+        LevelEditLOAD.dispose();
+        LevelEditLives.dispose();
+        LevelEditRemoveItem.dispose();
+        LevelEditSave.dispose();
+        LevelEditShark.dispose();
+        LevelEditTimeBar.dispose();
+        LevelEditFlechaIzq.dispose();
     }
 }

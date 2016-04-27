@@ -127,12 +127,16 @@ public class OptionsScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (SaveReturn.contains(touchpoint) && in.justTouched()) returnPressed = true;
+        if (SaveReturn.contains(touchpoint) && in.justTouched()) {
+            returnPressed = true;
+            Assets.load_mainmenu();
+        }
         if (returnPressed && !SaveReturn.contains(touchpoint)) returnPressed = false;
         if (returnPressed && !in.isTouched() || in.isBackPressed())
         {
             Options.save();
             game.setScreen(new MainMenuScreen(game));
+            Assets.dispose_options();
         }
         if (CreditsButt.contains(touchpoint) && in.justTouched()) creditsPressed = true;
         if (creditsPressed && !CreditsButt.contains(touchpoint)) creditsPressed = false;

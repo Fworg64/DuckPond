@@ -148,7 +148,6 @@ public class LevelScreen2 extends ScreenAdapter
     {
         wasHighres = Options.isHighres();
         Options.setStdres();
-        Assets.levelEditLoad();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -296,11 +295,13 @@ public class LevelScreen2 extends ScreenAdapter
                 break;
             case 1:
                 Gdx.app.debug("screenstate", "exit");
-                this.dispose();
                 Options.loadOptions();
                 if (wasHighres) Options.setHighres();
                 else Options.setStdres();
+                Assets.load_levelscreen();
                 game.setScreen(new LevelSelectionScreen(game));
+                Assets.dispose_leveledit();
+                this.dispose();
                 break;
         }
         draw();
