@@ -24,7 +24,8 @@ public class Assets
 {
     public static BitmapFont font;
 
-    public static Texture LevelEditMapa;
+    public static Texture LevelEditMapaArriba;
+    public static Texture LevelEditMapaAbajo;
     public static Texture LevelEditClock;
     public static Texture LevelEditConfirm;
     public static Texture LevelEditDuck;
@@ -93,12 +94,21 @@ public class Assets
 
     private static Texture shark;
     private static TextureRegion[][] sharkframes;
-    private static TextureRegion[] sharkSwim;
+    private static TextureRegion[] sharkSwimLeft;
+    //private static TextureRegion[] sharkSwimRight;
+    private static TextureRegion[] sharkSwimUp;
+    private static TextureRegion[] sharkSwimDown;
     private static TextureRegion[] sharkEat;
-    public static Array<TextureRegion> sharkSwimFrames;
+    public static Array<TextureRegion> sharkSwimLeftFrames;
+    public static Array<TextureRegion> sharkSwimRightFrames;
+    public static Array<TextureRegion> sharkSwimUpFrames;
+    public static Array<TextureRegion> sharkSwimDownFrames;
     public static Array<TextureRegion> sharkEatFrames;
-    public static Animation eatAnim;
-    public static Animation swimAnim;
+    public static Animation sharkEatAnim;
+    public static Animation sharkSwimLeftAnim;
+    public static Animation sharkSwimRightAnim;
+    public static Animation sharkSwimUpAnim;
+    public static Animation sharkSwimDownAnim;
 
     private static Texture lily;
     private static TextureRegion[][] lilyframes;
@@ -210,12 +220,26 @@ public class Assets
 
         shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
-        sharkSwim = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
+        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
+        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3]};
+        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2]};
         sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
-        sharkSwimFrames = new Array<TextureRegion>(sharkSwim);
+        sharkSwimLeftFrames = new Array<TextureRegion>(sharkSwimLeft);
+        sharkSwimRightFrames = new Array<TextureRegion>();
+        for (TextureRegion t:sharkSwimLeftFrames)
+        {
+            TextureRegion temp = new TextureRegion(t);
+            temp.flip(true,false);
+            sharkSwimRightFrames.add(temp);
+        }
+        sharkSwimUpFrames = new Array<TextureRegion>(sharkSwimUp);
+        sharkSwimDownFrames = new Array<TextureRegion>(sharkSwimDown);
         sharkEatFrames = new Array<TextureRegion>(sharkEat);
-        swimAnim = new Animation(.2f, Assets.sharkSwimFrames, Animation.PlayMode.LOOP);
-        eatAnim = new Animation(.2f, Assets.sharkEatFrames, Animation.PlayMode.NORMAL);
+        sharkSwimLeftAnim = new Animation(.2f, sharkSwimLeftFrames, Animation.PlayMode.LOOP);
+        sharkSwimRightAnim = new Animation(.2f, sharkSwimRightFrames, Animation.PlayMode.LOOP);
+        sharkSwimUpAnim = new Animation(.2f, sharkSwimUpFrames, Animation.PlayMode.LOOP);
+        sharkSwimDownAnim = new Animation(.2f, sharkSwimDownFrames, Animation.PlayMode.LOOP);
+        sharkEatAnim = new Animation(.2f, Assets.sharkEatFrames, Animation.PlayMode.NORMAL);
 
     }
     public static void dispose_gamescreen()
@@ -273,7 +297,8 @@ public class Assets
         res = "stdres\\";
 
         font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
-        LevelEditMapa = new Texture(Gdx.files.internal("leveledit\\mapa.png"));
+        LevelEditMapaArriba = new Texture(Gdx.files.internal("leveledit\\mapaarriba.png"));
+        LevelEditMapaAbajo = new Texture(Gdx.files.internal("leveledit\\mapaabajo.png"));
         LevelEditClock = new Texture(Gdx.files.internal("leveledit\\RELOJ.png"));
         LevelEditConfirm = new Texture(Gdx.files.internal("leveledit\\CONFIRM.png"));
         LevelEditDuck = new Texture(Gdx.files.internal("leveledit\\duck.png"));
@@ -289,10 +314,60 @@ public class Assets
         LevelEditFlechaDer = new TextureRegion(LevelEditFlechaIzq);
         LevelEditFlechaDer.flip(true, false);
 
+        GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
+
+        duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
+        duckframes = TextureRegion.split(duck, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
+        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
+        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
+        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        //duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
+        duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
+        duckSwimSideRightFrames = new Array<TextureRegion>(duckSwimSideRight);
+        duckSwimSideLeftFrames = new Array<TextureRegion>();
+        for (TextureRegion t:duckSwimSideRightFrames)
+        {
+            TextureRegion temp = new TextureRegion(t);
+            temp.flip(true,false);
+            duckSwimSideLeftFrames.add(temp);
+        }
+        swimUpAnim = new Animation(.2f, Assets.duckSwimUpFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
+        swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
+
+        shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
+        sharkframes = TextureRegion.split(shark, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
+        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
+        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3]};
+        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2]};
+        sharkSwimLeftFrames = new Array<TextureRegion>(sharkSwimLeft);
+        sharkSwimRightFrames = new Array<TextureRegion>();
+        for (TextureRegion t:sharkSwimLeftFrames)
+        {
+            TextureRegion temp = new TextureRegion(t);
+            temp.flip(true,false);
+            sharkSwimRightFrames.add(temp);
+        }
+        sharkSwimUpFrames = new Array<TextureRegion>(sharkSwimUp);
+        sharkSwimDownFrames = new Array<TextureRegion>(sharkSwimDown);
+        sharkSwimLeftAnim = new Animation(.2f, sharkSwimLeftFrames, Animation.PlayMode.LOOP);
+        sharkSwimRightAnim = new Animation(.2f, sharkSwimRightFrames, Animation.PlayMode.LOOP);
+        sharkSwimUpAnim = new Animation(.2f, sharkSwimUpFrames, Animation.PlayMode.LOOP);
+        sharkSwimDownAnim = new Animation(.2f, sharkSwimDownFrames, Animation.PlayMode.LOOP);
+
+        lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
+        lilyframes = TextureRegion.split(lily, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
+        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
+        lilyRotFrames = new Array<TextureRegion>(lilyRot);
+        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
     }
     public static void dispose_leveledit()
     {
-        LevelEditMapa.dispose();
+        GameBackground.dispose();
+        LevelEditMapaArriba.dispose();
+        LevelEditMapaAbajo.dispose();
         LevelEditClock.dispose();
         LevelEditConfirm.dispose();
         LevelEditDuck.dispose();
@@ -305,5 +380,8 @@ public class Assets
         LevelEditShark.dispose();
         LevelEditTimeBar.dispose();
         LevelEditFlechaIzq.dispose();
+        duck.dispose();
+        shark.dispose();
+        lily.dispose();
     }
 }

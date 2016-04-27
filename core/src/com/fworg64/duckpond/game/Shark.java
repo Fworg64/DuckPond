@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Shark
 {
     public enum State {SWIMMING, EATING};
+    public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
+
 
     State state;
     public float clock;
@@ -24,6 +27,8 @@ public class Shark
     Vector2 posv;
 
     public Animation currAnim;
+    public Sprite sprite;
+    public Direction dir;
 
     public Shark (float x, float y, float xv, float yv)
     {
@@ -35,7 +40,10 @@ public class Shark
         vel = new Vector2(xv,yv);
         col = new Circle(pos.getX() + .5f* pos.getWidth(),pos.getY() + .5f*pos.getHeight(), .3f* pos.getWidth());
 
-        currAnim = Assets.swimAnim;
+        currAnim = Assets.sharkSwimLeftAnim;
+        dir = Direction.LEFT;
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
+
     }
 
     public void update(float delta)
@@ -47,13 +55,13 @@ public class Shark
 
         if (state == State.EATING)
         {
-            currAnim = Assets.eatAnim;
+            currAnim = Assets.sharkEatAnim;
             if (currAnim.isAnimationFinished(clock))
             {
                 state = State.SWIMMING;
-                currAnim = Assets.swimAnim;
             }
         }
+        setSprite();
     }
 
     public void eatDuck(Duck duck)
@@ -65,6 +73,25 @@ public class Shark
     public  String toString(){
         String s = "x: " + pos.x + " y: " + pos.y + " velocity: " + " velocity x: " + this.vel.x + " velocity y: " + this.vel.y + "\n";
         return s;
+    }
+
+    private void setSprite()
+    {
+        float ang = vel.angle();
+        if (state == State.SWIMMING)
+        {
+
+            if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
+        }
+        sprite = new Sprite(currAnim.getKeyFrame(clock));
+        sprite.setPosition(pos.getX(), pos.getY());
+        sprite.setOriginCenter();
+        if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+        if (dir == Direction.RIGHT && vel.angle() <90) sprite.setRotation(ang*.3f);
+        if (dir == Direction.RIGHT && vel.angle() >270) sprite.setRotation((ang-360)*.3f +360);
     }
 
 }
