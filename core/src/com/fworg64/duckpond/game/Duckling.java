@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class Duckling
 {
-    public static final int ducklingDistConst = 50; //world units
-    public static final float CRUMB_SPACE_TIME = .5f;
+    public static final int ducklingDistConst = 100; //world units
+    public static final float CRUMB_SPACE_TIME = .15f;
     public enum State {INITIALIZING, SWIMMING, PADDING, PAD, EATEN, DEAD};
     public enum Direction {RIGHT, UP, LEFT, DOWN};
 

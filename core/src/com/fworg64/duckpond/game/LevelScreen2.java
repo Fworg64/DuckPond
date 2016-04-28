@@ -693,7 +693,27 @@ public class LevelScreen2 extends ScreenAdapter
                     if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
                     if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
                     if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
-                    sprite.draw(game.batch);                }
+                    sprite.draw(game.batch);
+                    //duckling shit
+                    Sprite ducklingsprite;
+                    ducklingsprite = new Sprite(sprite);
+                    ducklingsprite.setOriginCenter();
+                    ducklingsprite.setScale(.5f);
+                    for (int i =1; i<= s.getNumducks();i++)
+                    {
+                        if (s.getVel().len()*(tempt2s-s.getTime2spawn()) >= Duckling.ducklingDistConst * i)
+                        {
+                            Vector2 rendercoord = new Vector2(EDITOR_OFFSET.cpy().add(s.getPos()).add(s.getVel().cpy().scl(tempt2s - s.getTime2spawn())).sub(s.getVel().cpy().setLength(Duckling.ducklingDistConst * i)));
+                            ducklingsprite.setPosition(rendercoord.x, rendercoord.y);
+                            ducklingsprite.draw(game.batch);
+                        }
+                        else
+                        {
+                            ducklingsprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
+                            ducklingsprite.draw(game.batch);
+                        }
+                    }
+                }
                 if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s), render_X, render_Y);
             }
             if (s.getTime2spawn() > tempt2s)
