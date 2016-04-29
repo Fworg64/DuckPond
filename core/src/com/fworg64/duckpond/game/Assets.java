@@ -1,8 +1,6 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -42,6 +40,12 @@ public class Assets
     public static Texture LevelEditUnlives;
 
     public static Texture LevelSelectionBackground;
+
+    public static Texture NavigationFlechaIzq;
+    public static TextureRegion NavigationFlechaDer;
+    public static Texture NavigationUpone;
+    public static Texture NavigationCancel;
+    public static Texture NavigationConfirm;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
@@ -280,6 +284,37 @@ public class Assets
         MainMenuLevelEditorPressed.dispose();
     }
 
+    public static void load_navigation()
+    {
+        if (Options.highres) load_navigation_std();
+        else load_navigation_high();
+    }
+    public static void load_navigation_std()
+    {
+        NavigationCancel = new Texture(Gdx.files.internal("stdres\\navigation\\cancel.png"));
+        NavigationConfirm = new Texture(Gdx.files.internal("stdres\\navigation\\confirm.png"));
+        NavigationFlechaIzq = new Texture(Gdx.files.internal("stdres\\navigation\\flechaizq.png"));
+        NavigationFlechaDer = new TextureRegion(NavigationFlechaIzq);
+        NavigationFlechaDer.flip(true, false);
+        NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
+    }
+    public static void load_navigation_high()
+    {
+        NavigationCancel = new Texture(Gdx.files.internal("highres\\navigation\\cancel.png"));
+        NavigationConfirm = new Texture(Gdx.files.internal("highres\\navigation\\confirm.png"));
+        NavigationFlechaIzq = new Texture(Gdx.files.internal("highres\\navigation\\flechaizq.png"));
+        NavigationFlechaDer = new TextureRegion(NavigationFlechaIzq);
+        NavigationFlechaDer.flip(true, false);
+        NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
+    }
+    public static void dispose_navigation()
+    {
+        NavigationFlechaIzq.dispose();
+        NavigationCancel.dispose();
+        NavigationConfirm.dispose();
+        NavigationUpone.dispose();
+    }
+    
     public static void load_font()
     {
         if (Options.highres) res = "highres\\";

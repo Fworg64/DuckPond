@@ -91,6 +91,15 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int C_TIME_DISPLAY_X = 700;
     public static final int C_TIME_DISPLAY_Y = 255;
 
+    public static final int CANCEL_X = 300;
+    public static final int CANCEL_Y = 1920 - 500;
+    public static final int CANCEL_W = 126;
+    public static final int CANCEL_H = 126;
+    public static final int SAVE_CONFIRM_X = 500;
+    public static final int SAVE_CONFIRM_Y = 1920 - 500;
+    public static final int SAVE_CONFIRM_W = 126;
+    public static final int SAVE_CONFIRM_H = 126;
+
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .7f;
     public static final float SPRITE_ALPHA_BEFORE_SPAWN = .2f;
@@ -117,6 +126,8 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle exitbutt;
     Rectangle loadbutt;
     Rectangle savebutt;
+    Rectangle cancelbutt;
+    Rectangle saveconfirmbutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -158,6 +169,7 @@ public class LevelScreen2 extends ScreenAdapter
     {
         //options has no effect on resolution
         Assets.load_numberfont_std();
+        Assets.load_navigation_high();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -187,6 +199,8 @@ public class LevelScreen2 extends ScreenAdapter
         exitbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         loadbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
+        cancelbutt = new Rectangle(CANCEL_X, CANCEL_Y, CANCEL_W, CANCEL_H);
+        saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -307,6 +321,8 @@ public class LevelScreen2 extends ScreenAdapter
                 Assets.load_levelscreen();
                 game.setScreen(new LevelSelectionScreen(game));
                 Assets.dispose_leveledit();
+                Assets.dispose_navigation();
+                Assets.dispose_numberfont();
                 this.dispose();
                 break;
         }
@@ -326,7 +342,7 @@ public class LevelScreen2 extends ScreenAdapter
 
             Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
-            if (in.enterJustPressed())
+            if (in.enterJustPressed() || (in.justTouched() && saveconfirmbutt.contains(touchpoint)))
             {
                 if (!filename.isEmpty())
                 {
@@ -340,6 +356,13 @@ public class LevelScreen2 extends ScreenAdapter
                 savefile = false;
                 defaultstate = true;
                 in.hideKeyboard();
+            }
+
+            if (in.justTouched() && cancelbutt.contains(touchpoint))
+            {
+                in.hideKeyboard();
+                savefile = false;
+                defaultstate = true;
             }
         }
         else
@@ -405,6 +428,12 @@ public class LevelScreen2 extends ScreenAdapter
                 }
             }
 
+            loadfile = false;
+            defaultstate = true;
+        }
+        if (in.justTouched() && cancelbutt.contains(touchpoint))
+        {
+            in.hideKeyboard();
             loadfile = false;
             defaultstate = true;
         }
@@ -803,6 +832,9 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
         game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
+
+        if (savefile || loadfile) game.batch.draw(Assets.NavigationCancel, cancelbutt.getX(), cancelbutt.getY());
+        if (savefile) game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());
 
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 1*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
