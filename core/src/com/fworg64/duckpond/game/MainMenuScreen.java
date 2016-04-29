@@ -92,7 +92,6 @@ public class MainMenuScreen extends ScreenAdapter
 
 
         this.game = game;
-        Assets.load();
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
@@ -124,18 +123,26 @@ public class MainMenuScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (playbutt.contains(touchpoint) && in.justTouched()) playPressed = true;
+        if (playbutt.contains(touchpoint) && in.justTouched()) {
+            playPressed = true;
+            Assets.load_levelscreen();
+        }
         if (playPressed && !playbutt.contains(touchpoint)) playPressed = false;
         if (playPressed && !in.isTouched())
         {
             game.setScreen(new LevelSelectionScreen(game));
+            Assets.dispose_mainmenu();
             return 2;
         }
-        if (optionbutt.contains(touchpoint) && in.justTouched()) optionsPressed = true;
+        if (optionbutt.contains(touchpoint) && in.justTouched()) {
+            optionsPressed = true;
+            Assets.load_options();
+        }
         if (optionsPressed && !optionbutt.contains(touchpoint)) optionsPressed = false;
         if (optionsPressed && !in.isTouched())
         {
             game.setScreen(new OptionsScreen(game));
+            Assets.dispose_mainmenu();
             return 1;
         }
         if (exitbutt.contains(touchpoint) && in.justTouched()) exitPressed = true;

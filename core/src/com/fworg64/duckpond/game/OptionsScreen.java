@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by fworg on 3/8/2016.
+ *
+ * JUST NEEDS CREDITS SCREEN AND WILL BE READY
  */
 public class OptionsScreen extends ScreenAdapter
 {
@@ -47,7 +49,7 @@ public class OptionsScreen extends ScreenAdapter
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
-    ShapeRenderer shapeRenderer;
+    /*ShapeRenderer shapeRenderer;*/
 
     InputListener in;
     Vector2 touchpoint;
@@ -105,8 +107,8 @@ public class OptionsScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(gcam.combined);
+        /*shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(gcam.combined);*/
 
         SaveReturn = new Rectangle(OPTEXIT_X,OPTEXIT_Y,OPTWIDTH, OPTHEIGHT);
         StdRes = new Rectangle(RES_X, RES_Y, RES_W, RES_H);
@@ -125,12 +127,16 @@ public class OptionsScreen extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (SaveReturn.contains(touchpoint) && in.justTouched()) returnPressed = true;
+        if (SaveReturn.contains(touchpoint) && in.justTouched()) {
+            returnPressed = true;
+            Assets.load_mainmenu();
+        }
         if (returnPressed && !SaveReturn.contains(touchpoint)) returnPressed = false;
         if (returnPressed && !in.isTouched() || in.isBackPressed())
         {
             Options.save();
             game.setScreen(new MainMenuScreen(game));
+            Assets.dispose_options();
         }
         if (CreditsButt.contains(touchpoint) && in.justTouched()) creditsPressed = true;
         if (creditsPressed && !CreditsButt.contains(touchpoint)) creditsPressed = false;
@@ -205,14 +211,14 @@ public class OptionsScreen extends ScreenAdapter
         game.batch.draw(slidingSfx ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, SfxSlider.getX(), SfxSlider.getY());
         game.batch.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        /*shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(SaveReturn.getX(), SaveReturn.getY(), SaveReturn.getWidth(), SaveReturn.getHeight());
         shapeRenderer.rect(StdRes.getX(), StdRes.getY(), StdRes.getWidth(), StdRes.getHeight());
         shapeRenderer.rect(HighRes.getX(), HighRes.getY(), HighRes.getWidth(), HighRes.getHeight());
         shapeRenderer.rect(SfxSlider.getX(), SfxSlider.getY(), SfxSlider.getWidth(), SfxSlider.getHeight());
         shapeRenderer.rect(MusicSlider.getX(), MusicSlider.getY(), MusicSlider.getWidth(), MusicSlider.getHeight());
-        shapeRenderer.end();
+        shapeRenderer.end();*/
     }
 
     @Override

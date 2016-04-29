@@ -8,12 +8,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by fworg on 2/20/2016.
  */
 public class Duckling
 {
+    public static final int ducklingDistConst = 100; //world units
+    public static final float CRUMB_SPACE_TIME = .15f;
     public enum State {INITIALIZING, SWIMMING, PADDING, PAD, EATEN, DEAD};
     public enum Direction {RIGHT, UP, LEFT, DOWN};
 
@@ -34,19 +38,24 @@ public class Duckling
     public Sprite sprite;
     Direction dir;
 
-    int pointsbehind; //if the duckling has reached the first point of the trail to follow
 
-    private ArrayList<Vector2> checkpoints;
+    private List<Vector2> checkpoints;
+    float followclock;
+    float distance_waited;
+    boolean GOGOGO;
 
-    public Duckling(int x, int y, int pointsbehind)
+    public Duckling(int x, int y)
     {
         pos = new Rectangle(x,y, DuckPondGame.objWandH/2, DuckPondGame.objWandH/2);
         col = new Circle(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight(), pos.getWidth()*.33f);
         posv = new Vector2(pos.getX(), pos.getY());
         vel = new Vector2();
 
-        checkpoints = new ArrayList<Vector2>(2*pointsbehind);
-        this.pointsbehind = pointsbehind;
+        checkpoints = new ArrayList<Vector2>(200); //something something minimum speed, max distance apart, time between points balah balah
+        checkpoints.add(posv.cpy());
+        followclock =0;
+        distance_waited =0;
+        GOGOGO = false;
         state = State.INITIALIZING;
 
         clock =0;
@@ -65,24 +74,61 @@ public class Duckling
     public void follow(Vector2 pos2follow)
     {
         //update posv and vel and pos and col
-        checkpoints.add(new Vector2(pos2follow));
-        if (checkpoints.size()> pointsbehind)
-        {
-            posv.set(checkpoints.get(0));
-            vel.set(checkpoints.get(1).cpy().sub(checkpoints.get(0)));
-            checkpoints.remove(0);
-            if (!vel.isZero() && state != State.EATEN) state = State.SWIMMING;
+
+        if (!GOGOGO) {
+            if (followclock >= CRUMB_SPACE_TIME)
+            {
+                followclock -= CRUMB_SPACE_TIME;
+                if (pos2follow.cpy().sub(posv).len() != 0) checkpoints.add(pos2follow.cpy());
+                distance_waited = posv.cpy().sub(pos2follow).len();
+                //Gdx.app.debug("distancewaited", Float.toString(distance_waited));
+                if (distance_waited >= ducklingDistConst)
+                {
+                    GOGOGO = true;
+                    state = State.SWIMMING;
+                    vel.set(checkpoints.get(1).cpy().sub(posv)); //set the vel to nonzero or theyll pad
+                }
+
+            }
         }
-        pos.setPosition(posv);
-        col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
+        else
+        {
+            if (followclock >= CRUMB_SPACE_TIME)
+            {
+                followclock -=CRUMB_SPACE_TIME;
+                checkpoints.add(pos2follow.cpy());
+                posv.set(checkpoints.get(1).cpy());
+
+                vel.set(checkpoints.get(2).cpy().sub(checkpoints.get(1).cpy())); //not actual vel, just direction for animation and detecting a stop
+                pos.setPosition(posv.cpy());
+                col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
+
+                Gdx.app.debug(checkpoints.get(2).toString(), checkpoints.get(1).toString());
+                Gdx.app.debug("vel",vel.toString());
+                checkpoints.remove(0); //this doesnt run fast enough to be done by the next line maybe
+            }
+            else
+            {
+                posv.set(checkpoints.get(0).cpy().lerp(checkpoints.get(1), followclock/CRUMB_SPACE_TIME));
+                pos.setPosition(posv.cpy());
+                col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
+                Gdx.app.debug("vel", vel.toString());
+            }
+        }
+
+
+
     }
 
     public void update(float delta)
     {
         clock += delta;
+        followclock += delta;
 
         setSprite();
-        if (vel.isZero() && state == State.SWIMMING) state = State.PAD;
+        if (vel.isZero() && state == State.SWIMMING){
+            state = State.PAD;
+        }
     }
 
     public void getEaten()

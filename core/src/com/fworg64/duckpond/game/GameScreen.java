@@ -56,7 +56,10 @@ public class GameScreen extends ScreenAdapter
     private boolean isMuted;
     private boolean showConfirmRestart;
     private boolean showConfirmExit;
+    private boolean ready2go;
     Menus menu;
+
+    private Rectangle readybutt;
 
     private Rectangle HUDarea;
     private Rectangle pausebutt;
@@ -75,6 +78,7 @@ public class GameScreen extends ScreenAdapter
     private float gameoverRunTime;
     private boolean GAMEOVERMUSICFLAG;
 
+    private boolean saydegeat;
 
     GameScreen(DuckPondGame game, String level)
     {
@@ -95,6 +99,9 @@ public class GameScreen extends ScreenAdapter
         touchpointWorld = new Vector2();
         clock =0;
 
+        saydegeat = true;
+        ready2go = false;
+
         listener = new World.WorldListener() //interface object?
         {
             @Override
@@ -110,7 +117,7 @@ public class GameScreen extends ScreenAdapter
             {
                 isPaused = true;
                 menu = Menus.GMLOSE;
-                Gdx.app.debug("gamestate", "DEGEAT");
+                if (saydegeat) {Gdx.app.debug("gamestate", "DEGEAT");saydegeat = false;}
             }
 
             @Override
@@ -162,6 +169,8 @@ public class GameScreen extends ScreenAdapter
             GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
             GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
             GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+
+            readybutt = new Rectangle(400, 800, 200, 100);
         }
         else
         {
@@ -180,6 +189,8 @@ public class GameScreen extends ScreenAdapter
             GOVLevelSelection = new Rectangle(50f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
             GOLLevelSelection = new Rectangle(250f/640f *DuckPondGame.worldW, 100f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
             GOLrestart = new Rectangle(40f/640f *DuckPondGame.worldW, 10f/960f * DuckPondGame.worldH, 180f/640f * DuckPondGame.worldW, 180f/915f *DuckPondGame.worldH);
+
+            readybutt = new Rectangle(300, 300, 150, 75);
         }
 
         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
@@ -295,7 +306,10 @@ public class GameScreen extends ScreenAdapter
                     {
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
+                        Assets.load_levelscreen();
                         game.setScreen(new LevelSelectionScreen(game));
+                        Assets.dispose_gamescreen();
+                        this.dispose();
                     }
                     if (showConfirmRestart == true && confirmYes.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
@@ -328,8 +342,10 @@ public class GameScreen extends ScreenAdapter
                     {
                         mas.stopCurrMusic();
                         mas.stopSfx();
+                        Assets.load_levelscreen();
                         game.setScreen(new LevelSelectionScreen(game));
-                    }
+                        Assets.dispose_gamescreen();
+                        this.dispose();                    }
                     if (GOLrestart.contains(screenIn.getTouchpoint()) && screenIn.justTouched())
                     {
                         world.ReloadLevel();
@@ -361,8 +377,10 @@ public class GameScreen extends ScreenAdapter
                     if (GOVLevelSelection.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) {
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
+                        Assets.load_levelscreen();
                         game.setScreen(new LevelSelectionScreen(game));
-                    }
+                        Assets.dispose_gamescreen();
+                        this.dispose();                    }
                     break;
             }
         }
@@ -465,7 +483,24 @@ public class GameScreen extends ScreenAdapter
     @Override
     public void render (float delta)
     {
-        update(delta);
-        draw(delta);
+        if (!ready2go)
+        {
+            update(0);
+            draw(0);
+            //draw button, darken screen
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+            shapeRenderer.rect(readybutt.getX(), readybutt.getY(), readybutt.getWidth(), readybutt.getHeight());
+            shapeRenderer.end();
+            if (screenIn.justTouched() && readybutt.contains(touchpointScreen))
+            {
+                ready2go = true;
+            }
+        }
+        else {
+            update(delta);
+            draw(delta);
+        }
+
     }
 }

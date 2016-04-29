@@ -6,35 +6,46 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by fworg on 3/4/2016.
  */
 public class LevelScreen2 extends ScreenAdapter
 {
+    public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
+    public final static float SWYPE_ARROW_SCALE = 1.6f;
+    public final static int PAGE_SIZE = 6;
+
+
     public static final int TOPBUTTONS_X = 90;
     public static final int TOPBUTTONS_Y = 1920-136;
-    public static final int TOPBUTTONS_W = 200;
+    public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
 
-    public static final int CHARACTER_BUTTON_X = 55;
+    public static final int CHARACTER_BUTTON_X = 355;
     public static final int CHARACTER_BUTTON_Y = 1920 -1737;
     public static final int CHARACTER_BUTTON_S = 150;
-    public static final int TRASH_AND_CONFIRM_X = 800;
-    public static final int CONFIRM_Y = 50;
+    public static final int TRASH_X = 55;
+    public static final int TRASH_Y = 1920-1737;
+    public static final int CONFIRM_X = 800;
+    public static final int CONFIRM_Y = 1920-1737;
 
     public static final int LOWER_AREA_BUTTON_W = 250;
     public static final int LOWER_AREA_BUTTON_H = 100;
@@ -42,7 +53,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TSLIDER_X = 100;
     public static final int TSLIDER_W = 650;
     public static final int TSLIDER_H = 20;
-    public static final int TSLIDER_Y = CONFIRM_Y + LOWER_AREA_BUTTON_H/2 - TSLIDER_H/2;
+    public static final int TSLIDER_Y = 90;
     public static final int TKNOB_W = 96;
     public static final int TKNOB_H = 96;
 
@@ -61,19 +72,40 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_LOAD_R = 3;
     public static final int LEVEL_LOAD_C = 2;
 
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_X = 515;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_Y = 1920-1750;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_W = 96;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_H = 60;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_XS = 150;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_YS = 80;
+    public static final int LEVEL_TIME_BUTTON_X = 55;
+    public static final int LEVEL_TIME_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
+    public static final int LEVEL_TIME_BUTTON_W = 40;
+    public static final int LEVEL_TIME_BUTTON_H = 75;
+    public static final int LEVEL_TIME_BUTTON_XS = 380;
 
-    public static final int LIVES_DISPLAY_X = 700;
+    public static final int LEVEL_LIVES_BUTTON_X = 615;
+    public static final int LEVEL_LIVES_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
+    public static final int LEVEL_LIVES_BUTTON_W = 40;
+    public static final int LEVEL_LIVES_BUTTON_H = 75;
+    public static final int LEVEL_LIVES_BUTTON_XS = 380;
+
+    public static final int LIVES_DISPLAY_X = 670;
     public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
-    public static final int LIVES_DISPLAY_S = 125;
+    public static final int LIVES_DISPLAY_S = 106;
 
-    public static final int TIME_DISPLAY_X = 700;
-    public static final int TIME_DISPLAY_Y = 1780;
+    public static final int T_TIME_DISPLAY_X = 150;
+    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT +100;
+    public static final int C_TIME_DISPLAY_X = 700;
+    public static final int C_TIME_DISPLAY_Y = 255;
+
+    public static final int CANCEL_X = 300;
+    public static final int CANCEL_Y = 1920 - 500;
+    public static final int CANCEL_W = 126;
+    public static final int CANCEL_H = 126;
+    public static final int SAVE_CONFIRM_X = 500;
+    public static final int SAVE_CONFIRM_Y = 1920 - 500;
+    public static final int SAVE_CONFIRM_W = 126;
+    public static final int SAVE_CONFIRM_H = 126;
+    public static final int LOAD_PAGE_FLIP_X = 200;
+    public static final int LOAD_PAGE_FLIP_Y = 500;
+    public static final int LOAD_PAGE_LEFT_W = 86;
+    public static final int LOAD_PAGE_LEFT_H = 163;
+    public static final int LOAD_PAGE_LEFT_XS = 330;
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .7f;
@@ -98,15 +130,18 @@ public class LevelScreen2 extends ScreenAdapter
     boolean savefile;
     boolean loadfile;
 
-    boolean wasHighres;
     Rectangle exitbutt;
     Rectangle loadbutt;
     Rectangle savebutt;
+    Rectangle cancelbutt;
+    Rectangle saveconfirmbutt;
+    Rectangle loadpageleft;
+    Rectangle loadpageright;
+    int pagenumber;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
     Vector2 temppos;
-    Vector2 tempvel;
     float tempt2s;
     int tempducks;
     int time;
@@ -133,21 +168,18 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle upperarea;
     Rectangle lowerarea;
 
-    Sprite duckSprite;
-    Sprite sharkSprite;
-
     FileHandle customDIR;
     FileHandle currfile;
     String filename;
-    FileHandle[] customfiles;
+    List<FileHandle> customfiles;
 
     private ShapeRenderer shapeRenderer;
 
     public LevelScreen2(DuckPondGame game)
     {
-        wasHighres = Options.isHighres();
-        Options.setStdres();
-        Assets.levelEditLoad();
+        //options has no effect on resolution
+        Assets.load_numberfont_std();
+        Assets.load_navigation_high();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -155,13 +187,12 @@ public class LevelScreen2 extends ScreenAdapter
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
             customDIR = Gdx.files.local("LEVELS\\CUSTOM\\");
-            customfiles = customDIR.list();
+            customfiles = Arrays.asList(customDIR.list());
         }
         
         spawnables = new Array<Spawnable>();
         tempguy = new Spawnable();
         temppos = new Vector2();
-        tempvel = new Vector2();
         tempt2s = 0;
         tempducks =0;
         lives = 3;
@@ -169,7 +200,8 @@ public class LevelScreen2 extends ScreenAdapter
 
         playarea = new Rectangle(EDITOR_OFFSET.x, EDITOR_OFFSET.y, DuckPondGame.worldW, DuckPondGame.worldH);
         lowerarea = new Rectangle(0, 0, DuckPondGame.highresScreenW, LOWER_AREA_HEIGHT);
-        placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.worldW + 4*DuckPondGame.objWandH, DuckPondGame.worldH + 4*DuckPondGame.objWandH);
+        upperarea = new Rectangle(0, 1920 - UPPER_AREA_HEIGHT, DuckPondGame.highresScreenW, UPPER_AREA_HEIGHT);
+        placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.highresScreenW, DuckPondGame.highresScreenH-LOWER_AREA_HEIGHT-UPPER_AREA_HEIGHT);
         ducks = new Rectangle(CHARACTER_BUTTON_X, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
         sharks = new Rectangle(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
         lillies = new Rectangle(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
@@ -177,13 +209,18 @@ public class LevelScreen2 extends ScreenAdapter
         exitbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         loadbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
+        cancelbutt = new Rectangle(CANCEL_X, CANCEL_Y, CANCEL_W, CANCEL_H);
+        saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
+        loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
+        loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
+        pagenumber =0;
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
         Message = "heerp";
         Tknob = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
-        Confirm = new Rectangle(TRASH_AND_CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
+        Confirm = new Rectangle(CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
         ducklingNumber = new Rectangle[MAX_DUCKLINGS];
         for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H );}
         loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
@@ -193,11 +230,11 @@ public class LevelScreen2 extends ScreenAdapter
                 loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
             }
         }
-        trashbutt = new Rectangle(TRASH_AND_CONFIRM_X,CHARACTER_BUTTON_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
-        TtimeUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        TtimeDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        LivesUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X +LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        LivesDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X + LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
+        trashbutt = new Rectangle(TRASH_X,TRASH_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
+        TtimeUp = new Rectangle(LEVEL_TIME_BUTTON_X + LEVEL_TIME_BUTTON_XS, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
+        TtimeDown = new Rectangle(LEVEL_TIME_BUTTON_X, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
+        LivesUp = new Rectangle(LEVEL_LIVES_BUTTON_X + LEVEL_LIVES_BUTTON_XS, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
+        LivesDown = new Rectangle(LEVEL_LIVES_BUTTON_X, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
 
         defaultstate = true;
         getD = false;
@@ -211,9 +248,6 @@ public class LevelScreen2 extends ScreenAdapter
         savefile = false;
 
         filename ="";
-
-        duckSprite = new Sprite(Assets.LevelEditDuck);
-        sharkSprite = new Sprite(Assets.LevelEditShark);
 
         gcam.update();
         shapeRenderer = new ShapeRenderer();
@@ -295,11 +329,14 @@ public class LevelScreen2 extends ScreenAdapter
                 break;
             case 1:
                 Gdx.app.debug("screenstate", "exit");
-                this.dispose();
                 Options.loadOptions();
-                if (wasHighres) Options.setHighres();
-                else Options.setStdres();
+
+                Assets.load_levelscreen();
                 game.setScreen(new LevelSelectionScreen(game));
+                Assets.dispose_leveledit();
+                Assets.dispose_navigation();
+                Assets.dispose_numberfont();
+                this.dispose();
                 break;
         }
         draw();
@@ -318,7 +355,7 @@ public class LevelScreen2 extends ScreenAdapter
 
             Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
-            if (in.enterJustPressed())
+            if (in.enterJustPressed() || (in.justTouched() && saveconfirmbutt.contains(touchpoint)))
             {
                 if (!filename.isEmpty())
                 {
@@ -332,6 +369,13 @@ public class LevelScreen2 extends ScreenAdapter
                 savefile = false;
                 defaultstate = true;
                 in.hideKeyboard();
+            }
+
+            if (in.justTouched() && cancelbutt.contains(touchpoint))
+            {
+                in.hideKeyboard();
+                savefile = false;
+                defaultstate = true;
             }
         }
         else
@@ -349,6 +393,11 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void LoadFile()
     {
+        customfiles = Arrays.asList(customDIR.list()); //reload... reload... reload...
+
+        if (in.justTouched() && loadpageleft.contains(touchpoint) && pagenumber>0) pagenumber--;
+        if (in.justTouched() && loadpageright.contains(touchpoint) && (customDIR.list().length / PAGE_SIZE > pagenumber)) pagenumber++;
+        customfiles = new ArrayList<FileHandle>(customfiles.subList(pagenumber * PAGE_SIZE, customfiles.size() < (pagenumber+1)*PAGE_SIZE ? customfiles.size() : (pagenumber+1)*PAGE_SIZE));
         int buttpressed =-1;//no button pressed
         touchpoint.set(in.getTouchpoint());
         for (int i =0; i<loadlevelbuttons.length;i++)
@@ -357,15 +406,15 @@ public class LevelScreen2 extends ScreenAdapter
                 buttpressed = i;
             }
         }
-        if (buttpressed >=0 && buttpressed <loadlevelbuttons.length)
-        {
-            //button pressed, load corresponidng file
-            //first clear current file
 
-            spawnables = new Array<Spawnable>();
-            if (buttpressed < customfiles.length)
-            {
-                String levelstring = customfiles[buttpressed].readString();
+
+        if (buttpressed >=0 && buttpressed <customfiles.size()) //custom files length must be less than or equal to loadlevelbuttons length
+        {
+            //button pressed with file, load corresponidng file
+
+            spawnables = new Array<Spawnable>();//first clear current file
+
+                String levelstring = customfiles.get(buttpressed).readString();
 
                 ArrayList<String> levelcodes = new ArrayList<String>(Arrays.asList(levelstring.split("\n")));
                 try
@@ -395,8 +444,13 @@ public class LevelScreen2 extends ScreenAdapter
                 {
                     Gdx.app.debug("Error","Level File appers corrupt");
                 }
-            }
 
+            loadfile = false;
+            defaultstate = true;
+        }
+        if (in.justTouched() && cancelbutt.contains(touchpoint))
+        {
+            in.hideKeyboard();
             loadfile = false;
             defaultstate = true;
         }
@@ -407,7 +461,6 @@ public class LevelScreen2 extends ScreenAdapter
         Message = "Current temp\n destroyed.";
         tempguy = new Spawnable();
         temppos.setZero();
-        tempvel.setZero();
         getVel = false;
         getT = false;
         getPos = false;
@@ -424,11 +477,11 @@ public class LevelScreen2 extends ScreenAdapter
         {
             for (Spawnable s: spawnables)
             {
-                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn()) *time;
-                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn()) *time;
-                    if (touchpoint.x<(del_X + Options.spriteWidth) && touchpoint.x > del_X) //x matches
+                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
+                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
+                    if (touchpoint.x<(del_X + DuckPondGame.stdspriteW) && touchpoint.x > del_X) //x matches
                     {
-                        if (touchpoint.y<(del_Y + Options.spriteHeight) && touchpoint.y > del_Y)//y matches
+                        if (touchpoint.y<(del_Y + DuckPondGame.stdspriteH) && touchpoint.y > del_Y)//y matches
                         {
                             Message = s.getObjtype() + "\nDestroyed";
                             spawnables.removeValue(s,true);
@@ -510,17 +563,16 @@ public class LevelScreen2 extends ScreenAdapter
         temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
-            tempvel.set(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 200));
-            Message = tempvel.toString() + "\nSpeed:" + Float.toString(tempvel.len());
+            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 200));
+            Message = tempguy.getVel().toString() + "\nSpeed:" + Float.toString(tempguy.getVel().len());
         }
-        if (!in.isTouched() && !tempvel.isZero()) //vel was set
+        if (!in.isTouched() && !tempguy.getVel().isZero()) //vel was set
         {
             ready2confirm = true;
             Message = "Press confirm when Velocity is set";
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
         {
-            tempguy.setVel(tempvel.cpy());
             getVel = false;
             getT = true;
             ready2confirm = false;
@@ -552,7 +604,6 @@ public class LevelScreen2 extends ScreenAdapter
                 Message = tempguy.toString();
                 tempguy = new Spawnable();
                 temppos.setZero();
-                tempvel.setZero();
             }
             getT = false;
             ready2confirm = false;
@@ -578,7 +629,10 @@ public class LevelScreen2 extends ScreenAdapter
         }
     }
 
-    public void updateTempt2s() {tempt2s = ((Tknob.getX()+Tknob.getWidth()*.5f-Tslider.getX())/Tslider.getWidth()) * time;}
+    public void updateTempt2s() {
+        tempt2s = (((Tknob.getX()+Tknob.getWidth()*.5f-Tslider.getX())/Tslider.getWidth()) * time);
+        tempt2s = new BigDecimal(tempt2s).setScale(2, RoundingMode.HALF_UP).floatValue();
+    }
 
     public void slideKnob()
     {
@@ -607,13 +661,12 @@ public class LevelScreen2 extends ScreenAdapter
             Message = tempguy.toString();
             tempguy = new Spawnable();
             temppos.setZero();
-            tempvel.setZero();
             getD = false;
             defaultstate = true;
         }
     }
 
-    public void draw() //fyotb
+    public void draw()
     {
         GL20 gl = Gdx.gl;
         gl.glClearColor(.27451f, .70588f, .83922f, 1);
@@ -621,36 +674,110 @@ public class LevelScreen2 extends ScreenAdapter
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
 
-        game.batch.disableBlending();
-        game.batch.begin();
-        //draw background image here
-        game.batch.draw(Assets.LevelEditUpperArea, 0, 1920-308);
-        game.batch.draw(Assets.LevelEditLowerArea, 0, 0);
-        game.batch.draw(Assets.LevelEditOutsidePlacement, 0, 308);
-        game.batch.draw(Assets.LevelEditGameplayArea, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
-        game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
-        game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
-        game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
-        game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
-        game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
-        game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
-        game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
-        if (tempguy.getObjtype().equals("Shark")) game.batch.draw(Assets.LevelEditShark,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Duck")) game.batch.draw(Assets.LevelEditDuck,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        //drawbackgroundimagehere
+        game.batch.draw(Assets.GameBackground, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
+
+        if (tempguy.getObjtype().equals("Shark"))
+        {
+            Animation currAnim;
+            float ang = tempguy.getVel().angle();
+            Sprite sprite;
+            Direction dir;
+            if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
+            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+            sprite.setOriginCenter();
+            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+            sprite.draw(game.batch);
+        }
+        else if (tempguy.getObjtype().equals("Duck"))
+        {
+            Animation currAnim;
+            float ang = tempguy.getVel().angle();
+            Sprite sprite;
+            Direction dir;
+            if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
+            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+            sprite.setOriginCenter();
+            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+            sprite.draw(game.batch);
+        }
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s),tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
         for (Spawnable s: spawnables)
         {
             if (s.getTime2spawn() <= tempt2s)
             {
                 float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
                 float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
-                if (s.getObjtype().equals("Shark")) game.batch.draw(Assets.LevelEditShark, render_X, render_Y);
-                if (s.getObjtype().equals("Duck")) game.batch.draw(Assets.LevelEditDuck, render_X, render_Y);
-                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily, render_X, render_Y);
+                if (s.getObjtype().equals("Shark"))
+                {
+                    Animation currAnim;
+                    float ang = s.getVel().angle();
+                    Sprite sprite;
+                    Direction dir;
+                    if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
+                    else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
+                    else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
+                    else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
+                    sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+                    sprite.setPosition(render_X, render_Y);
+                    sprite.setOriginCenter();
+                    if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+                    sprite.draw(game.batch);                }
+                if (s.getObjtype().equals("Duck"))
+                {
+                    Animation currAnim;
+                    float ang = s.getVel().angle();
+                    Sprite sprite;
+                    Direction dir;
+                    if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
+                    else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
+                    else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
+                    else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
+                    sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+                    sprite.setPosition(render_X, render_Y);
+                    sprite.setOriginCenter();
+                    if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+                    sprite.draw(game.batch);
+                    //duckling shit
+                    Sprite ducklingsprite;
+                    ducklingsprite = new Sprite(sprite);
+                    ducklingsprite.setOriginCenter();
+                    ducklingsprite.setScale(.5f);
+                    for (int i =1; i<= s.getNumducks();i++)
+                    {
+                        if (s.getVel().len()*(tempt2s-s.getTime2spawn()) >= Duckling.ducklingDistConst * i)
+                        {
+                            Vector2 rendercoord = new Vector2(EDITOR_OFFSET.cpy().add(s.getPos()).add(s.getVel().cpy().scl(tempt2s - s.getTime2spawn())).sub(s.getVel().cpy().setLength(Duckling.ducklingDistConst * i)));
+                            ducklingsprite.setPosition(rendercoord.x, rendercoord.y);
+                            ducklingsprite.draw(game.batch);
+                        }
+                        else
+                        {
+                            ducklingsprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
+                            ducklingsprite.draw(game.batch);
+                        }
+                    }
+                }
+                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s), render_X, render_Y);
             }
             if (s.getTime2spawn() > tempt2s)
             {
@@ -658,23 +785,77 @@ public class LevelScreen2 extends ScreenAdapter
                 float render_Y = s.getPos().y + EDITOR_OFFSET.y;
                 if (s.getObjtype().equals("Shark"))
                 {
-                    sharkSprite.setPosition(render_X, render_Y);
-                    sharkSprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
-                    sharkSprite.draw(game.batch);
+                    Animation currAnim;
+                    float ang = s.getVel().angle();
+                    Sprite sprite;
+                    Direction dir;
+                    if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
+                    else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
+                    else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
+                    else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
+                    sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+                    sprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
+                    sprite.setOriginCenter();
+                    if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+                    sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
+                    sprite.draw(game.batch);
                 }
                 if (s.getObjtype().equals("Duck"))
                 {
-                    duckSprite.setPosition(render_X, render_Y);
-                    duckSprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
-                    duckSprite.draw(game.batch);
+                    Animation currAnim;
+                    float ang = s.getVel().angle();
+                    Sprite sprite;
+                    Direction dir;
+                    if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
+                    else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
+                    else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
+                    else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
+                    sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+                    sprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
+                    sprite.setOriginCenter();
+                    if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
+                    if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+                    sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
+                    sprite.draw(game.batch);
                 }
-                //if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.LevelEditLily, render_X, render_Y);
+                if (s.getObjtype().equals("Lily"))
+                {
+                    Sprite sprite;
+                    sprite = new Sprite(Assets.padRot.getKeyFrame(tempt2s));
+                    sprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
+                    sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
+                    sprite.draw(game.batch);
+                }
             }
         }
+
+        game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY());
+        game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY());
+        game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
+        game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
+        game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
+        game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
+        game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
+        game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
+        game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
+        game.batch.draw(Assets.LevelEditFlechaIzq, TtimeDown.getX(), TtimeDown.getY());
+        game.batch.draw(Assets.LevelEditFlechaDer, TtimeUp.getX(), TtimeUp.getY());
+        game.batch.draw(Assets.LevelEditFlechaIzq, LivesDown.getX(), LivesDown.getY());
+        game.batch.draw(Assets.LevelEditFlechaDer, LivesUp.getX(), LivesUp.getY());
+
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
-
         game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
+
+        if (savefile || loadfile) game.batch.draw(Assets.NavigationCancel, cancelbutt.getX(), cancelbutt.getY());
+        if (savefile) game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());
+
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 1*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X, LIVES_DISPLAY_Y);
         switch (lives)
         {
             case 3:
@@ -688,11 +869,17 @@ public class LevelScreen2 extends ScreenAdapter
         }
 
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
-        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TIME_DISPLAY_X, TIME_DISPLAY_Y);
-        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), TIME_DISPLAY_X, TIME_DISPLAY_Y - 60);
+        //Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
+        Assets.numberfont.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X + 100, T_TIME_DISPLAY_Y);
+        //Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y - 60);
+        Assets.numberfont.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
-            if (i<customfiles.length) Assets.font.draw(game.batch, customfiles[i].name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+            if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+        }
+        if (loadfile){
+            game.batch.draw(Assets.NavigationFlechaIzq, loadpageleft.getX(), loadpageleft.getY());
+            game.batch.draw(Assets.NavigationFlechaDer, loadpageright.getX(), loadpageright.getY());
         }
         game.batch.end();
 
@@ -716,8 +903,35 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempvel.cpy().add(temppos).add(EDITOR_OFFSET));
 
         shapeRenderer.end();
+
+        if (getVel)
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+            Vector2[] swipedraw = new Vector2[4];
+            Vector2 swipestart = tempguy.getPos().cpy().add(EDITOR_OFFSET).add(new Vector2(DuckPondGame.stdspriteW *.5f, DuckPondGame.stdspriteH * .5f));
+            Vector2 swipeend = tempguy.getVel().cpy().add(tempguy.getPos()).add(EDITOR_OFFSET).add(new Vector2(DuckPondGame.stdspriteW *.5f, DuckPondGame.stdspriteH * .5f));
+            swipedraw[0] = swipestart.cpy();
+            swipedraw[3] = swipeend.cpy();
+            Vector2 tmp = swipestart.cpy().lerp(swipeend, .875f); // point between begining and end
+            Vector2 othertmp = tmp.cpy().sub(swipeend); //one of the wings, ish
+            swipedraw[1] = new Vector2(tmp.x - othertmp.y, tmp.y + othertmp.x);
+            swipedraw[2] = new Vector2(tmp.x + othertmp.y, tmp.y - othertmp.x);
+            Vector2 thirdtemp = swipedraw[0].cpy().scl(SWYPE_ARROW_SCALE).sub(swipestart);
+            for (int i=1;i<swipedraw.length;i++)
+            {
+                swipedraw[i].scl(SWYPE_ARROW_SCALE);
+                swipedraw[i].sub(thirdtemp);
+            }
+            shapeRenderer.setColor(.2f, .5f, .5f, 1f);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[1].x, swipedraw[1].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[2].x, swipedraw[2].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.end();
+            shapeRenderer.end();
+        }
+
     }
 }

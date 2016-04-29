@@ -172,7 +172,12 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 if (levels.size() > i)
                 {
-                    if (!levels.get(i).isDirectory()) game.setScreen(new GameScreen(game, levels.get(i).readString()));
+                    if (!levels.get(i).isDirectory()) {
+                        Assets.load_gamescreen();
+                        game.setScreen(new GameScreen(game, levels.get(i).readString()));
+                        Assets.dispose_levelscreen();
+                        this.dispose();
+                    }
                     else
                     {
                         levelDir = levels.get(i);
@@ -204,7 +209,10 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if ((in.justTouched() && mainMenubutt.contains(touchpoint)) || in.isBackPressed())
         {
+            Assets.load_mainmenu();
             game.setScreen(new MainMenuScreen(game));
+            Assets.dispose_levelscreen();
+            this.dispose();
         }
         if ((in.justTouched() && pageleftbutt.contains(touchpoint)) && levelDir.name().equals(CUSTOM_FOLDER_NAME))
         {
@@ -226,7 +234,10 @@ public class LevelSelectionScreen extends ScreenAdapter
         if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
         if (leveleditPressed && !in.isTouched())
         {
+            Assets.load_leveledit();
             game.setScreen(new LevelScreen2(game));
+            Assets.dispose_levelscreen();
+            this.dispose();
         }
     }
 
