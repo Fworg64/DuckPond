@@ -18,6 +18,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by fworg on 3/4/2016.
@@ -26,6 +27,7 @@ public class LevelScreen2 extends ScreenAdapter
 {
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
     public final static float SWYPE_ARROW_SCALE = 1.6f;
+    public final static int PAGE_SIZE = 6;
 
 
     public static final int TOPBUTTONS_X = 90;
@@ -99,6 +101,11 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_CONFIRM_Y = 1920 - 500;
     public static final int SAVE_CONFIRM_W = 126;
     public static final int SAVE_CONFIRM_H = 126;
+    public static final int LOAD_PAGE_FLIP_X = 200;
+    public static final int LOAD_PAGE_FLIP_Y = 500;
+    public static final int LOAD_PAGE_LEFT_W = 86;
+    public static final int LOAD_PAGE_LEFT_H = 163;
+    public static final int LOAD_PAGE_LEFT_XS = 330;
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .7f;
@@ -128,6 +135,9 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle savebutt;
     Rectangle cancelbutt;
     Rectangle saveconfirmbutt;
+    Rectangle loadpageleft;
+    Rectangle loadpageright;
+    int pagenumber;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -161,7 +171,7 @@ public class LevelScreen2 extends ScreenAdapter
     FileHandle customDIR;
     FileHandle currfile;
     String filename;
-    FileHandle[] customfiles;
+    List<FileHandle> customfiles;
 
     private ShapeRenderer shapeRenderer;
 
@@ -177,7 +187,7 @@ public class LevelScreen2 extends ScreenAdapter
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
             customDIR = Gdx.files.local("LEVELS\\CUSTOM\\");
-            customfiles = customDIR.list();
+            customfiles = Arrays.asList(customDIR.list());
         }
         
         spawnables = new Array<Spawnable>();
@@ -201,6 +211,9 @@ public class LevelScreen2 extends ScreenAdapter
         savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         cancelbutt = new Rectangle(CANCEL_X, CANCEL_Y, CANCEL_W, CANCEL_H);
         saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
+        loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
+        loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
+        pagenumber =0;
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -380,7 +393,11 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void LoadFile()
     {
-        customfiles = customDIR.list(); //reload... reload... reload...
+        customfiles = Arrays.asList(customDIR.list()); //reload... reload... reload...
+
+        if (in.justTouched() && loadpageleft.contains(touchpoint) && pagenumber>0) pagenumber--;
+        if (in.justTouched() && loadpageright.contains(touchpoint) && (customDIR.list().length / PAGE_SIZE > pagenumber)) pagenumber++;
+        customfiles = new ArrayList<FileHandle>(customfiles.subList(pagenumber * PAGE_SIZE, customfiles.size() < (pagenumber+1)*PAGE_SIZE ? customfiles.size() : (pagenumber+1)*PAGE_SIZE));
         int buttpressed =-1;//no button pressed
         touchpoint.set(in.getTouchpoint());
         for (int i =0; i<loadlevelbuttons.length;i++)
@@ -389,14 +406,15 @@ public class LevelScreen2 extends ScreenAdapter
                 buttpressed = i;
             }
         }
-        if (buttpressed >=0 && buttpressed <loadlevelbuttons.length)
+
+
+        if (buttpressed >=0 && buttpressed <customfiles.size()) //custom files length must be less than or equal to loadlevelbuttons length
         {
-            //button pressed, load corresponidng file
+            //button pressed with file, load corresponidng file
 
             spawnables = new Array<Spawnable>();//first clear current file
-            if (buttpressed < customfiles.length)
-            {
-                String levelstring = customfiles[buttpressed].readString();
+
+                String levelstring = customfiles.get(buttpressed).readString();
 
                 ArrayList<String> levelcodes = new ArrayList<String>(Arrays.asList(levelstring.split("\n")));
                 try
@@ -426,7 +444,6 @@ public class LevelScreen2 extends ScreenAdapter
                 {
                     Gdx.app.debug("Error","Level File appers corrupt");
                 }
-            }
 
             loadfile = false;
             defaultstate = true;
@@ -858,7 +875,11 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.numberfont.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
-            if (i<customfiles.length) Assets.font.draw(game.batch, customfiles[i].name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+            if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+        }
+        if (loadfile){
+            game.batch.draw(Assets.NavigationFlechaIzq, loadpageleft.getX(), loadpageleft.getY());
+            game.batch.draw(Assets.NavigationFlechaDer, loadpageright.getX(), loadpageright.getY());
         }
         game.batch.end();
 
@@ -882,8 +903,6 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-
-        if (getVel) shapeRenderer.line(tempguy.getPos().cpy().add(EDITOR_OFFSET), tempguy.getVel().cpy().add(tempguy.getPos()).add(EDITOR_OFFSET));
 
         shapeRenderer.end();
 
