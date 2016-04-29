@@ -23,8 +23,8 @@ import sun.applet.Main;
 public class Assets
 {
     public static BitmapFont font;
+    public static BitmapFont numberfont;
 
-    public static Texture LevelEditMapaArriba;
     public static Texture LevelEditMapaAbajo;
     public static Texture LevelEditClock;
     public static Texture LevelEditConfirm;
@@ -39,6 +39,7 @@ public class Assets
     public static Texture LevelEditShark;
     public static Texture LevelEditTimeBar;
     public static Texture LevelEditLives;
+    public static Texture LevelEditUnlives;
 
     public static Texture LevelSelectionBackground;
 
@@ -285,11 +286,28 @@ public class Assets
         else res = "stdres\\";
 
         font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
-        //no need to dispose of things if we just keep everything in memory the whole time hehe
     }
     public static void dispose_font()
     {
         font.dispose();
+    }
+
+    public static void load_numberfont_std()
+    {
+        numberfont = new BitmapFont(Gdx.files.internal("stdres\\FONT\\numbers.fnt"));
+    }
+    public static void load_numberfont_high()
+    {
+        numberfont = new BitmapFont(Gdx.files.internal("highres\\FONT\\numbers.fnt"));
+    }
+    public static void load_numberfont()
+    {
+        if (Options.highres) load_numberfont_high();
+        else load_numberfont_std();
+    }
+    public static void dispose_numberfont()
+    {
+        numberfont.dispose();
     }
 
     public static void load_leveledit()
@@ -297,7 +315,6 @@ public class Assets
         res = "stdres\\";
 
         font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
-        LevelEditMapaArriba = new Texture(Gdx.files.internal("leveledit\\mapaarriba.png"));
         LevelEditMapaAbajo = new Texture(Gdx.files.internal("leveledit\\mapaabajo.png"));
         LevelEditClock = new Texture(Gdx.files.internal("leveledit\\RELOJ.png"));
         LevelEditConfirm = new Texture(Gdx.files.internal("leveledit\\CONFIRM.png"));
@@ -306,6 +323,7 @@ public class Assets
         LevelEditLily = new Texture(Gdx.files.internal("leveledit\\lily.png"));
         LevelEditLOAD = new Texture(Gdx.files.internal("leveledit\\LOAD.png"));
         LevelEditLives = new Texture(Gdx.files.internal("leveledit\\lives.png"));
+        LevelEditUnlives = new Texture(Gdx.files.internal("leveledit\\unlives.png"));
         LevelEditRemoveItem = new Texture(Gdx.files.internal("leveledit\\REMOVEITEM.png"));
         LevelEditSave = new Texture(Gdx.files.internal("leveledit\\SAVE.png"));
         LevelEditShark = new Texture(Gdx.files.internal("leveledit\\shark.png"));
@@ -366,7 +384,6 @@ public class Assets
     public static void dispose_leveledit()
     {
         GameBackground.dispose();
-        LevelEditMapaArriba.dispose();
         LevelEditMapaAbajo.dispose();
         LevelEditClock.dispose();
         LevelEditConfirm.dispose();
@@ -375,6 +392,7 @@ public class Assets
         LevelEditLily.dispose();
         LevelEditLOAD.dispose();
         LevelEditLives.dispose();
+        LevelEditUnlives.dispose();
         LevelEditRemoveItem.dispose();
         LevelEditSave.dispose();
         LevelEditShark.dispose();

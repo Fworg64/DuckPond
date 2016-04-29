@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -23,6 +25,8 @@ import java.util.Iterator;
 public class LevelScreen2 extends ScreenAdapter
 {
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
+    public final static float SWYPE_ARROW_SCALE = 1.6f;
+
 
     public static final int TOPBUTTONS_X = 90;
     public static final int TOPBUTTONS_Y = 1920-136;
@@ -33,11 +37,13 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
 
-    public static final int CHARACTER_BUTTON_X = 55;
+    public static final int CHARACTER_BUTTON_X = 355;
     public static final int CHARACTER_BUTTON_Y = 1920 -1737;
     public static final int CHARACTER_BUTTON_S = 150;
-    public static final int TRASH_AND_CONFIRM_X = 800;
-    public static final int CONFIRM_Y = 50;
+    public static final int TRASH_X = 55;
+    public static final int TRASH_Y = 1920-1737;
+    public static final int CONFIRM_X = 800;
+    public static final int CONFIRM_Y = 1920-1737;
 
     public static final int LOWER_AREA_BUTTON_W = 250;
     public static final int LOWER_AREA_BUTTON_H = 100;
@@ -45,7 +51,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TSLIDER_X = 100;
     public static final int TSLIDER_W = 650;
     public static final int TSLIDER_H = 20;
-    public static final int TSLIDER_Y = CONFIRM_Y + LOWER_AREA_BUTTON_H/2 - TSLIDER_H/2;
+    public static final int TSLIDER_Y = 90;
     public static final int TKNOB_W = 96;
     public static final int TKNOB_H = 96;
 
@@ -64,19 +70,26 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_LOAD_R = 3;
     public static final int LEVEL_LOAD_C = 2;
 
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_X = 515;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_Y = 1920-1750;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_W = 96;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_H = 60;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_XS = 150;
-    public static final int LEVEL_TIME_AND_LIVES_BUTTON_YS = 80;
+    public static final int LEVEL_TIME_BUTTON_X = 55;
+    public static final int LEVEL_TIME_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
+    public static final int LEVEL_TIME_BUTTON_W = 40;
+    public static final int LEVEL_TIME_BUTTON_H = 75;
+    public static final int LEVEL_TIME_BUTTON_XS = 380;
 
-    public static final int LIVES_DISPLAY_X = 725;
+    public static final int LEVEL_LIVES_BUTTON_X = 615;
+    public static final int LEVEL_LIVES_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
+    public static final int LEVEL_LIVES_BUTTON_W = 40;
+    public static final int LEVEL_LIVES_BUTTON_H = 75;
+    public static final int LEVEL_LIVES_BUTTON_XS = 380;
+
+    public static final int LIVES_DISPLAY_X = 670;
     public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int LIVES_DISPLAY_S = 106;
 
-    public static final int TIME_DISPLAY_X = 700;
-    public static final int TIME_DISPLAY_Y = 1780;
+    public static final int T_TIME_DISPLAY_X = 150;
+    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT +100;
+    public static final int C_TIME_DISPLAY_X = 700;
+    public static final int C_TIME_DISPLAY_Y = 255;
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
     public static final float VELOCITY_INPUT_SCALE = .7f;
@@ -144,6 +157,7 @@ public class LevelScreen2 extends ScreenAdapter
     public LevelScreen2(DuckPondGame game)
     {
         //options has no effect on resolution
+        Assets.load_numberfont_std();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -179,7 +193,7 @@ public class LevelScreen2 extends ScreenAdapter
         Message = "heerp";
         Tknob = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
-        Confirm = new Rectangle(TRASH_AND_CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
+        Confirm = new Rectangle(CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
         ducklingNumber = new Rectangle[MAX_DUCKLINGS];
         for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H );}
         loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
@@ -189,11 +203,11 @@ public class LevelScreen2 extends ScreenAdapter
                 loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
             }
         }
-        trashbutt = new Rectangle(TRASH_AND_CONFIRM_X,CHARACTER_BUTTON_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
-        TtimeUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        TtimeDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        LivesUp = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X +LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y + LEVEL_TIME_AND_LIVES_BUTTON_YS, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
-        LivesDown = new Rectangle(LEVEL_TIME_AND_LIVES_BUTTON_X + LEVEL_TIME_AND_LIVES_BUTTON_XS, LEVEL_TIME_AND_LIVES_BUTTON_Y, LEVEL_TIME_AND_LIVES_BUTTON_W, LEVEL_TIME_AND_LIVES_BUTTON_H);
+        trashbutt = new Rectangle(TRASH_X,TRASH_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
+        TtimeUp = new Rectangle(LEVEL_TIME_BUTTON_X + LEVEL_TIME_BUTTON_XS, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
+        TtimeDown = new Rectangle(LEVEL_TIME_BUTTON_X, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
+        LivesUp = new Rectangle(LEVEL_LIVES_BUTTON_X + LEVEL_LIVES_BUTTON_XS, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
+        LivesDown = new Rectangle(LEVEL_LIVES_BUTTON_X, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
 
         defaultstate = true;
         getD = false;
@@ -569,7 +583,10 @@ public class LevelScreen2 extends ScreenAdapter
         }
     }
 
-    public void updateTempt2s() {tempt2s = ((Tknob.getX()+Tknob.getWidth()*.5f-Tslider.getX())/Tslider.getWidth()) * time;}
+    public void updateTempt2s() {
+        tempt2s = (((Tknob.getX()+Tknob.getWidth()*.5f-Tslider.getX())/Tslider.getWidth()) * time);
+        tempt2s = new BigDecimal(tempt2s).setScale(2, RoundingMode.HALF_UP).floatValue();
+    }
 
     public void slideKnob()
     {
@@ -770,7 +787,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
 
         game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY());
-        game.batch.draw(Assets.LevelEditMapaArriba, upperarea.getX(), upperarea.getY());
+        game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY());
         game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
         game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
         game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
@@ -778,11 +795,18 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
         game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
         game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
+        game.batch.draw(Assets.LevelEditFlechaIzq, TtimeDown.getX(), TtimeDown.getY());
+        game.batch.draw(Assets.LevelEditFlechaDer, TtimeUp.getX(), TtimeUp.getY());
+        game.batch.draw(Assets.LevelEditFlechaIzq, LivesDown.getX(), LivesDown.getY());
+        game.batch.draw(Assets.LevelEditFlechaDer, LivesUp.getX(), LivesUp.getY());
 
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
         game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
 
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 1*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
+        game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X, LIVES_DISPLAY_Y);
         switch (lives)
         {
             case 3:
@@ -796,8 +820,10 @@ public class LevelScreen2 extends ScreenAdapter
         }
 
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
-        Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), TIME_DISPLAY_X, TIME_DISPLAY_Y);
-        Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), TIME_DISPLAY_X, TIME_DISPLAY_Y - 60);
+        //Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
+        Assets.numberfont.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X + 100, T_TIME_DISPLAY_Y);
+        //Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y - 60);
+        Assets.numberfont.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
             if (i<customfiles.length) Assets.font.draw(game.batch, customfiles[i].name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
@@ -824,8 +850,37 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-        if (getVel) shapeRenderer.line(temppos.cpy().add(EDITOR_OFFSET), tempguy.getVel().cpy().add(temppos).add(EDITOR_OFFSET));
+
+        if (getVel) shapeRenderer.line(tempguy.getPos().cpy().add(EDITOR_OFFSET), tempguy.getVel().cpy().add(tempguy.getPos()).add(EDITOR_OFFSET));
 
         shapeRenderer.end();
+
+        if (getVel)
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+            Vector2[] swipedraw = new Vector2[4];
+            Vector2 swipestart = tempguy.getPos().cpy().add(EDITOR_OFFSET).add(new Vector2(DuckPondGame.stdspriteW *.5f, DuckPondGame.stdspriteH * .5f));
+            Vector2 swipeend = tempguy.getVel().cpy().add(tempguy.getPos()).add(EDITOR_OFFSET).add(new Vector2(DuckPondGame.stdspriteW *.5f, DuckPondGame.stdspriteH * .5f));
+            swipedraw[0] = swipestart.cpy();
+            swipedraw[3] = swipeend.cpy();
+            Vector2 tmp = swipestart.cpy().lerp(swipeend, .875f); // point between begining and end
+            Vector2 othertmp = tmp.cpy().sub(swipeend); //one of the wings, ish
+            swipedraw[1] = new Vector2(tmp.x - othertmp.y, tmp.y + othertmp.x);
+            swipedraw[2] = new Vector2(tmp.x + othertmp.y, tmp.y - othertmp.x);
+            Vector2 thirdtemp = swipedraw[0].cpy().scl(SWYPE_ARROW_SCALE).sub(swipestart);
+            for (int i=1;i<swipedraw.length;i++)
+            {
+                swipedraw[i].scl(SWYPE_ARROW_SCALE);
+                swipedraw[i].sub(thirdtemp);
+            }
+            shapeRenderer.setColor(.2f, .5f, .5f, 1f);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[1].x, swipedraw[1].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[2].x, swipedraw[2].y, swipedraw[3].x, swipedraw[3].y);
+            shapeRenderer.end();
+            shapeRenderer.end();
+        }
+
     }
 }
