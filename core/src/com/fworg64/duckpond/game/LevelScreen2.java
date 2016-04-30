@@ -35,6 +35,10 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
+    public static final int SHARE_X = 950;
+    public static final int SHARE_Y = 1920-136;
+    public static final int SHARE_W = 100;
+    public static final int SHARE_H = 100;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
@@ -138,6 +142,7 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle loadpageleft;
     Rectangle loadpageright;
     int pagenumber;
+    Rectangle sharebutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -214,6 +219,7 @@ public class LevelScreen2 extends ScreenAdapter
         loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         pagenumber =0;
+        sharebutt = new Rectangle(SHARE_X, SHARE_Y, SHARE_W, SHARE_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -903,6 +909,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
+        shapeRenderer.rect(sharebutt.getX(), sharebutt.getY(), sharebutt.getWidth(), sharebutt.getHeight());
 
         shapeRenderer.end();
 
