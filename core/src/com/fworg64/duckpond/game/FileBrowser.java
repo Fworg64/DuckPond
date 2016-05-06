@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
@@ -127,8 +128,10 @@ public class FileBrowser
 
     public void pageRight()
     {
-        Gdx.app.debug("pagerighttocuh", Integer.toString(levelDir.list().length /PAGE_SIZE));
-        if (levelDir.list().length / PAGE_SIZE > pagenumber) pagenumber++;
+        int effectivelength = levelDir.list().length;
+        if (levelDir.name().equals("LEVELS")) effectivelength -=1;
+        Gdx.app.debug("pagerighttocuh", Integer.toString(effectivelength) +" "+ Integer.toString(PAGE_SIZE) +" "+ Integer.toString(pagenumber));
+        if (effectivelength > PAGE_SIZE*(pagenumber+1)) pagenumber++;
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
         {
@@ -159,13 +162,25 @@ public class FileBrowser
         {
             levelDir = levelDir.parent(); //take us to LEVELS
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+            for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
+            {
+                FileHandle f = iterator.next();
+                if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+            }
+            int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
+            Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
+            levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
         }
-        for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
+    }
+
+    public void pageInto(FileHandle f)
+    {
+        if (f.isDirectory())
         {
-            FileHandle f = iterator.next();
-            if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+            levelDir = f;
+            levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+            pagenumber =0;
         }
-        levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, (pagenumber+1)*PAGE_SIZE));
     }
 
     public void gocustom()
@@ -194,8 +209,8 @@ public class FileBrowser
         batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++)
         {
-            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + levelbutts[i].getHeight());
             batch.draw(Assets.NavigationWorldButt, levelbutts[i].getX(), levelbutts[i].getY());
+            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + levelbutts[i].getHeight());
         }
 
         batch.end();

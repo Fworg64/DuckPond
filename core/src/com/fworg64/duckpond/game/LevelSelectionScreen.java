@@ -148,9 +148,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                     }
                     else //you picked a folder
                     {
-                        fileBrowser.levelDir = fileBrowser.levels.get(i);
-                        fileBrowser.levels = new ArrayList<FileHandle>(Arrays.asList(fileBrowser.levelDir.list()));
-                        if (fileBrowser.levelDir.name().equals("LEVELS")) fileBrowser.levels.remove(0); //remove custom folder if you picked levels
+                        fileBrowser.pageInto(fileBrowser.levels.get(i));
                         break;
                     }
                 }
