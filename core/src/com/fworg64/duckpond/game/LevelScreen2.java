@@ -35,10 +35,10 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
-    public static final int SHARE_X = 950;
-    public static final int SHARE_Y = 1920-136;
+    public static final int SHARE_X = 750;
+    public static final int SHARE_Y = 1920-300;
     public static final int SHARE_W = 100;
-    public static final int SHARE_H = 100;
+    public static final int SHARE_H = 300;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
@@ -268,6 +268,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
+            if (sharebutt.contains(touchpoint)) return 2;
             if (savebutt.contains(touchpoint))
             {
                 if (defaultstate == true)
@@ -290,7 +291,6 @@ public class LevelScreen2 extends ScreenAdapter
                     defaultstate = false;
                 }
                 else DestroyCurrent();
-
             }
             if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
             if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
@@ -336,7 +336,6 @@ public class LevelScreen2 extends ScreenAdapter
             case 1:
                 Gdx.app.debug("screenstate", "exit");
                 Options.loadOptions();
-
                 Assets.load_levelscreen();
                 game.setScreen(new LevelSelectionScreen(game));
                 Assets.dispose_leveledit();
@@ -344,6 +343,12 @@ public class LevelScreen2 extends ScreenAdapter
                 Assets.dispose_numberfont();
                 this.dispose();
                 break;
+            case 2:
+                Gdx.app.debug("screenstate", "sharescreen");
+                Options.loadOptions();
+                game.setScreen(new ShareScreen(game));
+                Assets.dispose_leveledit();
+                this.dispose();
         }
         draw();
     }

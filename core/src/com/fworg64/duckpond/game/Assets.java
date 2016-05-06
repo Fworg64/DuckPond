@@ -39,8 +39,6 @@ public class Assets
     public static Texture LevelEditLives;
     public static Texture LevelEditUnlives;
 
-    public static Texture LevelSelectionBackground;
-
     public static Texture NavigationFlechaIzq;
     public static TextureRegion NavigationFlechaDer;
     public static Texture NavigationUpone;
@@ -123,9 +121,6 @@ public class Assets
 
 
     static String res;
-
-
-
 
     public static void load_mainmenu()
     {
@@ -271,7 +266,6 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        LevelSelectionBackground = new Texture(Gdx.files.internal(res + "LevelSelectionBckgnd.png"));
         MainMenuLevelEditor = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditor.png"));
         MainMenuLevelEditorPressed = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditorpressed.png"));
 
@@ -279,14 +273,13 @@ public class Assets
     }
     public static void dispose_levelscreen()
     {
-        LevelSelectionBackground.dispose();
         MainMenuLevelEditor.dispose();
         MainMenuLevelEditorPressed.dispose();
     }
 
     public static void load_navigation()
     {
-        if (Options.highres) load_navigation_std();
+        if (!Options.highres) load_navigation_std();
         else load_navigation_high();
     }
     public static void load_navigation_std()

@@ -18,35 +18,10 @@ import java.util.Arrays;
  */
 public class LevelSelectionScreen extends ScreenAdapter
 {
-    public final String CUSTOM_FOLDER_NAME = "CUSTOM";
-    public int LEVEL_LOAD_X ;
-    public int LEVEL_LOAD_Y;
-    public int LEVEL_LOAD_W ;
-    public int LEVEL_LOAD_H ;
-    public int LEVEL_LOAD_XS;
-    public int LEVEL_LOAD_YS;
-    public final static int LEVEL_LOAD_R =3;
-    public final static int LEVEL_LOAD_C =2;
-
     int LEVEL_X;
     int LEVEL_Y;
     int LEVEL_W;
     int LEVEL_H;
-
-    public int UP_ONE_X;
-    public int UP_ONE_Y;
-    public int UP_ONE_W;
-    public int UP_ONE_H;
-
-    public int PAGE_RIGHT_X;
-    public int PAGE_RIGHT_Y;
-    public int PAGE_LEFT_X;
-    public int PAGE_LEFT_Y;
-    public int PAGE_W;
-    public int PAGE_H;
-    public final int PAGE_SIZE = 6;
-    public int pagenumber;
-
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -55,17 +30,11 @@ public class LevelSelectionScreen extends ScreenAdapter
     InputListener in;
     Vector2 touchpoint;
 
-    FileHandle levelDir;
-    ArrayList<FileHandle> levels;
-
-    Rectangle[] levelbutts;
     Rectangle customlevelbutt;
-    Rectangle upone;
-    Rectangle pageleftbutt;
-    Rectangle pagerightbutt;
     Rectangle leveleditbutt;
-
     Rectangle mainMenubutt;
+
+    FileBrowser fileBrowser;
 
     boolean leveleditPressed;
 
@@ -73,49 +42,14 @@ public class LevelSelectionScreen extends ScreenAdapter
     {
         if (Options.highres)
         {
-            LEVEL_LOAD_X = 200;
-            LEVEL_LOAD_Y = 1920 -550;
-            LEVEL_LOAD_W = 200;
-            LEVEL_LOAD_H = 200;
-            LEVEL_LOAD_XS = 300;
-            LEVEL_LOAD_YS = 300;
-
             LEVEL_X = 700;
             LEVEL_Y = 200;
 
-            UP_ONE_X = 600;
-            UP_ONE_Y = 1920 - 1600;
-            UP_ONE_W = 200;
-            UP_ONE_H = 200;
-
-            PAGE_RIGHT_X = 650;
-            PAGE_RIGHT_Y = 1920 - 1600;
-            PAGE_LEFT_X = 50;
-            PAGE_LEFT_Y = 1920 - 1600;
-            PAGE_W = 200;
-            PAGE_H = 200;
         }
         else
         {
-            LEVEL_LOAD_X = 150;
-            LEVEL_LOAD_Y = 960 -300;
-            LEVEL_LOAD_W = 100;
-            LEVEL_LOAD_H = 100;
-            LEVEL_LOAD_XS = 150;
-            LEVEL_LOAD_YS = 150;
             LEVEL_X = 500;
             LEVEL_Y = 200;
-            UP_ONE_X = 400;
-            UP_ONE_Y = 160;
-            UP_ONE_W = 100;
-            UP_ONE_H = 100;
-
-            PAGE_RIGHT_X = 200;
-            PAGE_RIGHT_Y = 160;
-            PAGE_LEFT_X = 20;
-            PAGE_LEFT_Y = 160;
-            PAGE_W = 100;
-            PAGE_H = 100;
         }
 
         LEVEL_W = (int)(165f/640f * Options.screenWidth);
@@ -133,28 +67,14 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.mas.playMainMenu();
 
-        levelDir = Gdx.files.internal("LEVELS\\");
-        levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-        levels.remove(0); //remove custom world folder
-
-        pagenumber =0;
-
         mainMenubutt = new Rectangle(10f/640f * Options.screenWidth, 800f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
 
         customlevelbutt = new Rectangle(100f/640f * Options.screenWidth, 150f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
 
-        levelbutts = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
-        for (int i=0; i<LEVEL_LOAD_C; i++) {
-            for (int j=0; j<LEVEL_LOAD_R;j++)
-            {
-               levelbutts[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
-            }
-        }
-        upone = new Rectangle(UP_ONE_X, UP_ONE_Y, UP_ONE_W, UP_ONE_H);
-        pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y, PAGE_W, PAGE_H);
-        pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y, PAGE_W, PAGE_H);
         leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
         leveleditPressed = false;
+
+        fileBrowser = new FileBrowser();
 
         if (Gdx.app.getType() == Application.ApplicationType.Android)
         {
@@ -166,24 +86,24 @@ public class LevelSelectionScreen extends ScreenAdapter
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
-        for(int i=0; i<levelbutts.length;i++)
+        for(int i=0; i<fileBrowser.levelbutts.length;i++)
         {
-            if (in.justTouched() && levelbutts[i].contains(touchpoint))
+            if (in.justTouched() && fileBrowser.levelbutts[i].contains(touchpoint))
             {
-                if (levels.size() > i)
+                if (fileBrowser.levels.size() > i) //if you picked a valid choice
                 {
-                    if (!levels.get(i).isDirectory()) {
+                    if (!fileBrowser.levels.get(i).isDirectory()) { //if you picked a level
                         Assets.load_gamescreen();
-                        game.setScreen(new GameScreen(game, levels.get(i).readString()));
+                        game.setScreen(new GameScreen(game, fileBrowser.levels.get(i).readString()));
                         Assets.dispose_levelscreen();
+                        fileBrowser.dispose();
                         this.dispose();
                     }
-                    else
+                    else //you picked a folder
                     {
-                        levelDir = levels.get(i);
-                        levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-                        if (levelDir.name().equals("LEVELS")) levels.remove(0); //remove custom folder
-
+                        fileBrowser.levelDir = fileBrowser.levels.get(i);
+                        fileBrowser.levels = new ArrayList<FileHandle>(Arrays.asList(fileBrowser.levelDir.list()));
+                        if (fileBrowser.levelDir.name().equals("LEVELS")) fileBrowser.levels.remove(0); //remove custom folder if you picked levels
                         break;
                     }
                 }
@@ -193,42 +113,29 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (Gdx.app.getType() != Application.ApplicationType.WebGL)
             {
-                levelDir = Gdx.files.local("LEVELS\\" + CUSTOM_FOLDER_NAME);
-                levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+                fileBrowser.gocustom();
             }
             else game.setScreen(new GameScreen(game, Options.getCustom1()));
         }
-        if (in.justTouched() && upone.contains(touchpoint))
+        if (in.justTouched() && fileBrowser.upone.contains(touchpoint))
         {
-            if (!levelDir.name().equals("LEVELS"))
-            {
-                levelDir = levelDir.parent(); //take us to LEVELS
-                levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-                levels.remove(0); //remove custom folder
-            }
+            fileBrowser.pageUp();
         }
         if ((in.justTouched() && mainMenubutt.contains(touchpoint)) || in.isBackPressed())
         {
             Assets.load_mainmenu();
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_levelscreen();
+            fileBrowser.dispose();
             this.dispose();
         }
-        if ((in.justTouched() && pageleftbutt.contains(touchpoint)) && levelDir.name().equals(CUSTOM_FOLDER_NAME))
+        if ((in.justTouched() && fileBrowser.pageleftbutt.contains(touchpoint)))
         {
-            if (pagenumber>0) pagenumber--;
-            levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-            levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, (pagenumber+1)*PAGE_SIZE));
+            fileBrowser.pageLeft();
         }
-        if ((in.justTouched() && pagerightbutt.contains(touchpoint) && levelDir.name().equals(CUSTOM_FOLDER_NAME)))
+        if ((in.justTouched() && fileBrowser.pagerightbutt.contains(touchpoint)))
         {
-            Gdx.app.debug("pagerighttocuh", Integer.toString(levelDir.list().length /6));
-            if (levelDir.list().length / PAGE_SIZE > pagenumber) pagenumber++;
-            levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-            for (int i =0; i<pagenumber*PAGE_SIZE; i++)
-            {
-                levels.remove(0);
-            }
+            fileBrowser.pageRight();
         }
         if (leveleditbutt.contains(touchpoint) && in.justTouched()) leveleditPressed = true;
         if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
@@ -237,6 +144,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             Assets.load_leveledit();
             game.setScreen(new LevelScreen2(game));
             Assets.dispose_levelscreen();
+            fileBrowser.dispose();
             this.dispose();
         }
     }
@@ -244,36 +152,32 @@ public class LevelSelectionScreen extends ScreenAdapter
     public void draw()
     {
         GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 0, 0, 1);
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
-        game.batch.disableBlending();
-        game.batch.begin();
-        game.batch.draw(Assets.LevelSelectionBackground, 0, 0);
-        game.batch.end();
 
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
         Assets.font.draw(game.batch, "Return to MainMenu", mainMenubutt.getX(), mainMenubutt.getY());
         Assets.font.draw(game.batch, "Custom Level", customlevelbutt.getX(), customlevelbutt.getY());
-        Assets.font.draw(game.batch, "PageLeft", pageleftbutt.getX(), pageleftbutt.getY());
-        Assets.font.draw(game.batch, "Pageright", pagerightbutt.getX(), pagerightbutt.getY());
-        Assets.font.draw(game.batch, "Up1", upone.getX(), upone.getY());
-        for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++) Assets.font.draw(game.batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY());
         game.batch.end();
+
+        fileBrowser.renderSprites(game.batch);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        for(Rectangle r: levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+        for(Rectangle r: fileBrowser.levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
         shapeRenderer.rect(customlevelbutt.getX(), customlevelbutt.getY(), customlevelbutt.getWidth(), customlevelbutt.getHeight());
         shapeRenderer.rect(mainMenubutt.getX(), mainMenubutt.getY(), mainMenubutt.getWidth(), mainMenubutt.getHeight());
-        shapeRenderer.rect(upone.getX(), upone.getY(), upone.getWidth(), upone.getHeight());
-        shapeRenderer.rect(pageleftbutt.getX(), pageleftbutt.getY(), pageleftbutt.getWidth(), pageleftbutt.getHeight());
-        shapeRenderer.rect(pagerightbutt.getX(), pagerightbutt.getY(), pagerightbutt.getWidth(), pagerightbutt.getHeight());
+        shapeRenderer.rect(fileBrowser.upone.getX(), fileBrowser.upone.getY(), fileBrowser.upone.getWidth(), fileBrowser.upone.getHeight());
+        shapeRenderer.rect(fileBrowser.pageleftbutt.getX(), fileBrowser.pageleftbutt.getY(), fileBrowser.pageleftbutt.getWidth(), fileBrowser.pageleftbutt.getHeight());
+        shapeRenderer.rect(fileBrowser.pagerightbutt.getX(), fileBrowser.pagerightbutt.getY(), fileBrowser.pagerightbutt.getWidth(), fileBrowser.pagerightbutt.getHeight());
         shapeRenderer.rect(leveleditbutt.getX(), leveleditbutt.getY(), leveleditbutt.getWidth(), leveleditbutt.getHeight());
         shapeRenderer.end();
+
+        fileBrowser.renderShapes(shapeRenderer);
     }
 
     @Override
