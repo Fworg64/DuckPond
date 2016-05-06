@@ -44,12 +44,16 @@ public class Assets
     public static Texture NavigationUpone;
     public static Texture NavigationCancel;
     public static Texture NavigationConfirm;
+    public static Texture NavigationWorldButt;
+
+    public static Texture LevelSelectionMainMenu;
+    public static Texture LevelSelectionCustomWorld;
+    public static Texture LevelSelectionGetMore;
+    public static Texture LevelSelectionWorldMaker;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
     public static Texture MainMenuPlayPressed;
-    public static Texture MainMenuLevelEditor;
-    public static Texture MainMenuLevelEditorPressed;
     public static Texture MainMenuOptions;
     public static Texture MainMenuOptionsPressed;
     public static Texture MainMenuExit;
@@ -266,20 +270,24 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        MainMenuLevelEditor = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditor.png"));
-        MainMenuLevelEditorPressed = new Texture(Gdx.files.internal(res + "mainmenu\\leveleditorpressed.png"));
+        LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
+        LevelSelectionCustomWorld = new Texture(Gdx.files.internal(res + "levelselection\\custombutt.png"));
+        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\getmore.png"));
+        LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
 
 
     }
     public static void dispose_levelscreen()
     {
-        MainMenuLevelEditor.dispose();
-        MainMenuLevelEditorPressed.dispose();
+        LevelSelectionWorldMaker.dispose();
+        LevelSelectionCustomWorld.dispose();
+        LevelSelectionGetMore.dispose();
+        LevelSelectionMainMenu.dispose();
     }
 
     public static void load_navigation()
     {
-        if (!Options.highres) load_navigation_std();
+        if (!Options.isHighres()) load_navigation_std();
         else load_navigation_high();
     }
     public static void load_navigation_std()
@@ -290,6 +298,7 @@ public class Assets
         NavigationFlechaDer = new TextureRegion(NavigationFlechaIzq);
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
+        NavigationWorldButt = new Texture(Gdx.files.internal("stdres\\navigation\\levelbutt.png"));
     }
     public static void load_navigation_high()
     {
@@ -299,6 +308,7 @@ public class Assets
         NavigationFlechaDer = new TextureRegion(NavigationFlechaIzq);
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
+        NavigationWorldButt = new Texture(Gdx.files.internal("highres\\navigation\\levelbutt.png"));
     }
     public static void dispose_navigation()
     {
@@ -306,6 +316,7 @@ public class Assets
         NavigationCancel.dispose();
         NavigationConfirm.dispose();
         NavigationUpone.dispose();
+        NavigationWorldButt.dispose();
     }
     
     public static void load_font()

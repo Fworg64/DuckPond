@@ -337,10 +337,10 @@ public class LevelScreen2 extends ScreenAdapter
                 Gdx.app.debug("screenstate", "exit");
                 Options.loadOptions();
                 Assets.load_levelscreen();
-                game.setScreen(new LevelSelectionScreen(game));
-                Assets.dispose_leveledit();
                 Assets.dispose_navigation();
                 Assets.dispose_numberfont();
+                game.setScreen(new LevelSelectionScreen(game));
+                Assets.dispose_leveledit();
                 this.dispose();
                 break;
             case 2:

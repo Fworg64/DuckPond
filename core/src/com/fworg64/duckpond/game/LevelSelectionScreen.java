@@ -18,10 +18,25 @@ import java.util.Arrays;
  */
 public class LevelSelectionScreen extends ScreenAdapter
 {
-    int LEVEL_X;
-    int LEVEL_Y;
-    int LEVEL_W;
-    int LEVEL_H;
+    int WORLDMAKER_X;
+    int WORLDMAKER_Y;
+    int WORLDMAKER_W;
+    int WORLDMAKER_H;
+
+    int MAINBUTT_X;
+    int MAINBUTT_Y;
+    int MAINBUTT_W;
+    int MAINBUTT_H;
+
+    int GETMORE_X;
+    int GETMORE_Y;
+    int GETMORE_W;
+    int GETMORE_H;
+
+    int CUSTOMWORLD_X;
+    int CUSTOMWORLD_Y;
+    int CUSTOMWORLD_W;
+    int CUSTOMWORLD_H;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -33,6 +48,7 @@ public class LevelSelectionScreen extends ScreenAdapter
     Rectangle customlevelbutt;
     Rectangle leveleditbutt;
     Rectangle mainMenubutt;
+    Rectangle getmorebutt;
 
     FileBrowser fileBrowser;
 
@@ -42,18 +58,49 @@ public class LevelSelectionScreen extends ScreenAdapter
     {
         if (Options.highres)
         {
-            LEVEL_X = 700;
-            LEVEL_Y = 200;
+            MAINBUTT_X = 62;
+            MAINBUTT_Y = 1920 - 385; //BOTTOM LEFT CORNER
+            MAINBUTT_W = 281;
+            MAINBUTT_H = 160;
+
+            GETMORE_X = 614;
+            GETMORE_Y = 1920 -405;
+            GETMORE_W = 400;
+            GETMORE_H = 200;
+
+            CUSTOMWORLD_X = 80; //BOTTOM LEFT
+            CUSTOMWORLD_Y = 25;
+            CUSTOMWORLD_W = 400;
+            CUSTOMWORLD_H = 200;
+
+            WORLDMAKER_X = 619; //BOTTOM LEFT
+            WORLDMAKER_Y = 22;
+            WORLDMAKER_W = 381;
+            WORLDMAKER_H = 218;
 
         }
         else
         {
-            LEVEL_X = 500;
-            LEVEL_Y = 200;
-        }
+            MAINBUTT_X = 64;
+            MAINBUTT_Y = 960 - 290;
+            MAINBUTT_W = 167;
+            MAINBUTT_H = 95;
 
-        LEVEL_W = (int)(165f/640f * Options.screenWidth);
-        LEVEL_H = (int)(156f/960f * Options.screenHeight);
+            GETMORE_X = 364;
+            GETMORE_Y = 960 -305;
+            GETMORE_W = 237;
+            GETMORE_H = 119;
+
+            CUSTOMWORLD_X = 47;
+            CUSTOMWORLD_Y = 960-931;
+            CUSTOMWORLD_W = 237;
+            CUSTOMWORLD_H = 119;
+
+            WORLDMAKER_X = 367;
+            WORLDMAKER_Y = 960 - 935;
+            WORLDMAKER_W = 226;
+            WORLDMAKER_H = 129;
+        }
 
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -67,11 +114,11 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.mas.playMainMenu();
 
-        mainMenubutt = new Rectangle(10f/640f * Options.screenWidth, 800f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
+        mainMenubutt = new Rectangle(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H);
+        customlevelbutt = new Rectangle(CUSTOMWORLD_X, CUSTOMWORLD_Y, CUSTOMWORLD_W, CUSTOMWORLD_H);
+        leveleditbutt = new Rectangle(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H);
+        getmorebutt = new Rectangle(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H);
 
-        customlevelbutt = new Rectangle(100f/640f * Options.screenWidth, 150f/960f * Options.screenHeight, 100f/640f * Options.screenWidth, 100f/960f * Options.screenHeight);
-
-        leveleditbutt = new Rectangle(LEVEL_X, LEVEL_Y, LEVEL_W, LEVEL_H);
         leveleditPressed = false;
 
         fileBrowser = new FileBrowser();
@@ -159,9 +206,10 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(leveleditPressed ? Assets.MainMenuLevelEditorPressed : Assets.MainMenuLevelEditor, leveleditbutt.getX(), leveleditbutt.getY());
-        Assets.font.draw(game.batch, "Return to MainMenu", mainMenubutt.getX(), mainMenubutt.getY());
-        Assets.font.draw(game.batch, "Custom Level", customlevelbutt.getX(), customlevelbutt.getY());
+        game.batch.draw(Assets.LevelSelectionWorldMaker, leveleditbutt.getX(), leveleditbutt.getY());
+        game.batch.draw(Assets.LevelSelectionMainMenu, mainMenubutt.getX(), mainMenubutt.getY());
+        game.batch.draw(Assets.LevelSelectionCustomWorld, customlevelbutt.getX(), customlevelbutt.getY());
+        game.batch.draw(Assets.LevelSelectionGetMore, getmorebutt.getX(), getmorebutt.getY());
         game.batch.end();
 
         fileBrowser.renderSprites(game.batch);

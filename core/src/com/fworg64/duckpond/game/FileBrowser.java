@@ -38,9 +38,9 @@ public class FileBrowser
     public int UP_ONE_W;
     public int UP_ONE_H;
 
-    public final static int LEVEL_LOAD_R =3;
-    public final static int LEVEL_LOAD_C =2;
-    public final static int PAGE_SIZE = LEVEL_LOAD_C * LEVEL_LOAD_R;
+    public int LEVEL_LOAD_R;
+    public int LEVEL_LOAD_C;
+    public int PAGE_SIZE;
 
     Rectangle[] levelbutts;
     Rectangle pageleftbutt;
@@ -56,44 +56,52 @@ public class FileBrowser
         //region valuesForRectangles
         if (Options.highres)
         {
-            LEVEL_LOAD_X = 200;
-            LEVEL_LOAD_Y = 1920 - 550;
-            LEVEL_LOAD_W = 200;
-            LEVEL_LOAD_H = 200;
-            LEVEL_LOAD_XS = 300;
-            LEVEL_LOAD_YS = 300;
+            LEVEL_LOAD_X = 210;
+            LEVEL_LOAD_Y = 1920 - 453;
+            LEVEL_LOAD_W = 300;
+            LEVEL_LOAD_H = 300;
+            LEVEL_LOAD_XS = 360;
+            LEVEL_LOAD_YS = 360;
 
-            PAGE_RIGHT_X = 850;
+            PAGE_RIGHT_X = 694;
             PAGE_RIGHT_Y = 420;
-            PAGE_LEFT_X = 270;
+            PAGE_LEFT_X = 300;
             PAGE_LEFT_Y = 420;
             PAGE_W = 86;
             PAGE_H = 163;
 
-            UP_ONE_X = 500;
+            UP_ONE_X = 480;
             UP_ONE_Y = 420;
             UP_ONE_W = 121;
             UP_ONE_H = 163;
+
+            LEVEL_LOAD_R = 3;
+            LEVEL_LOAD_C = 2;
+            PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
         }
         else {
-            LEVEL_LOAD_X = 150;
-            LEVEL_LOAD_Y = 960 -300;
-            LEVEL_LOAD_W = 100;
-            LEVEL_LOAD_H = 100;
-            LEVEL_LOAD_XS = 150;
-            LEVEL_LOAD_YS = 150;
+            LEVEL_LOAD_X = 65;
+            LEVEL_LOAD_Y = 960 -332;
+            LEVEL_LOAD_W = 150;
+            LEVEL_LOAD_H = 150;
+            LEVEL_LOAD_XS = 180;
+            LEVEL_LOAD_YS = 180;
 
-            PAGE_RIGHT_X = 400;
-            PAGE_RIGHT_Y = 140;
-            PAGE_LEFT_X = 160;
-            PAGE_LEFT_Y = 140;
+            PAGE_RIGHT_X = 441;
+            PAGE_RIGHT_Y = 960-687;
+            PAGE_LEFT_X = 178;
+            PAGE_LEFT_Y = 960-687;
             PAGE_W = 50;
             PAGE_H = 96;
 
-            UP_ONE_X = 250;
-            UP_ONE_Y = 140;
+            UP_ONE_X = 284;
+            UP_ONE_Y = 960-687;
             UP_ONE_W = 71;
             UP_ONE_H = 96;
+
+            LEVEL_LOAD_R = 2;
+            LEVEL_LOAD_C = 3;
+            PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
         }
         //endregion
 
@@ -103,13 +111,13 @@ public class FileBrowser
         for (int i=0; i<LEVEL_LOAD_C; i++) {
             for (int j=0; j<LEVEL_LOAD_R;j++)
             {
-                levelbutts[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
+                levelbutts[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS - LEVEL_LOAD_H, LEVEL_LOAD_W, LEVEL_LOAD_H);
             }
         }
 
-        pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y, PAGE_W, PAGE_H);
-        pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y, PAGE_W, PAGE_H);
-        upone = new Rectangle(UP_ONE_X, UP_ONE_Y, UP_ONE_W, UP_ONE_H);
+        pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H);
+        pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
+        upone = new Rectangle(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H);
 
         levelDir = Gdx.files.internal("LEVELS\\");
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
@@ -184,7 +192,12 @@ public class FileBrowser
         batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
         batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
         batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
-        for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++) Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY());
+        for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++)
+        {
+            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + levelbutts[i].getHeight());
+            batch.draw(Assets.NavigationWorldButt, levelbutts[i].getX(), levelbutts[i].getY());
+        }
+
         batch.end();
 
     }
