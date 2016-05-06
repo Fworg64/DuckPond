@@ -122,7 +122,11 @@ public class FileBrowser
 
         levelDir = Gdx.files.internal("LEVELS\\");
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-        levels.remove(0); //remove custom world folder
+        for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
+        {
+            FileHandle f = iterator.next();
+            if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+        }
         pagenumber =0;
     }
 
@@ -153,7 +157,9 @@ public class FileBrowser
             FileHandle f = iterator.next();
             if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
         }
-        levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, (pagenumber+1)*PAGE_SIZE));
+        int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
+        Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
+        levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
     }
 
     public void pageUp()
@@ -204,9 +210,16 @@ public class FileBrowser
     {
         batch.enableBlending();
         batch.begin();
+        batch.setColor(1,1,1,.2f);
+        batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
         batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
         batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
-        batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
+        batch.setColor(1,1,1,1f);
+
+        if (!levelDir.name().equals("LEVELS")) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
+        if (pagenumber !=0) batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
+        if (levelDir.list().length > (pagenumber +1)*PAGE_SIZE) batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
+
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++)
         {
             batch.draw(Assets.NavigationWorldButt, levelbutts[i].getX(), levelbutts[i].getY());

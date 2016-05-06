@@ -163,7 +163,7 @@ public class MainMenuScreen extends ScreenAdapter
     {
         //background 46b4d6: .27451, .70588, .83922
         GL20 gl = Gdx.gl;
-        gl.glClearColor(.27451f, .70588f, .83922f, 1);
+        gl.glClearColor(DuckPondGame.DuckPondBlue.r,DuckPondGame.DuckPondBlue.g,DuckPondGame.DuckPondBlue.b,DuckPondGame.DuckPondBlue.a);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
@@ -171,9 +171,25 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(Assets.MainMenuTitle, TITTLE_X, TITTLE_Y);
-        game.batch.draw(playPressed ? Assets.MainMenuPlayPressed : Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
-        game.batch.draw(optionsPressed ? Assets.MainMenuOptionsPressed : Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
-        game.batch.draw(exitPressed ? Assets.MainMenuExitPressed : Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
+        game.batch.draw(Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
+        game.batch.draw(Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
+        game.batch.draw(Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
+
+        if (playPressed) {
+            game.batch.setColor(DuckPondGame.BlueButtTit);
+            game.batch.draw(Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
+        }
+        if (optionsPressed)
+        {
+            game.batch.setColor(DuckPondGame.GreenButtTit);
+            game.batch.draw(Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
+        }
+        if (exitPressed) {
+            game.batch.setColor(DuckPondGame.GreenButtTit);
+            game.batch.draw(Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
+        }
+        game.batch.setColor(1,1,1,1);
+
         Assets.font.draw(game.batch, DuckPondGame.version, 0, 100);
         game.batch.end();
 
