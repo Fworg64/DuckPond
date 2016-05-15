@@ -85,10 +85,6 @@ public class DPClientConnection extends Thread
 
     private void communicate()
     {
-        String fromServer;
-        String fromUser;
-        fromServer = "";
-
         switch (sendUserName())
         {
             case -2: //network error
@@ -135,26 +131,7 @@ public class DPClientConnection extends Thread
                 break;
         }
 
- /*       while (!fromServer.equals("Bye."))
-        {
-            try
-            {
-                fromServer = in.readLine(); //read from server
-            }
-            catch (IOException e)
-            {
-                fromServer = "INTERNAL ERROR, COULDNT READ FROM SERVER";
-            }
-
-
-            Gdx.app.debug("Server", fromServer);
-
-            fromUser = "herp";
-            if (fromUser != null) {
-                Gdx.app.debug("Client", fromUser);
-                out.println(fromUser); //send to server
-            }
-        }       */
+        out.println("dirgety");
     }
 
     private int sendUserName()
@@ -253,7 +230,6 @@ public class DPClientConnection extends Thread
     private boolean setServerPin2PinOnFile()
     {
         String fromserver ="";
-        out.println("PINCOMING");
         out.println(Options.getSavedPin());
 
         try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
