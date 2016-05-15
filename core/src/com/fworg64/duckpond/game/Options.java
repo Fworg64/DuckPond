@@ -148,7 +148,9 @@ public class Options
 
     public static String getSavedPin()
     {
-        pin = prefs.getString("pin");
+
+        if (prefs.contains("pin")) pin = prefs.getString("pin");
+        else pin = "\0";
         return pin;
     }
 
