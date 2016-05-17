@@ -156,6 +156,7 @@ public class Options
 
     public static void save()
     {
+        Gdx.app.debug("Options", "saved");
         prefs.flush();
     }
 }

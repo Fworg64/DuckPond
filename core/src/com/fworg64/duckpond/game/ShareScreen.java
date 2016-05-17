@@ -14,18 +14,15 @@ import com.badlogic.gdx.utils.StreamUtils;
  */
 public class ShareScreen extends ScreenAdapter
 {
-    public int PINBUTT_W;
-    public int PINBUTT_H;
-    public int PINBUTT_X;
-    public int PINBUTT_Y;
-    public int PINBUTT_XS;
-    public int PINBUTT_YS;
-
     public int BACKBUTT_X;
     public int BACKBUTT_Y;
     public int BACKBUTT_W;
     public int BACKBUTT_H;
 
+    public int SHAREBUTT_X = 100;
+    public int SHAREBUTT_Y = 100;
+    public int SHAREBUTT_W = 100;
+    public int SHAREBUTT_Z = 100;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -33,14 +30,12 @@ public class ShareScreen extends ScreenAdapter
 
     Rectangle sharebutt;
     Rectangle backbutt;
-    Rectangle pinpad[];
-    public static final String pinmap[] = {"1", "2","3","4","5","6","7","8","9","<-","0","OK"};
 
     InputListener in;
     Vector2 touchpoint;
 
     DPClientConnection dpClientConnection;
-    String temppin;
+    PinPad pinPad;
 
     public ShareScreen (DuckPondGame game)
     {
@@ -58,45 +53,39 @@ public class ShareScreen extends ScreenAdapter
 
         if (Options.isHighres())
         {
-            PINBUTT_W = 100;
-            PINBUTT_H = 100;
-            PINBUTT_X = 345;
-            PINBUTT_Y = 1500;
-            PINBUTT_XS = 180;
-            PINBUTT_YS = 180;
-
             BACKBUTT_X =0;
             BACKBUTT_Y = 1820;
             BACKBUTT_W =100;
             BACKBUTT_H = 100;
+
+            SHAREBUTT_X = 100;
+            SHAREBUTT_Y = 100;
+            SHAREBUTT_W = 100;
+            SHAREBUTT_Z = 100;
         }
         else
         {
-            PINBUTT_W = 50;
-            PINBUTT_H = 50;
-            PINBUTT_X = 222;
-            PINBUTT_Y = 600;
-            PINBUTT_XS = 65;
-            PINBUTT_YS = 65;
-
             BACKBUTT_X =0;
             BACKBUTT_Y = 800;
             BACKBUTT_W = 50;
             BACKBUTT_H = 50;
-        }
+
+            SHAREBUTT_X = 100;
+            SHAREBUTT_Y = 100;
+            SHAREBUTT_W = 100;
+            SHAREBUTT_Z = 100;
+        } //back and sharebutt dims and pos
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
 
         sharebutt = new Rectangle(100, 100, 100, 100);
         backbutt = new Rectangle(BACKBUTT_X, BACKBUTT_Y, BACKBUTT_W, BACKBUTT_H);
-        pinpad = new Rectangle[12];
-        for (int i =0; i< pinpad.length; i++) pinpad[i] = new Rectangle(PINBUTT_X + (i % 3)* PINBUTT_XS, PINBUTT_Y - (i/3)* PINBUTT_YS, PINBUTT_W, PINBUTT_H);
 
-        dpClientConnection = new DPClientConnection();
+        pinPad = new PinPad();
+
+        dpClientConnection = new DPClientConnection(pinPad);
         dpClientConnection.start();
-
-        temppin = "";
     }
 
     public void update()
@@ -111,61 +100,16 @@ public class ShareScreen extends ScreenAdapter
             this.dispose();
         }
 
-        if (dpClientConnection.needpin == true) getPin();
-        if (dpClientConnection.needConfirmPin == true) confirmPin();
+        if (pinPad.isNeedpin()) getPin(); // UI thread, non blocking
     }
 
     public void getPin()
     {
-        Gdx.app.debug("GetPin", Integer.toString(temppin.length()));
+        Gdx.app.debug("GetPin", Integer.toString(pinPad.tempPin.length()));
         for (int i = 0; i< 12; i++){
-            if (in.justTouched() && pinpad[i].contains(in.getTouchpoint()))
+            if (in.justTouched() && pinPad.pinpadbutts[i].contains(in.getTouchpoint()))
             {
-                if (pinmap[i].equals("<-")) {
-                    if (temppin.length() <= 1)
-                    {
-                        temppin = "\0";
-                        Options.setSavedPin(temppin);
-                        Options.save();
-                        dpClientConnection.gotpin = true;
-                    }
-                    else temppin = temppin.substring(0, temppin.length()-1);
-
-                }
-                else if (pinmap[i].equals("OK") && temppin.length() == 4) {
-                    Options.setSavedPin(temppin);
-                    Options.save();
-                    dpClientConnection.gotpin = true;
-                    Gdx.app.debug();
-                }
-                else if (temppin.length() < 4) temppin += pinmap[i];
-            }
-        }
-    }
-
-    public void confirmPin()
-    {
-        Gdx.app.debug("Pin Entry", "Confirm PIN");
-        for (int i = 0; i< 12; i++){
-            if (in.justTouched() && pinpad[i].contains(in.getTouchpoint()))
-            {
-                if (pinmap[i].equals("<-")) {
-                    if (temppin.length() <=1 )
-                    {
-                        temppin = "\0";
-                        dpClientConnection.pinConfirmSuccess = false;
-                        dpClientConnection.gotpin = true;
-                    }
-                    else temppin = temppin.substring(0, temppin.length()-1);
-
-                }
-                else if (pinmap[i].equals("OK") && temppin.equals(Options.getSavedPin())) {
-                    Options.setSavedPin(temppin);
-                    Options.save();
-                    dpClientConnection.pinConfirmSuccess = true;
-                    dpClientConnection.gotpin = true;
-                }
-                else temppin += pinmap[i];
+                pinPad.pressKey(i);
             }
         }
     }
@@ -185,20 +129,18 @@ public class ShareScreen extends ScreenAdapter
 
         game.batch.enableBlending();
         game.batch.begin();
-        if (dpClientConnection.needpin == true)
-        {
-            for (int i =0; i< 12; i++) Assets.font.draw(game.batch, pinmap[i], pinpad[i].getX(), pinpad[i].getY() + pinpad[i].getHeight() * .5f);
-            Assets.font.draw(game.batch, temppin, PINBUTT_X, PINBUTT_Y + PINBUTT_YS);
-        }
+        //need assetes
         game.batch.end();
-        
+
+        if (pinPad.isNeedpin()) pinPad.renderSpritesAndText(game.batch);
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         shapeRenderer.rect(backbutt.getX(), backbutt.getY(), backbutt.getWidth(), backbutt.getHeight());
         shapeRenderer.rect(sharebutt.getX(), sharebutt.getY(), sharebutt.getWidth(), sharebutt.getHeight());
-        if (dpClientConnection.needpin == true)
-            for (int i =0; i< 12; i++) shapeRenderer.rect(pinpad[i].getX(), pinpad[i].getY(), pinpad[i].getWidth(), pinpad[i].getHeight());
         shapeRenderer.end();
+
+        if (pinPad.isNeedpin()) pinPad.renderShapes(shapeRenderer);
 
 
     }

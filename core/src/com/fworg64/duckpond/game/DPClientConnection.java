@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,26 +24,20 @@ public class DPClientConnection extends Thread
     PrintWriter out;
     BufferedReader in;
 
+    PinPad pinPad;
+
     boolean greenlight2send;
 
-    boolean needpin;
-    boolean gotpin;
-    boolean needConfirmPin;
-    boolean pinConfirmSuccess;
-
-
-    public DPClientConnection()
+    public DPClientConnection(PinPad pinPad)
     {
         super("DPClientConnection");
+        this.pinPad = pinPad;
     }
 
     @Override
     public void run()
     {
         greenlight2send = false;
-        needpin = false;
-        gotpin = false;
-        needConfirmPin = false;
 
         switch (establishConnection())
         {
@@ -94,44 +89,57 @@ public class DPClientConnection extends Thread
                 break;
 
             case 1: //name exists
-                //does pin on file??
-                if (Options.getSavedPin().equals("\0")) //if no has a stored pin
-                {pinPrompt();}
-                if (checkPin()) greenlight2send = true;
-                while (!greenlight2send) //must be broken through the logic within
+                //is pin on file??
+                if (Options.getSavedPin().equals("\0")) //no stored pin
                 {
-                    if (Options.getSavedPin().equals("\0")) //user gave up
+                    Gdx.app.debug("saved pin is"," null");
+                    pinPrompt(); //prompt for initial pin to get pin, this should save the pin to options
+                }
+                if (checkPin()) greenlight2send = true; //sends pin in options to server
+                while (!(greenlight2send || pinPad.isInputcancelled()))
+                {
+                    pinPrompt(); //blocking
+                    if (checkPin()) greenlight2send = true;
+                    if (pinPad.isInputcancelled()) //user gave up
                     {
                         Gdx.app.debug("No Pin", "User terminated pin entry");
-                        break;
                     }
-                    pinPrompt();
-                    if (checkPin()) greenlight2send = true;
                 }
                 break;
 
             case 2: //name DNE
-                boolean pinconfirmed = false;
-                while (!pinconfirmed) //basically do-while
+                String temppin2;
+                while (!(pinPad.isInputcancelled() || greenlight2send)) //basically do-while
                 {
-                    pinPrompt();
-                    if (Options.getSavedPin().equals("\0")) //user gave up
+                    temppin2 = pinPrompt(); //get pin first time
+                    if (pinPad.isInputcancelled()) //user gave up
                     {
                         Gdx.app.debug("No Pin", "User terminated pin entry");
-                        break;
+                        continue; //break whatever, exit this loop
                     }
-                    if (pinConfirmPrompt())
+                    pinPad.setConfirmingPin();
+                    if (temppin2.equals(pinPrompt())) //prompt for pin again, check if it equals that entered before
                     {
-                        pinconfirmed = true;
-                        if (setServerPin2PinOnFile() == true) Gdx.app.debug("Pin set", "Whoo!");
+                        pinPad.unsetConfirmingPin();
+                        if (setServerPin2PinOnFile() == true) Gdx.app.debug("Pin set to server", "Whoo!");
                         else Gdx.app.debug("Pin", "Not accepterd??");
                         greenlight2send = true;
                     }
+                    else if (pinPad.isInputcancelled()) //user gave up
+                    {
+                        Gdx.app.debug("No Pin", "User terminated pin entry");
+                        continue; //break whatever, exit this loop
+                    }
+                }
+                if (pinPad.isInputcancelled())
+                {
+                    Gdx.app.debug("pin input cancelled for new user", "What now?");
+                    pinPad.resetInputcancelled();
                 }
                 break;
         }
 
-        out.println("dirgety");
+        Gdx.app.debug("green light to send!", "whoo");
     }
 
     private int sendUserName()
@@ -146,6 +154,7 @@ public class DPClientConnection extends Thread
         else
         {
             out.println(Options.getUsername());
+            Gdx.app.debug("ToServer", Options.getUsername());
         }
 
         try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
@@ -158,6 +167,7 @@ public class DPClientConnection extends Thread
         try
         {
             fromserver = in.readLine();
+            Gdx.app.debug("FromServer", fromserver);
         }
         catch (SocketTimeoutException STE)
         {
@@ -180,25 +190,28 @@ public class DPClientConnection extends Thread
         }
     }
 
-    private void pinPrompt()
+    private String pinPrompt()
     {
-        needpin = true;
-        while (!gotpin); //wait for other thread to get pin
-        needpin = false;
-    }
-
-    private boolean pinConfirmPrompt()
-    {
-        pinConfirmSuccess = false;
-        needConfirmPin =true;
-        while (!gotpin);
-        return pinConfirmSuccess;
+        pinPad.setNeedpin();
+        while (!pinPad.isGotpin())//wait for other thread to get pin
+        {
+            if (pinPad.isInputcancelled())
+            {
+                pinPad.resetInputcancelled();
+                pinPad.unsetNeedpin();
+                return "CRAP";
+            }
+        }
+        Gdx.app.debug("pinGOT", pinPad.getTempPin());
+        pinPad.unsetNeedpin();
+        return pinPad.getTempPin();
     }
 
     private boolean checkPin()
     {
         String fromserver ="";
         out.println(Options.getSavedPin());
+        Gdx.app.debug("ToServer", Options.getSavedPin());
 
         try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
         catch (SocketException STE)
@@ -206,10 +219,10 @@ public class DPClientConnection extends Thread
             Gdx.app.debug("Unable to set SOCKET TIMEOUT", "We're in Trouble");
             return  false;
         }
-
         try
         {
             fromserver = in.readLine();
+            Gdx.app.debug("FromServer", fromserver);
         }
         catch (SocketTimeoutException STE)
         {
@@ -231,6 +244,7 @@ public class DPClientConnection extends Thread
     {
         String fromserver ="";
         out.println(Options.getSavedPin());
+        Gdx.app.debug("ToServer", Options.getSavedPin());
 
         try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
         catch (SocketException STE)
@@ -242,6 +256,7 @@ public class DPClientConnection extends Thread
         try
         {
             fromserver = in.readLine();
+            Gdx.app.debug("FromServer", fromserver);
         }
         catch (SocketTimeoutException STE)
         {
