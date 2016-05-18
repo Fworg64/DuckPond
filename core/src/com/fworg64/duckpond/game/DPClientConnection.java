@@ -93,11 +93,13 @@ public class DPClientConnection extends Thread
                 if (Options.getSavedPin().equals("\0")) //no stored pin
                 {
                     Gdx.app.debug("saved pin is"," null");
+                    pinPad.setMessage("Please enter pin, " + Options.getUsername());
                     pinPrompt(); //prompt for initial pin to get pin, this should save the pin to options
                 }
                 if (checkPin()) greenlight2send = true; //sends pin in options to server
                 while (!(greenlight2send || pinPad.isInputcancelled()))
                 {
+                    pinPad.setMessage("Incorrect, please try again "+ Options.getUsername());
                     pinPrompt(); //blocking
                     if (checkPin()) greenlight2send = true;
                     if (pinPad.isInputcancelled()) //user gave up
@@ -109,8 +111,11 @@ public class DPClientConnection extends Thread
 
             case 2: //name DNE
                 String temppin2;
+                boolean firstattemptfailed = false;
                 while (!(pinPad.isInputcancelled() || greenlight2send)) //basically do-while
                 {
+                    if (!firstattemptfailed) pinPad.setMessage("Please enter new PIN, " + Options.getUsername());
+                    else pinPad.setMessage("PINs did not match, try again");
                     temppin2 = pinPrompt(); //get pin first time
                     if (pinPad.isInputcancelled()) //user gave up
                     {
@@ -118,6 +123,7 @@ public class DPClientConnection extends Thread
                         continue; //break whatever, exit this loop
                     }
                     pinPad.setConfirmingPin();
+                    pinPad.setMessage("Please confirm PIN, " +Options.getUsername());
                     if (temppin2.equals(pinPrompt())) //prompt for pin again, check if it equals that entered before
                     {
                         pinPad.unsetConfirmingPin();
@@ -125,15 +131,12 @@ public class DPClientConnection extends Thread
                         else Gdx.app.debug("Pin", "Not accepterd??");
                         greenlight2send = true;
                     }
-                    else if (pinPad.isInputcancelled()) //user gave up
-                    {
-                        Gdx.app.debug("No Pin", "User terminated pin entry");
-                        continue; //break whatever, exit this loop
-                    }
+                    firstattemptfailed =true;
                 }
-                if (pinPad.isInputcancelled())
+                if (pinPad.isInputcancelled()) // if we exited the loop for input cancelled
                 {
-                    Gdx.app.debug("pin input cancelled for new user", "What now?");
+                    Gdx.app.debug("pin input cancelled for new user", "not sent to server");
+                    out.println("\0");
                     pinPad.resetInputcancelled();
                 }
                 break;
@@ -197,9 +200,8 @@ public class DPClientConnection extends Thread
         {
             if (pinPad.isInputcancelled())
             {
-                pinPad.resetInputcancelled();
                 pinPad.unsetNeedpin();
-                return "CRAP";
+                return "\0";
             }
         }
         Gdx.app.debug("pinGOT", pinPad.getTempPin());

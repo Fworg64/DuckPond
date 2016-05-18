@@ -17,7 +17,8 @@ public class PinPad
     public int PINBUTT_XS;
     public int PINBUTT_YS;
 
-    String tempPin;
+    private String tempPin;
+    private String message;
 
     Rectangle pinpadbutts[];
     public static final String pinmap[] = {"1", "2","3","4","5","6","7","8","9","<-","0","OK"};
@@ -36,7 +37,7 @@ public class PinPad
             PINBUTT_W = 100;
             PINBUTT_H = 100;
             PINBUTT_X = 345;
-            PINBUTT_Y = 1500;
+            PINBUTT_Y = 1000;
             PINBUTT_XS = 180;
             PINBUTT_YS = 180;
         }
@@ -45,7 +46,7 @@ public class PinPad
             PINBUTT_W = 50;
             PINBUTT_H = 50;
             PINBUTT_X = 222;
-            PINBUTT_Y = 600;
+            PINBUTT_Y = 400;
             PINBUTT_XS = 65;
             PINBUTT_YS = 65;
         }//pinbutt x,y,w,h
@@ -56,6 +57,7 @@ public class PinPad
         confirmingPin = false;
 
         tempPin = "";
+        message = "";
 
         pinpadbutts = new Rectangle[12];
         for (int i =0; i< pinpadbutts.length; i++) pinpadbutts[i] = new Rectangle(PINBUTT_X + (i % 3)* PINBUTT_XS, PINBUTT_Y - (i/3)* PINBUTT_YS, PINBUTT_W, PINBUTT_H);
@@ -104,11 +106,15 @@ public class PinPad
             else tempPin = tempPin.substring(0, tempPin.length()-1);
 
         }
-        else if (pinmap[i].equals("OK") && tempPin.length() == 4) {
-            gotpin = true;
-            Options.setSavedPin(tempPin);
-            Options.save();
-            Gdx.app.debug("Pin submitted with OK", tempPin);
+        else if (pinmap[i].equals("OK")) {
+            if (tempPin.length() == 4)
+            {
+                gotpin = true;
+                Options.setSavedPin(tempPin);
+                Options.save();
+                Gdx.app.debug("Pin submitted with OK", tempPin);
+            }
+            else Gdx.app.debug("Ok pressed", "but pin not long enough");
         }
         else if (tempPin.length() < 4) tempPin += pinmap[i];
     }
@@ -132,6 +138,17 @@ public class PinPad
     {
         inputcancelled = false;
     }
+
+    public synchronized void setMessage(String message)
+    {
+        this.message = message;
+    }
+
+    public synchronized String getMessage()
+    {
+        return message;
+    }
+
 
     public void renderShapes(ShapeRenderer shapeRenderer)
     {
