@@ -34,7 +34,11 @@ public class DuckPondGame extends Game {
 	public static int highresScreenW = 1080;
 	public static int highresScreenH = 1920;
 
-	public static final String version = "v0.1.3a";
+	public static Color DuckPondBlue = new Color(.27451f, .70588f, .83922f, 1);
+	public static Color BlueButtTit = new Color(.5f, .5f, .55f, 1);
+	public static Color GreenButtTit = new Color(.5f, .5f, .55f, 1);
+
+	public static final String version = "v0.2.4a";
 
 	public SpriteBatch batch;
     public MusicAndSounds mas;

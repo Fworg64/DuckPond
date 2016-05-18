@@ -16,6 +16,8 @@ public class Options
     public static float musicVol;
 
     public static String custom1; //custom level, mainly for html
+    public static String username;
+    public static String pin;
 
     public static int screenWidth; //implied by highres
     public static int screenHeight;
@@ -42,6 +44,8 @@ public class Options
                     "0.0 Duck (-62.0,-16.0) (44.1,56.0) 7\n" +
                     "0.0 Shark (38.0,512.0) (14.7,-44.8) 0\n" +
                     "0.0 Lily (134.0,16.0) (0.0,0.0) 0\n");
+            prefs.putString("username", "");
+            prefs.putString("pin", "");
             prefs.flush();
         }
         isDefault = prefs.getBoolean("isDefault");
@@ -49,6 +53,8 @@ public class Options
         musicVol = prefs.getFloat("musicVol");
         highres = prefs.getBoolean("highres");
         custom1 = prefs.getString("custom1");
+        username = prefs.getString("username");
+        pin = prefs.getString("pin");
 
         if (highres) setHighres();
         else setStdres();
@@ -122,8 +128,35 @@ public class Options
         prefs.putString("custom1", Options.custom1);
     }
 
+    public static void setUsername(String username1)
+    {
+        username = username1;
+        prefs.putString("username", username);
+    }
+
+    public static String getUsername()
+    {
+        username = prefs.getString("username");
+        return username;
+    }
+
+    public static void setSavedPin(String pin1)
+    {
+        pin = pin1;
+        prefs.putString("pin", pin);
+    }
+
+    public static String getSavedPin()
+    {
+
+        if (prefs.contains("pin")) pin = prefs.getString("pin");
+        else pin = "\0";
+        return pin;
+    }
+
     public static void save()
     {
+        Gdx.app.debug("Options", "saved");
         prefs.flush();
     }
 }

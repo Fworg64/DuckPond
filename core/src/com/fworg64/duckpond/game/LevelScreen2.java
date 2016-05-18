@@ -35,6 +35,10 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
+    public static final int SHARE_X = 750;
+    public static final int SHARE_Y = 1920-300;
+    public static final int SHARE_W = 100;
+    public static final int SHARE_H = 300;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
@@ -138,6 +142,7 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle loadpageleft;
     Rectangle loadpageright;
     int pagenumber;
+    Rectangle sharebutt;
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -214,6 +219,7 @@ public class LevelScreen2 extends ScreenAdapter
         loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         pagenumber =0;
+        sharebutt = new Rectangle(SHARE_X, SHARE_Y, SHARE_W, SHARE_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -262,6 +268,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             touchpoint.set(in.getTouchpoint());
             if (exitbutt.contains(touchpoint)) return 1;
+            if (sharebutt.contains(touchpoint)) return 2;
             if (savebutt.contains(touchpoint))
             {
                 if (defaultstate == true)
@@ -284,7 +291,6 @@ public class LevelScreen2 extends ScreenAdapter
                     defaultstate = false;
                 }
                 else DestroyCurrent();
-
             }
             if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
             if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
@@ -330,14 +336,19 @@ public class LevelScreen2 extends ScreenAdapter
             case 1:
                 Gdx.app.debug("screenstate", "exit");
                 Options.loadOptions();
-
                 Assets.load_levelscreen();
-                game.setScreen(new LevelSelectionScreen(game));
-                Assets.dispose_leveledit();
                 Assets.dispose_navigation();
                 Assets.dispose_numberfont();
+                game.setScreen(new LevelSelectionScreen(game));
+                Assets.dispose_leveledit();
                 this.dispose();
                 break;
+            case 2:
+                Gdx.app.debug("screenstate", "sharescreen");
+                Options.loadOptions();
+                game.setScreen(new ShareScreen(game));
+                Assets.dispose_leveledit();
+                this.dispose();
         }
         draw();
     }
@@ -903,6 +914,7 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
         shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
         shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
+        shapeRenderer.rect(sharebutt.getX(), sharebutt.getY(), sharebutt.getWidth(), sharebutt.getHeight());
 
         shapeRenderer.end();
 
