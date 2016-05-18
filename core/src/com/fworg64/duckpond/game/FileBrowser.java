@@ -52,6 +52,8 @@ public class FileBrowser
     ArrayList<FileHandle> levels;
     int pagenumber;
 
+    public volatile boolean renderUpOne;
+
     public FileBrowser()
     {
         //region valuesForRectangles
@@ -128,6 +130,8 @@ public class FileBrowser
             if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
         }
         pagenumber =0;
+
+        renderUpOne = true;
     }
 
     public void pageRight()
@@ -200,7 +204,7 @@ public class FileBrowser
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         for(Rectangle r: levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        shapeRenderer.rect(upone.getX(), upone.getY(), upone.getWidth(), upone.getHeight());
+        if (renderUpOne) shapeRenderer.rect(upone.getX(), upone.getY(), upone.getWidth(), upone.getHeight());
         shapeRenderer.rect(pageleftbutt.getX(), pageleftbutt.getY(), pageleftbutt.getWidth(), pageleftbutt.getHeight());
         shapeRenderer.rect(pagerightbutt.getX(), pagerightbutt.getY(), pagerightbutt.getWidth(), pagerightbutt.getHeight());
         shapeRenderer.end();
@@ -211,12 +215,12 @@ public class FileBrowser
         batch.enableBlending();
         batch.begin();
         batch.setColor(1,1,1,.2f);
-        batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
+        if (renderUpOne) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
         batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
         batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
         batch.setColor(1,1,1,1f);
 
-        if (!levelDir.name().equals("LEVELS")) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
+        if (!levelDir.name().equals("LEVELS") && renderUpOne) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
         if (pagenumber !=0) batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
         if (levelDir.list().length > (pagenumber +1)*PAGE_SIZE) batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
 

@@ -25,13 +25,15 @@ public class DPClientConnection extends Thread
     BufferedReader in;
 
     PinPad pinPad;
+    FileTransferCommunicator fileTransferCommunicator;
 
     boolean greenlight2send;
 
-    public DPClientConnection(PinPad pinPad)
+    public DPClientConnection(PinPad pinPad, FileTransferCommunicator fileTransferCommunicator)
     {
         super("DPClientConnection");
         this.pinPad = pinPad;
+        this.fileTransferCommunicator = fileTransferCommunicator;
     }
 
     @Override
@@ -43,7 +45,17 @@ public class DPClientConnection extends Thread
         {
             case 0:
                 //continue
-                communicate();
+                switch (communicate())
+                {
+                    case -3: //user gave up
+                        return;
+                    case -2: //network error
+                        return;
+                    case -1: //invalid name
+                        return;
+                    case 0: //file sent successfully
+                        return;
+                }
                 break;
             case -1:
                 //terminate and error message
@@ -78,15 +90,14 @@ public class DPClientConnection extends Thread
         return 0;
     }
 
-    private void communicate()
+    private int communicate()
     {
         switch (sendUserName())
         {
             case -2: //network error
-                break;
-
+                return -2;
             case -1: //name2short
-                break;
+                return -1;
 
             case 1: //name exists
                 //is pin on file??
@@ -102,10 +113,7 @@ public class DPClientConnection extends Thread
                     pinPad.setMessage("Incorrect, please try again "+ Options.getUsername());
                     pinPrompt(); //blocking
                     if (checkPin()) greenlight2send = true;
-                    if (pinPad.isInputcancelled()) //user gave up
-                    {
-                        Gdx.app.debug("No Pin", "User terminated pin entry");
-                    }
+                    //input cancelled handled below
                 }
                 break;
 
@@ -119,30 +127,63 @@ public class DPClientConnection extends Thread
                     temppin2 = pinPrompt(); //get pin first time
                     if (pinPad.isInputcancelled()) //user gave up
                     {
-                        Gdx.app.debug("No Pin", "User terminated pin entry");
-                        continue; //break whatever, exit this loop
+                        //skip the confirm prompt
+                        continue;
                     }
-                    pinPad.setConfirmingPin();
                     pinPad.setMessage("Please confirm PIN, " +Options.getUsername());
                     if (temppin2.equals(pinPrompt())) //prompt for pin again, check if it equals that entered before
                     {
-                        pinPad.unsetConfirmingPin();
-                        if (setServerPin2PinOnFile() == true) Gdx.app.debug("Pin set to server", "Whoo!");
-                        else Gdx.app.debug("Pin", "Not accepterd??");
-                        greenlight2send = true;
+                        if (setServerPin2PinOnFile() == true)
+                        {
+                            Gdx.app.debug("Pin set to server", "Whoo!");
+                            greenlight2send = true;
+                        }
+                        else
+                        {
+                            Gdx.app.debug("Server Error", "Pin Not accepterd??");
+                            return -2;
+                        }
                     }
                     firstattemptfailed =true;
+                    //loop will break here if input was canclled, to be handeled below
                 }
                 if (pinPad.isInputcancelled()) // if we exited the loop for input cancelled
                 {
                     Gdx.app.debug("pin input cancelled for new user", "not sent to server");
                     out.println("\0");
                     pinPad.resetInputcancelled();
+                    return -3;
                 }
                 break;
         }
 
-        Gdx.app.debug("green light to send!", "whoo");
+        if (greenlight2send)
+        {
+            Gdx.app.debug("green light to send!", "whoo");
+            fileTransferCommunicator.setNeedfile();
+            while (!fileTransferCommunicator.isFilegot() && fileTransferCommunicator.isNeedfile()); //dont do this, this is bad
+            if (fileTransferCommunicator.isWascancelled())
+            {
+                Gdx.app.debug("File transfer", "Cancelled!");
+                fileTransferCommunicator.resetWascancelled();
+                return -3;
+            }
+            else //we got the file
+            {
+                String temp = fileTransferCommunicator.getThefile();
+                out.println(fileTransferCommunicator.getFilename());
+                out.println(temp);
+                out.println("\4");
+                Gdx.app.debug(fileTransferCommunicator.getFilename() + " sent to server ", Integer.toString(temp.length()) + " chars sent");
+                return 0;
+            }
+        }
+        else //shouldn't run these lines
+        {
+            Gdx.app.debug("unhandled something", "check communicate method");
+            return -2;
+        }
+
     }
 
     private int sendUserName()

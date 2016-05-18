@@ -59,9 +59,14 @@ public class ShareScreen extends ScreenAdapter
 
     DPClientConnection dpClientConnection;
     PinPad pinPad;
+    FileBrowser fileBrowser;
+
+    FileTransferCommunicator fileTransferCommunicator;
 
     boolean changename;
     String username;
+
+
 
     String message = "";
 
@@ -155,10 +160,16 @@ public class ShareScreen extends ScreenAdapter
         if (username.length() < 3) changename = true;
         else changename = false;
 
+        fileBrowser = new FileBrowser();
+        fileBrowser.gocustom();
+        fileBrowser.renderUpOne =false;
+
+        fileTransferCommunicator = new FileTransferCommunicator();
     }
 
     public void update()
     {
+        touchpoint.set(in.getTouchpoint());
         if (in.justTouched() && sharebutt.contains(in.getTouchpoint()))
         {
             share();
@@ -170,12 +181,16 @@ public class ShareScreen extends ScreenAdapter
         }
         if (in.justTouched() && namechangebutt.contains(in.getTouchpoint())) changename = true;
 
-        if (pinPad.isNeedpin()) {
-            getPin(); // UI thread, non blocking
+        if (fileTransferCommunicator.isNeedfile()) { //set by other thread
+            getFile(); //UI thread, runs quickly
+            message = "Choose a file to upload";
+        }
+        else if (pinPad.isNeedpin()) { //set by other thread
+            getPin(); // UI thread, runs quickly
             message = pinPad.getMessage();
         }
-        else if (changename) {
-            changeName(); //UI, non blocking
+        else if (changename) { //set by this thread
+            changeName(); //UI, runs quickly
             message = "Name must be longer than 3 characters (a-Z, 0-9)";
         }
         else message = "Default message";
@@ -193,6 +208,24 @@ public class ShareScreen extends ScreenAdapter
                 pinPad.pressKey(i);
             }
         }
+    }
+
+    public void getFile()
+    {
+        for(int i=0; i<fileBrowser.levelbutts.length;i++)
+        {
+            if (in.justTouched() && fileBrowser.levelbutts[i].contains(touchpoint))
+            {
+                if (fileBrowser.levels.size() > i) //if you picked a valid choice
+                {
+                    fileTransferCommunicator.setThefile(fileBrowser.levels.get(i).name(), fileBrowser.levels.get(i).readString()); //this is the level
+                    Gdx.app.debug("filebrowser", "file pressed");
+                }
+            }
+        }
+        if (in.justTouched() && fileBrowser.pagerightbutt.contains(touchpoint)) fileBrowser.pageRight();
+        if (in.justTouched() && fileBrowser.pageleftbutt.contains(touchpoint)) fileBrowser.pageLeft();
+        if (in.justTouched() && cancelbutt.contains(touchpoint)) fileTransferCommunicator.cancelNeedfile();
     }
 
     public void changeName()
@@ -226,7 +259,7 @@ public class ShareScreen extends ScreenAdapter
     
     public void share()
     {
-        dpClientConnection = new DPClientConnection(pinPad);
+        dpClientConnection = new DPClientConnection(pinPad, fileTransferCommunicator);
         dpClientConnection.start();
     }
     
@@ -249,12 +282,17 @@ public class ShareScreen extends ScreenAdapter
             Assets.font.draw(game.batch, "saveconfirm", saveconfirmbutt.getX(), saveconfirmbutt.getY());
             Assets.font.draw(game.batch, "cancel", cancelbutt.getX(), cancelbutt.getY());
         }
+        if (fileTransferCommunicator.isNeedfile())
+        {
+            Assets.font.draw(game.batch, "cancel", cancelbutt.getX(), cancelbutt.getY());
+        }
         Assets.font.draw(game.batch, username, USERNAME_X, USERNAME_Y);
 
         Assets.font.draw(game.batch, message, MESSAGE_X, MESSAGE_Y);
         game.batch.end();
 
         if (pinPad.isNeedpin()) pinPad.renderSpritesAndText(game.batch);
+        if (fileTransferCommunicator.isNeedfile()) fileBrowser.renderSprites(game.batch);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
@@ -266,10 +304,15 @@ public class ShareScreen extends ScreenAdapter
             shapeRenderer.rect(saveconfirmbutt.getX(), saveconfirmbutt.getY(), saveconfirmbutt.getWidth(), saveconfirmbutt.getHeight());
             shapeRenderer.rect(cancelbutt.getX(), cancelbutt.getY(), cancelbutt.getWidth(), cancelbutt.getHeight());
         }
+        if (fileTransferCommunicator.isNeedfile())
+        {
+            shapeRenderer.rect(cancelbutt.getX(), cancelbutt.getY(), cancelbutt.getWidth(), cancelbutt.getHeight());
+        }
 
         shapeRenderer.end();
 
         if (pinPad.isNeedpin()) pinPad.renderShapes(shapeRenderer);
+        if (fileTransferCommunicator.isNeedfile()) fileBrowser.renderShapes(shapeRenderer);
 
 
     }
