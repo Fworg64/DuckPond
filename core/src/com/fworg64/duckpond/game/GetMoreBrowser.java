@@ -1,8 +1,13 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by fworg on 5/18/2016.
@@ -20,10 +25,13 @@ public class GetMoreBrowser
     private boolean gotRequest;
     private boolean wasCancelled;
 
-    String request;
+    private String request;
 
-    Rectangle[] sixbutts;
-    public static final String[] requestmap = {"S", "P", "C", "R"};
+    private Rectangle[] sixbutts;
+    private static final String[] requestmap = {"S", "P", "C", "R"};
+
+    private List<String> allOptions;
+    private List<String> displayOptions;
 
     public GetMoreBrowser()
     {
@@ -55,6 +63,34 @@ public class GetMoreBrowser
         for (int i=0; i<6; i++)
         {
             sixbutts[i] = new Rectangle(SIXBUTT_X + (i % 2)* SIXBUTT_XS, SIXBUTT_Y - (i/2)* SIXBUTT_YS, SIXBUTT_W, SIXBUTT_H);
+        }
+        allOptions = new ArrayList<String>();
+        displayOptions = new ArrayList<String>();
+
+        for (String s: requestmap) {allOptions.add(s); displayOptions.add(s);}//populate initial buttons
+    }
+
+    public synchronized void touch(Vector2 touchpoint)
+    {
+        for (int i =0; i<displayOptions.size(); i++)
+        {
+            if (sixbutts[i].contains(touchpoint))
+            {
+                setRequest(displayOptions.get(i));
+                Gdx.app.debug("button pressed", displayOptions.get(i));
+            }
+        }
+        //check other buttons here as well
+    }
+
+    public synchronized void setAllOptions(List<String> allop)
+    {
+        allOptions.clear();
+        displayOptions.clear();
+        for (int i=0; i<allop.size();i++)
+        {
+            allOptions.add(allop.get(i));
+            if (i<6) displayOptions.add(allop.get(i));
         }
     }
 
@@ -89,6 +125,8 @@ public class GetMoreBrowser
         return gotRequest;
     }
 
+    public synchronized void unsetGotRequest() {gotRequest = false;}
+
     public synchronized void cancelGetRequest()
     {
         wasCancelled = true;
@@ -104,7 +142,7 @@ public class GetMoreBrowser
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         if (needRequest){
-            for (int i =0; i< 4; i++) shapeRenderer.rect(sixbutts[i].getX(), sixbutts[i].getY(), sixbutts[i].getWidth(), sixbutts[i].getHeight());
+            for (int i =0; i< displayOptions.size(); i++) shapeRenderer.rect(sixbutts[i].getX(), sixbutts[i].getY(), sixbutts[i].getWidth(), sixbutts[i].getHeight());
         }
         shapeRenderer.end();
     }
@@ -114,7 +152,7 @@ public class GetMoreBrowser
         batch.enableBlending();
         batch.begin();
         if (needRequest) {
-            for (int i =0; i< 4; i++) Assets.font.draw(batch, requestmap[i], sixbutts[i].getX(), sixbutts[i].getY() + sixbutts[i].getHeight() * .5f);
+            for (int i =0; i< displayOptions.size(); i++) Assets.font.draw(batch, displayOptions.get(i), sixbutts[i].getX(), sixbutts[i].getY() + sixbutts[i].getHeight() * .5f);
         }
 
         batch.end();

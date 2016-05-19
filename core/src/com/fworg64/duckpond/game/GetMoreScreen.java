@@ -69,6 +69,7 @@ public class GetMoreScreen extends ScreenAdapter
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
+        if (in.justTouched()) Gdx.app.debug("Just touched @" , touchpoint.toString());
 
         if (in.justTouched() && backbutt.contains(touchpoint)) //go back to level selection
         {
@@ -77,20 +78,12 @@ public class GetMoreScreen extends ScreenAdapter
             //should probably close network stuff here
         }
 
-        if (getMoreBrowser.isNeedRequest()) getRequest();
-    }
-
-    public void getRequest()
-    {
-        for (int i =0; i<4; i++)
+        if (getMoreBrowser.isNeedRequest())
         {
-            if (in.justTouched() && getMoreBrowser.sixbutts[i].contains(touchpoint))
-            {
-                getMoreBrowser.setRequest(getMoreBrowser.requestmap[i]);
-                Gdx.app.debug("Request button pressed", getMoreBrowser.requestmap[i]);
-            }
+            if (in.justTouched()) getMoreBrowser.touch(touchpoint);
         }
     }
+
 
     public void draw()
     {

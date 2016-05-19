@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by fworg on 5/18/2016.
@@ -50,37 +52,28 @@ public class DPGetMoreConnection extends Thread
                 return;
         }
 
-        switch (getRequest()) //blocking
-        {
-            case -1: //unknown input
-                break;
-            case 0: //input was cancelled
-                out.println("Q");
-                break;
-            case 1: //random request
-                out.println("R");
-                break;
-            case 2: //choice options, recomennded
-                out.println("C");
-                break;
-            case 3: //user wants to search
-                out.println("S");
-                break;
-            case 4: //user wants popular
-                out.println("P");
-                break;
-        }
+        String tempRequest = getRequest(); //blocking
+        out.println(tempRequest); //send request to server
 
-        String fromserver;
-        try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
-        catch (SocketException STE)
+        //receive path options
+        List<String> optionsGot;
+        optionsGot = getOptions();
+        if (optionsGot.size() == 0)
         {
-            Gdx.app.debug("Unable to set SOCKET TIMEOUT", "We're in Trouble");
+            Gdx.app.debug("Unable to get options for ", "request");
             return;
         }
+
+        //send options to browser
+        getMoreBrowser.setAllOptions(optionsGot);
+
+        //get another request
+        tempRequest = getRequest();
+        out.println(tempRequest);
+
         try
         {
-            fromserver = in.readLine();
+            String fromserver = in.readLine();
             Gdx.app.debug("FromServer", fromserver);
         }
         catch (SocketTimeoutException STE)
@@ -94,9 +87,46 @@ public class DPGetMoreConnection extends Thread
             //fromserver = "CRAP";
             return;
         }
+
+
     }
 
-    private int getRequest()
+    private List<String> getOptions()
+    {
+        List<String> options = new ArrayList<String>();
+        String fromserver;
+        try{DPSocket.setSoTimeout(5000);} //set timeout to 5 sec
+        catch (SocketException STE)
+        {
+            Gdx.app.debug("Unable to set SOCKET TIMEOUT", "We're in Trouble");
+            return options;
+        }
+        try
+        {
+            fromserver = in.readLine();
+            Gdx.app.debug("FromServer", fromserver);
+            while (!fromserver.equals("\3"))
+            {
+                options.add(fromserver);
+                Gdx.app.debug("Added to options" ,fromserver);
+                fromserver = in.readLine();
+            }
+        }
+        catch (SocketTimeoutException STE)
+        {
+            Gdx.app.debug("Server Timeout", "No response after 5? seconds");
+            return options;
+        }
+        catch (IOException e)
+        {
+            Gdx.app.debug("InternalError", "Couldn't readline from server");
+            //fromserver = "CRAP";
+            return options;
+        }
+        return options;
+    }
+
+    private String getRequest()
     {
         getMoreBrowser.setNeedRequest();
         while (!getMoreBrowser.isGotRequest())//wait for other thread to get pin
@@ -104,28 +134,14 @@ public class DPGetMoreConnection extends Thread
             if (getMoreBrowser.isWasCancelled())
             {
                 getMoreBrowser.unsetNeedRequest();
-                return 0; //input was cancelled
+                return "Q"; //input was cancelled
             }
         }
         String tempRequest = getMoreBrowser.getRequest();
         Gdx.app.debug("requestGOT",tempRequest);
         getMoreBrowser.unsetNeedRequest();
-        if (tempRequest.equals("Q")) { //user quit/cancelled
-            return 0;
-        }
-        if (tempRequest.equals("R")) { //random user
-            return 1;
-        }
-        if (tempRequest.equals("C")) { //recommened, choice users
-            return 2;
-        }
-        if (tempRequest.equals("S")) { //user wants to search
-            return 3;
-        }
-        if (tempRequest.equals("P")) { //user wants popular options
-            return 4;
-        }
-        else return -1; //unknown input
+        getMoreBrowser.unsetGotRequest();
+        return tempRequest;
     }
 
     private int establishConnection()
