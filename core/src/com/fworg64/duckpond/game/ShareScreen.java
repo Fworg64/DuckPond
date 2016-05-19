@@ -178,6 +178,7 @@ public class ShareScreen extends ScreenAdapter
         {
             game.setScreen(new LevelScreen2(game));
             this.dispose();
+            //should probably dispose of network stuff
         }
         if (in.justTouched() && namechangebutt.contains(in.getTouchpoint())) changename = true;
 
