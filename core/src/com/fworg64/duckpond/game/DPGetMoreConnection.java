@@ -1,6 +1,7 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +28,10 @@ public class DPGetMoreConnection extends Thread
 
     GetMoreBrowser getMoreBrowser;
 
+    String levelRequest;
+    String typeRequest;
+    String userRequest;
+
     public DPGetMoreConnection(GetMoreBrowser getMoreBrowser)
     {
         super("DPGetMoreConnection");
@@ -52,42 +57,90 @@ public class DPGetMoreConnection extends Thread
                 return;
         }
 
-        String tempRequest = getRequest(); //blocking
-        out.println(tempRequest); //send request to server
+        typeRequest = getRequest(); //blocking
+        out.println(typeRequest); //send request to server
 
-        //receive path options
+        //receive path options (users)
         List<String> optionsGot;
+        optionsGot = getOptions(); //get options from server
+        if (optionsGot.size() == 0)
+        {
+            Gdx.app.debug("Unable to get options for ", typeRequest);
+            return;
+        }
+        //send user options to browser
+        getMoreBrowser.setAllOptions(optionsGot);
+
+        //get user request from browser
+        userRequest = getRequest(); // if cancled, we can just send garbage ("Q") to the server to get kicked out, then reestablish connection
+        out.println(userRequest); //let the server error check
+
+        //receive path options (levels this time)
         optionsGot = getOptions();
         if (optionsGot.size() == 0)
         {
-            Gdx.app.debug("Unable to get options for ", "request");
+            Gdx.app.debug("Unable to get options for ", userRequest);
             return;
         }
-
-        //send options to browser
+        //send level options to browser
         getMoreBrowser.setAllOptions(optionsGot);
+        //get level request from browser
+        levelRequest = getRequest(); //let the server error check
+        out.println(levelRequest);
 
-        //get another request
-        tempRequest = getRequest();
-        out.println(tempRequest);
+        //recieve file here...
+        switch (receiveFile())
+        {
+            case -2: //timeout
+                return;
+            case -1: //other network error
+                return;
+            case 0: //success!
+                break;
+        }
 
+        Gdx.app.debug("FileDOwnloaded!!", "");
+
+
+    }
+
+    private int receiveFile()
+    {
+        //read into string, write string to file
+        List<String> strings = new ArrayList<String>();
+        String fromserver;
         try
         {
-            String fromserver = in.readLine();
+            fromserver = in.readLine();
             Gdx.app.debug("FromServer", fromserver);
+
+            while (!fromserver.equals("\3"))
+            {
+                strings.add(fromserver);
+                Gdx.app.debug("fileline read" ,fromserver);
+                fromserver = in.readLine();
+            }
         }
         catch (SocketTimeoutException STE)
         {
             Gdx.app.debug("Server Timeout", "No response after 5? seconds");
-            return;
+            return -2;
         }
         catch (IOException e)
         {
             Gdx.app.debug("InternalError", "Couldn't readline from server");
             //fromserver = "CRAP";
-            return;
+            return -1;
         }
 
+        //write to a file
+        FileHandle downloaded = Gdx.files.local("LEVELS\\DOWNLOADED" + '\\' + userRequest + '\\' + levelRequest);
+        for (String s: strings)
+        {
+            downloaded.writeString(s.toString() + '\n', true);
+        }
+        Gdx.app.debug("Wrote file",downloaded.toString());
+        return 0;
 
     }
 
