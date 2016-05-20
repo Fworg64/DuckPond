@@ -74,7 +74,9 @@ public class GetMoreScreen extends ScreenAdapter
         if (in.justTouched() && backbutt.contains(touchpoint)) //go back to level selection
         {
             game.setScreen(new LevelSelectionScreen(game));
+            getMoreBrowser.cancelGetRequest();
             this.dispose();
+
             //should probably close network stuff here
         }
 

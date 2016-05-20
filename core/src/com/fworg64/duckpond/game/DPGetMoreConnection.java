@@ -28,19 +28,31 @@ public class DPGetMoreConnection extends Thread
 
     GetMoreBrowser getMoreBrowser;
 
-    String levelRequest;
     String typeRequest;
     String userRequest;
+    String levelRequest;
+
+    private boolean getType; //requests
+    private boolean getUser;
+    private boolean getLevel;
+    private boolean dlLevel;
+
+    private List<String> optionsGot;
 
     public DPGetMoreConnection(GetMoreBrowser getMoreBrowser)
     {
         super("DPGetMoreConnection");
         this.getMoreBrowser = getMoreBrowser;
+        getType = false;
+        getUser = false;
+        getLevel = false;
+        dlLevel = false;
     }
 
     @Override
     public void run()
     {
+
         switch (establishConnection())
         {
             case 0:
@@ -56,95 +68,120 @@ public class DPGetMoreConnection extends Thread
                 Gdx.app.debug("Failure", "dang2");
                 return;
         }
+        getType = true;
 
-        typeRequest = getRequest(); //blocking
-        out.println(typeRequest); //send request to server
-
-        //receive path options (users)
-        List<String> optionsGot;
-        optionsGot = getOptions(); //get options from server
-        if (optionsGot.size() == 0)
+        while(true)
         {
-            Gdx.app.debug("Unable to get options for ", typeRequest);
-            return;
-        }
-        //send user options to browser
-        getMoreBrowser.setAllOptions(optionsGot);
-
-        //get user request from browser
-        userRequest = getRequest(); // if cancled, we can just send garbage ("Q") to the server to get kicked out, then reestablish connection
-        out.println(userRequest); //let the server error check
-
-        //receive path options (levels this time)
-        optionsGot = getOptions();
-        if (optionsGot.size() == 0)
-        {
-            Gdx.app.debug("Unable to get options for ", userRequest);
-            return;
-        }
-        //send level options to browser
-        getMoreBrowser.setAllOptions(optionsGot);
-        //get level request from browser
-        levelRequest = getRequest(); //let the server error check
-        out.println(levelRequest);
-
-        //recieve file here...
-        switch (receiveFile())
-        {
-            case -2: //timeout
-                return;
-            case -1: //other network error
-                return;
-            case 0: //success!
-                break;
-        }
-
-        Gdx.app.debug("FileDOwnloaded!!", "");
-
-
-    }
-
-    private int receiveFile()
-    {
-        //read into string, write string to file
-        List<String> strings = new ArrayList<String>();
-        String fromserver;
-        try
-        {
-            fromserver = in.readLine();
-            Gdx.app.debug("FromServer", fromserver);
-
-            while (!fromserver.equals("\3"))
+            if (getType)
             {
-                strings.add(fromserver);
-                Gdx.app.debug("fileline read" ,fromserver);
-                fromserver = in.readLine();
+                //receive type options
+                optionsGot = getBlockFromServer();
+                getMoreBrowser.disallowPageUp();
+                getMoreBrowser.setAllOptions(optionsGot);
+
+                //select option
+                typeRequest = getRequest(); //blocking
+                out.println(typeRequest); //send request to server
+                //A 4 will be sent if the user cancels/exits the screen and the server will quit the session
+                if (typeRequest.equals("\4"))
+                {
+                    Gdx.app.debug("User exited download session"," from type selection");
+                    return;
+                }
+                // A 5 (pageup) cannot be sent because it has been disallowed
+                //next step
+                getType = false;
+                getUser = true;
+            }
+            if (getUser)
+            {
+                //receive path options (users)
+                optionsGot = getBlockFromServer(); //get options from server
+                if (optionsGot.size() == 0)
+                {
+                    Gdx.app.debug("Unable to get options for ", typeRequest);
+                    return;
+                }
+                //send user options to browser
+                getMoreBrowser.setAllOptions(optionsGot);
+                getMoreBrowser.allowPageUp();
+                //get user request from browser
+                userRequest = getRequest();
+                out.println(userRequest);
+
+                if (typeRequest.equals("\4"))
+                {
+                    Gdx.app.debug("User exited download session"," from user selection");
+                    return;
+                }
+                else if (userRequest.equals("\5"))//go baack, the server will know
+                {
+                    getType = true;
+                    getUser = false;
+                }
+                else //should be a valid request
+                {
+                    getUser = false;
+                    getLevel = true;
+                }
+            }
+            if (getLevel)
+            {
+                //receive path options (levels this time)
+                optionsGot = getBlockFromServer(); //getOptions from server
+                if (optionsGot.size() == 0)
+                {
+                    Gdx.app.debug("Unable to get options for ", userRequest);
+                    return;
+                }
+                //send level options to browser
+                getMoreBrowser.setAllOptions(optionsGot);
+                //get level request from browser
+                levelRequest = getRequest(); //get level request from browser
+                out.println(levelRequest); //let the server error check
+
+                if (typeRequest.equals("\4"))
+                {
+                    Gdx.app.debug("User exited download session"," from level selection");
+                    return;
+                }
+                else if (levelRequest.equals("\5"))//go baack, the server will know
+                {
+                    getUser = true;
+                    getLevel = false;
+                }
+                else //level should have been gotten
+                {
+                    getLevel = false;
+                    dlLevel = true;
+                }
+            }
+            if (dlLevel) //file selected
+            {
+                List<String> levelstrings;
+                levelstrings = getBlockFromServer();
+                writeStringsToFile(levelstrings, Gdx.files.local("LEVELS\\DOWNLOADED" + '\\' + userRequest + '\\' + levelRequest));
+                dlLevel = false;
+                getLevel = true;
             }
         }
-        catch (SocketTimeoutException STE)
-        {
-            Gdx.app.debug("Server Timeout", "No response after 5? seconds");
-            return -2;
-        }
-        catch (IOException e)
-        {
-            Gdx.app.debug("InternalError", "Couldn't readline from server");
-            //fromserver = "CRAP";
-            return -1;
-        }
-
-        //write to a file
-        FileHandle downloaded = Gdx.files.local("LEVELS\\DOWNLOADED" + '\\' + userRequest + '\\' + levelRequest);
-        for (String s: strings)
-        {
-            downloaded.writeString(s.toString() + '\n', true);
-        }
-        Gdx.app.debug("Wrote file",downloaded.toString());
-        return 0;
-
     }
 
-    private List<String> getOptions()
+    private void writeStringsToFile(List<String> strings, FileHandle f)
+    {
+        if (f.exists())
+        {
+            f.delete();
+            Gdx.app.debug("Existing file deleated", f.toString());
+        }
+        for (String s: strings)
+        {
+            f.writeString(s.toString() + '\n', true);
+        }
+        Gdx.app.debug(f.toString(), "wrote for " + Integer.toString(strings.size()) + " lines.");
+    }
+
+    private List<String> getBlockFromServer()
     {
         List<String> options = new ArrayList<String>();
         String fromserver;
@@ -187,7 +224,7 @@ public class DPGetMoreConnection extends Thread
             if (getMoreBrowser.isWasCancelled())
             {
                 getMoreBrowser.unsetNeedRequest();
-                return "Q"; //input was cancelled
+                return "\4"; //input was cancelled
             }
         }
         String tempRequest = getMoreBrowser.getRequest();

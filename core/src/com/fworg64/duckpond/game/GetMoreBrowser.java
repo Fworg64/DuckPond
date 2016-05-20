@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,6 +22,18 @@ public class GetMoreBrowser
     public int SIXBUTT_XS;
     public int SIXBUTT_YS;
 
+    public int PAGE_RIGHT_X;
+    public int PAGE_RIGHT_Y;
+    public int PAGE_LEFT_X;
+    public int PAGE_LEFT_Y;
+    public int PAGE_W;
+    public int PAGE_H;
+
+    public int UP_ONE_X;
+    public int UP_ONE_Y;
+    public int UP_ONE_W;
+    public int UP_ONE_H;
+
     private boolean needRequest;
     private boolean gotRequest;
     private boolean wasCancelled;
@@ -28,7 +41,14 @@ public class GetMoreBrowser
     private String request;
 
     private Rectangle[] sixbutts;
-    private static final String[] requestmap = {"S", "P", "C", "R"};
+    private Rectangle pageleftbutt;
+    private Rectangle pagerightbutt;
+    private Rectangle pageupbutt;
+
+    private boolean canPageLeft;
+    private boolean canPageRight;
+    private boolean canPageUp;
+    private int pagenumber;
 
     private List<String> allOptions;
     private List<String> displayOptions;
@@ -44,6 +64,18 @@ public class GetMoreBrowser
             SIXBUTT_Y = 1000;
             SIXBUTT_XS = 180;
             SIXBUTT_YS = 180;
+
+            PAGE_RIGHT_X = 694;
+            PAGE_RIGHT_Y = 420;
+            PAGE_LEFT_X = 300;
+            PAGE_LEFT_Y = 420;
+            PAGE_W = 86;
+            PAGE_H = 163;
+
+            UP_ONE_X = 480;
+            UP_ONE_Y = 420;
+            UP_ONE_W = 121;
+            UP_ONE_H = 163;
         }
         else
         {
@@ -53,6 +85,18 @@ public class GetMoreBrowser
             SIXBUTT_Y = 400;
             SIXBUTT_XS = 65;
             SIXBUTT_YS = 65;
+
+            PAGE_RIGHT_X = 441;
+            PAGE_RIGHT_Y = 960-687;
+            PAGE_LEFT_X = 178;
+            PAGE_LEFT_Y = 960-687;
+            PAGE_W = 50;
+            PAGE_H = 96;
+
+            UP_ONE_X = 284;
+            UP_ONE_Y = 960-687;
+            UP_ONE_W = 71;
+            UP_ONE_H = 96;
         }
 
         needRequest = false;
@@ -64,10 +108,16 @@ public class GetMoreBrowser
         {
             sixbutts[i] = new Rectangle(SIXBUTT_X + (i % 2)* SIXBUTT_XS, SIXBUTT_Y - (i/2)* SIXBUTT_YS, SIXBUTT_W, SIXBUTT_H);
         }
+        pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H);
+        pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
+        pageupbutt = new Rectangle(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H);
         allOptions = new ArrayList<String>();
         displayOptions = new ArrayList<String>();
 
-        for (String s: requestmap) {allOptions.add(s); displayOptions.add(s);}//populate initial buttons
+        canPageLeft = false;
+        canPageRight = false;
+        canPageUp = false;
+        pagenumber = 0;
     }
 
     public synchronized void touch(Vector2 touchpoint)
@@ -81,6 +131,9 @@ public class GetMoreBrowser
             }
         }
         //check other buttons here as well
+        if (pageleftbutt.contains(touchpoint) && canPageLeft) pageLeft();
+        if (pagerightbutt.contains(touchpoint) && canPageRight) pageRight();
+        if (pageupbutt.contains(touchpoint) && canPageUp) pageUp();
     }
 
     public synchronized void setAllOptions(List<String> allop)
@@ -92,7 +145,41 @@ public class GetMoreBrowser
             allOptions.add(allop.get(i));
             if (i<6) displayOptions.add(allop.get(i));
         }
+        if (allop.size()>6) canPageRight = true;
     }
+
+    public synchronized void allowPageUp()
+    {
+        canPageUp = true;
+    }
+
+    public synchronized void disallowPageUp()
+    {
+        canPageUp = false;
+    }
+
+    private synchronized void pageUp()
+    {
+        setRequest("\5"); //send the server a good old 5;
+    }
+
+    private synchronized void pageRight()
+    {
+        pagenumber++;
+        int safeend = 6*pagenumber < allOptions.size() ? 6*pagenumber: allOptions.size();
+        displayOptions = allOptions.subList(6 * pagenumber, safeend);
+        canPageLeft = true;
+        if (safeend == allOptions.size()) canPageRight=false;
+    }
+
+    private synchronized void pageLeft()
+    {
+        pagenumber--;
+        displayOptions = allOptions.subList(6*pagenumber, 6*(pagenumber +1));
+        if (pagenumber ==0) canPageLeft = false;
+        canPageRight = true;
+    }
+
 
     public synchronized void setNeedRequest()
     {
@@ -109,7 +196,7 @@ public class GetMoreBrowser
         return wasCancelled;
     }
 
-    public synchronized void setRequest(String request1)
+    private synchronized void setRequest(String request1)
     {
         gotRequest = true;
         request = request1;
@@ -144,6 +231,9 @@ public class GetMoreBrowser
         if (needRequest){
             for (int i =0; i< displayOptions.size(); i++) shapeRenderer.rect(sixbutts[i].getX(), sixbutts[i].getY(), sixbutts[i].getWidth(), sixbutts[i].getHeight());
         }
+        shapeRenderer.rect(pageleftbutt.getX(), pageleftbutt.getY(), pageleftbutt.getWidth(), pageleftbutt.getHeight());
+        shapeRenderer.rect(pagerightbutt.getX(), pagerightbutt.getY(), pagerightbutt.getWidth(), pagerightbutt.getHeight());
+        shapeRenderer.rect(pageupbutt.getX(), pageupbutt.getY(), pageupbutt.getWidth(), pageupbutt.getHeight());
         shapeRenderer.end();
     }
 
@@ -154,6 +244,9 @@ public class GetMoreBrowser
         if (needRequest) {
             for (int i =0; i< displayOptions.size(); i++) Assets.font.draw(batch, displayOptions.get(i), sixbutts[i].getX(), sixbutts[i].getY() + sixbutts[i].getHeight() * .5f);
         }
+        if (canPageLeft) Assets.font.draw(batch, "PageLeft", pageleftbutt.getX(), pageleftbutt.getY() + .5f*pageleftbutt.getHeight());
+        if (canPageRight) Assets.font.draw(batch, "PageRight", pagerightbutt.getX(), pagerightbutt.getY() + .5f*pagerightbutt.getHeight());
+        if (canPageUp) Assets.font.draw(batch, "PageUp", pageupbutt.getX(), pageupbutt.getY() + .5f*pageupbutt.getHeight());
 
         batch.end();
     }
