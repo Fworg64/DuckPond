@@ -77,7 +77,7 @@ public class DPGetMoreConnection extends Thread
                 //receive type options
                 optionsGot = getBlockFromServer();
                 getMoreBrowser.disallowPageUp();
-                getMoreBrowser.setAllOptions(optionsGot);
+                getMoreBrowser.setAllOptions(new ArrayList<String>(optionsGot));
 
                 //select option
                 typeRequest = getRequest(); //blocking
@@ -103,7 +103,7 @@ public class DPGetMoreConnection extends Thread
                     return;
                 }
                 //send user options to browser
-                getMoreBrowser.setAllOptions(optionsGot);
+                getMoreBrowser.setAllOptions(new ArrayList<String>(optionsGot));
                 getMoreBrowser.allowPageUp();
                 //get user request from browser
                 userRequest = getRequest();
@@ -135,7 +135,7 @@ public class DPGetMoreConnection extends Thread
                     return;
                 }
                 //send level options to browser
-                getMoreBrowser.setAllOptions(optionsGot);
+                getMoreBrowser.setAllOptions(new ArrayList<String>(optionsGot));
                 //get level request from browser
                 levelRequest = getRequest(); //get level request from browser
                 out.println(levelRequest); //let the server error check

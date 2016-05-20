@@ -133,7 +133,7 @@ public class GetMoreBrowser
         //check other buttons here as well
         if (pageleftbutt.contains(touchpoint) && canPageLeft) pageLeft();
         if (pagerightbutt.contains(touchpoint) && canPageRight) pageRight();
-        if (pageupbutt.contains(touchpoint) && canPageUp) pageUp();
+        if (pageupbutt.contains(touchpoint) && canPageUp) setRequest("\5");
     }
 
     public synchronized void setAllOptions(List<String> allop)
@@ -145,7 +145,10 @@ public class GetMoreBrowser
             allOptions.add(allop.get(i));
             if (i<6) displayOptions.add(allop.get(i));
         }
+        pagenumber = 0;
         if (allop.size()>6) canPageRight = true;
+        else canPageRight = false;
+        canPageLeft = false;
     }
 
     public synchronized void allowPageUp()
@@ -158,16 +161,11 @@ public class GetMoreBrowser
         canPageUp = false;
     }
 
-    private synchronized void pageUp()
-    {
-        setRequest("\5"); //send the server a good old 5;
-    }
-
     private synchronized void pageRight()
     {
         pagenumber++;
-        int safeend = 6*pagenumber < allOptions.size() ? 6*pagenumber: allOptions.size();
-        displayOptions = allOptions.subList(6 * pagenumber, safeend);
+        int safeend = 6*(pagenumber+1) < allOptions.size() ? 6*(pagenumber+1): allOptions.size();
+        displayOptions =new ArrayList<String>(allOptions.subList(6 * pagenumber, safeend));
         canPageLeft = true;
         if (safeend == allOptions.size()) canPageRight=false;
     }
@@ -175,7 +173,7 @@ public class GetMoreBrowser
     private synchronized void pageLeft()
     {
         pagenumber--;
-        displayOptions = allOptions.subList(6*pagenumber, 6*(pagenumber +1));
+        displayOptions = new ArrayList<String>(allOptions.subList(6*pagenumber, 6*(pagenumber +1)));
         if (pagenumber ==0) canPageLeft = false;
         canPageRight = true;
     }
