@@ -18,6 +18,7 @@ import java.util.Arrays;
  */
 public class LevelSelectionScreen extends ScreenAdapter
 {
+    //button dims defs
     int WORLDMAKER_X;
     int WORLDMAKER_Y;
     int WORLDMAKER_W;
@@ -56,6 +57,7 @@ public class LevelSelectionScreen extends ScreenAdapter
 
     public LevelSelectionScreen (DuckPondGame game)
     {
+        //button dims
         if (Options.highres)
         {
             MAINBUTT_X = 62;
@@ -100,7 +102,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             WORLDMAKER_Y = 960 - 935;
             WORLDMAKER_W = 226;
             WORLDMAKER_H = 129;
-        }
+        }//button dims
 
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
@@ -170,6 +172,13 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             Assets.load_mainmenu();
             game.setScreen(new MainMenuScreen(game));
+            Assets.dispose_levelscreen();
+            fileBrowser.dispose();
+            this.dispose();
+        }
+        if ((in.justTouched() && getmorebutt.contains(touchpoint)))
+        {
+            game.setScreen(new GetMoreScreen(game));
             Assets.dispose_levelscreen();
             fileBrowser.dispose();
             this.dispose();

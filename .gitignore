@@ -1,3 +1,7 @@
+## Download folder
+/duckpond/android/assets/LEVELS/DOWNLOADED/
+/duckpond/android/assets/LEVELS/CUSTOM/
+
 ## Java
 
 *.class
@@ -70,3 +74,4 @@ desktop/build/
 .DS_Store
 
 ## Assets and other proprietaries (to be added)
+

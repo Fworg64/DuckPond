@@ -366,7 +366,7 @@ public class LevelScreen2 extends ScreenAdapter
 
             Message = filename + '\n' + "Type a filename and press enter. (a-Z, 0-9)";
 
-            if (in.enterJustPressed() || (in.justTouched() && saveconfirmbutt.contains(touchpoint)))
+            if ((in.enterJustPressed() || (in.justTouched() && saveconfirmbutt.contains(touchpoint))) && !filename.equals("ATTRIBUTES"))
             {
                 if (!filename.isEmpty())
                 {
