@@ -17,7 +17,7 @@ import java.net.UnknownHostException;
  */
 public class DPClientConnection extends Thread
 {
-    public static final String HOSTNAME = "localhost";
+    public static final String HOSTNAME = "www.tcupdevelopment.me";
     public static final int PORTNUMBER = 42069;
 
     Socket DPSocket;

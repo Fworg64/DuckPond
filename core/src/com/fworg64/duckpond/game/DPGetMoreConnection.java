@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class DPGetMoreConnection extends Thread
 {
-    public static final String HOSTNAME = "localhost";
+    public static final String HOSTNAME = "www.tcupdevelopment.me";
     public static final int PORTNUMBER = 42068;
 
     Socket DPSocket;
