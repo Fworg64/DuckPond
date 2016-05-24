@@ -21,7 +21,6 @@ import sun.applet.Main;
 public class Assets
 {
     public static BitmapFont font;
-    public static BitmapFont numberfont;
 
     public static Texture LevelEditMapaAbajo;
     public static Texture LevelEditClock;
@@ -324,31 +323,12 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        font = new BitmapFont(Gdx.files.internal(res + "FONT\\opensans.fnt"));
+        font = new BitmapFont(Gdx.files.internal(res + "FONT\\lois.fnt"));
     }
     public static void dispose_font()
     {
         font.dispose();
     }
-
-    public static void load_numberfont_std()
-    {
-        numberfont = new BitmapFont(Gdx.files.internal("stdres\\FONT\\numbers.fnt"));
-    }
-    public static void load_numberfont_high()
-    {
-        numberfont = new BitmapFont(Gdx.files.internal("highres\\FONT\\numbers.fnt"));
-    }
-    public static void load_numberfont()
-    {
-        if (Options.highres) load_numberfont_high();
-        else load_numberfont_std();
-    }
-    public static void dispose_numberfont()
-    {
-        numberfont.dispose();
-    }
-
     public static void load_leveledit()
     {
         res = "stdres\\";
