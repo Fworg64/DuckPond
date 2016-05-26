@@ -183,7 +183,6 @@ public class LevelScreen2 extends ScreenAdapter
     public LevelScreen2(DuckPondGame game)
     {
         //options has no effect on resolution
-        Assets.load_numberfont_std();
         Assets.load_navigation_high();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
@@ -338,7 +337,6 @@ public class LevelScreen2 extends ScreenAdapter
                 Options.loadOptions();
                 Assets.load_levelscreen();
                 Assets.dispose_navigation();
-                Assets.dispose_numberfont();
                 game.setScreen(new LevelSelectionScreen(game));
                 Assets.dispose_leveledit();
                 this.dispose();
@@ -881,9 +879,9 @@ public class LevelScreen2 extends ScreenAdapter
 
         Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
         //Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
-        Assets.numberfont.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X + 100, T_TIME_DISPLAY_Y);
+        Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X + 100, T_TIME_DISPLAY_Y);
         //Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y - 60);
-        Assets.numberfont.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
+        Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
             if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
