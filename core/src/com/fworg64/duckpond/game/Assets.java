@@ -323,7 +323,7 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        font = new BitmapFont(Gdx.files.internal(res + "FONT\\lois.fnt"));
+        font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"));
     }
     public static void dispose_font()
     {
@@ -333,7 +333,7 @@ public class Assets
     {
         res = "stdres\\";
 
-        font = new BitmapFont(Gdx.files.internal("leveledit\\FONT\\opensans.fnt"));
+        load_font();
         LevelEditMapaAbajo = new Texture(Gdx.files.internal("leveledit\\mapaabajo.png"));
         LevelEditClock = new Texture(Gdx.files.internal("leveledit\\RELOJ.png"));
         LevelEditConfirm = new Texture(Gdx.files.internal("leveledit\\CONFIRM.png"));
