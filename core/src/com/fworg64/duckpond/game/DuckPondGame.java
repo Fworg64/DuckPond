@@ -63,7 +63,7 @@ public class DuckPondGame extends Game {
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load_mainmenu();
-		Assets.load_font(); //should be removed for release??
+		Assets.load_font();
         mas = new MusicAndSounds();
         mas.playMainMenu();
 
