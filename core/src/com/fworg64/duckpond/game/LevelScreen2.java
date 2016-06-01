@@ -190,7 +190,7 @@ public class LevelScreen2 extends ScreenAdapter
 
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            customDIR = Gdx.files.local("CUSTOM\\");
+            customDIR = Gdx.files.local("CUSTOM");
             customfiles = Arrays.asList(customDIR.list());
         }
         
@@ -274,6 +274,7 @@ public class LevelScreen2 extends ScreenAdapter
                 {
                     savefile = true;
                     defaultstate = false;
+                    Gdx.app.debug("Save", "Going to save file");
                 }
 
             }
@@ -281,6 +282,7 @@ public class LevelScreen2 extends ScreenAdapter
             {
                 loadfile = true;
                 defaultstate = false;
+                Gdx.app.debug("Load", "Goind to load");
             }
             if (trashbutt.contains(touchpoint))
             {
@@ -354,7 +356,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void savefile()
     {
         //get a name
-        Gdx.app.debug("Save", "Going to save file");
+        
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
@@ -404,6 +406,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void LoadFile()
     {
+    	Gdx.app.debug("Loading from", customDIR.path());
         customfiles = Arrays.asList(customDIR.list()); //reload... reload... reload...
 
         if (in.justTouched() && loadpageleft.contains(touchpoint) && pagenumber>0) pagenumber--;
