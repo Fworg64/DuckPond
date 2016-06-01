@@ -190,7 +190,7 @@ public class LevelScreen2 extends ScreenAdapter
 
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            customDIR = Gdx.files.local("LEVELS\\CUSTOM\\");
+            customDIR = Gdx.files.local("CUSTOM\\");
             customfiles = Arrays.asList(customDIR.list());
         }
         
@@ -354,6 +354,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void savefile()
     {
         //get a name
+        Gdx.app.debug("Save", "Going to save file");
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
@@ -369,6 +370,7 @@ public class LevelScreen2 extends ScreenAdapter
                 if (!filename.isEmpty())
                 {
                     currfile = Gdx.files.local(customDIR.path() + '\\' + filename);
+                    Gdx.app.debug("Saving file as", currfile.path());
                     currfile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
                     for (Spawnable s : spawnables) {
                         currfile.writeString(s.toString() + '\n', true);
