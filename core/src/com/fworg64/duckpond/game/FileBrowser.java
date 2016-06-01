@@ -215,7 +215,7 @@ public class FileBrowser
 
     public void gocustom()
     {
-        levelDir = Gdx.files.local("LEVELS\\" + CUSTOM_FOLDER_NAME);
+        levelDir = Gdx.files.local(CUSTOM_FOLDER_NAME);
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         pagenumber =0;
         Gdx.app.debug("currleveldir: ", levelDir.path());
