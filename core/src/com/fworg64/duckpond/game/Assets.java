@@ -126,6 +126,7 @@ public class Assets
 
     public static void load_mainmenu()
     {
+        Gdx.app.debug("Assets: ", "MainMenu Loaded");
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
