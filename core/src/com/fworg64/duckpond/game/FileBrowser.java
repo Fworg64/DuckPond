@@ -173,7 +173,19 @@ public class FileBrowser
 
     public void pageUp()
     {
-        if (!levelDir.name().equals("LEVELS"))
+        if (levelDir.name().equals(CUSTOM_FOLDER_NAME))
+        {
+            levelDir = Gdx.files.internal("LEVELS");
+            levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+            for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
+            {
+                FileHandle f = iterator.next();
+                Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
+                if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+            }
+            pagenumber =0;
+        }
+        else if (!levelDir.name().equals("LEVELS"))
         {
             levelDir = levelDir.parent(); //take us to LEVELS
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
@@ -205,6 +217,7 @@ public class FileBrowser
     {
         levelDir = Gdx.files.local("LEVELS\\" + CUSTOM_FOLDER_NAME);
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+        pagenumber =0;
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
     
