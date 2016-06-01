@@ -324,7 +324,7 @@ public class Assets
         else res = "stdres\\";
         Gdx.app.debug("Assets: ", "Font Loading " + res);
 
-        font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"));
+        font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"), Gdx.files.internal(res + "font\\loisfont.png"), false, false);
     }
     public static void dispose_font()
     {
