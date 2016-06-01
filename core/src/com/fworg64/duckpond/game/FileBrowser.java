@@ -122,11 +122,12 @@ public class FileBrowser
         pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
         upone = new Rectangle(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H);
 
-        levelDir = Gdx.files.internal("LEVELS\\");
+        levelDir = Gdx.files.internal(".\\LEVELS\\"); //this doestnt work on ios
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
         {
             FileHandle f = iterator.next();
+            Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
             if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
         }
         pagenumber =0;
@@ -177,6 +178,7 @@ public class FileBrowser
                 FileHandle f = iterator.next();
                 if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
             }
+            pagenumber=0;
             int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
             Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
             levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
