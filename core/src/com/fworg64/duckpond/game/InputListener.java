@@ -55,7 +55,6 @@ public class InputListener implements InputProcessor
 
         Gdx.app.debug("Xscalefactor",Float.toString(Xscalefactor));
         Gdx.app.debug("Yscalefactor",Float.toString(Yscalefactor));
-//        Gdx.app.debug("Yoffset",Float.toString(Yoffset));
         rawTouchX = 0;
         rawTouchY =0;
         projTouch = new Vector2();
