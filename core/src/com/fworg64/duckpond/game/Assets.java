@@ -326,6 +326,18 @@ public class Assets
 
         font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"), Gdx.files.internal(res + "font\\loisfont.png"), false, false);
     }
+    public static void load_font_std()
+    {
+        Gdx.app.debug("Assets: ", "Explicit loading std font");
+
+        font = new BitmapFont(Gdx.files.internal("stdres\\font\\lois.fnt"), Gdx.files.internal("stdres\\font\\loisfont.png"), false, false);
+    }
+    public static void load_font_high()
+    {
+        Gdx.app.debug("Assets: ", "Explicit loading high font");
+
+        font = new BitmapFont(Gdx.files.internal("highres\\font\\lois.fnt"), Gdx.files.internal("highres\\font\\loisfont.png"), false, false);
+    }
     public static void dispose_font()
     {
         font.dispose();

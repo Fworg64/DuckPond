@@ -176,6 +176,8 @@ public class ShareScreen extends ScreenAdapter
         }
         if (in.justTouched() && backbutt.contains(in.getTouchpoint()))
         {
+            Assets.load_leveledit();
+            Assets.load_navigation();
             game.setScreen(new LevelScreen2(game));
             this.dispose();
             //should probably dispose of network stuff

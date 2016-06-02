@@ -135,6 +135,8 @@ public class OptionsScreen extends ScreenAdapter
         if (returnPressed && !in.isTouched() || in.isBackPressed())
         {
             Options.save();
+            Assets.load_font();
+            Assets.load_mainmenu();
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_options();
         }

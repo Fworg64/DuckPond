@@ -345,7 +345,8 @@ public class LevelScreen2 extends ScreenAdapter
                 Options.loadOptions();
                 in.hideKeyboard();
                 Assets.load_levelscreen();
-                Assets.dispose_navigation();
+                Assets.load_navigation();
+                Assets.load_font();
                 game.setScreen(new LevelSelectionScreen(game));
                 Assets.dispose_leveledit();
                 this.dispose();
