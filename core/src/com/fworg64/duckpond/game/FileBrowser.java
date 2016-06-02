@@ -89,7 +89,7 @@ public class FileBrowser
             LEVEL_LOAD_XS = 180;
             LEVEL_LOAD_YS = 180;
 
-            PAGE_RIGHT_X = 441;
+            PAGE_RIGHT_X = 411;
             PAGE_RIGHT_Y = 960-687;
             PAGE_LEFT_X = 178;
             PAGE_LEFT_Y = 960-687;

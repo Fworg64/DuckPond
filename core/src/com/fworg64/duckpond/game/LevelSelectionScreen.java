@@ -161,7 +161,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                 {
                     if (!fileBrowser.levels.get(i).isDirectory()) { //if you picked a level
                         Assets.load_gamescreen();
-                        game.setScreen(new GameScreen(game, fileBrowser.levels.get(i).readString()));
+                        game.setScreen(new GameScreen(game, fileBrowser.levels.get(i).readString(), fileBrowser.levels.get(i).nameWithoutExtension()));
                         Assets.dispose_levelscreen();
                         fileBrowser.dispose();
                         this.dispose();
@@ -180,7 +180,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 fileBrowser.gocustom();
             }
-            else game.setScreen(new GameScreen(game, Options.getCustom1()));
+            else game.setScreen(new GameScreen(game, Options.getCustom1(), "Custom"));
         }
         if (in.justTouched() && downldlevelbutt.contains(touchpoint))
         {

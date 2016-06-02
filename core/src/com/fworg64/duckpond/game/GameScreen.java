@@ -78,12 +78,17 @@ public class GameScreen extends ScreenAdapter
     private float TIME_RENDER_X;
     private float TIME_RENDER_Y;
 
+    private float LEVELNAME_RENDER_X;
+    private float LEVELNAME_RENDER_Y;
+
     private float gameoverRunTime;
     private boolean GAMEOVERMUSICFLAG;
 
     private boolean saydegeat;
 
-    GameScreen(DuckPondGame game, String level)
+    private String levelname;
+
+    GameScreen(DuckPondGame game, String level, String levelname)
     {
         this.game = game;
         this.mas = game.mas;
@@ -177,6 +182,8 @@ public class GameScreen extends ScreenAdapter
 
             TIME_RENDER_X = 7;
             TIME_RENDER_Y = 1920 - 310;
+            LEVELNAME_RENDER_X = 500;
+            LEVELNAME_RENDER_Y = 1920-150;
         }
         else
         {
@@ -200,10 +207,14 @@ public class GameScreen extends ScreenAdapter
 
             TIME_RENDER_X = 400;
             TIME_RENDER_Y = 960 - 20; //top left?
+            LEVELNAME_RENDER_X = 202;
+            LEVELNAME_RENDER_Y = 960-50;
         }
 
         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
+
+        this.levelname = levelname;
     }
 
     public void update(float delta)
@@ -408,6 +419,7 @@ public class GameScreen extends ScreenAdapter
         game.batch.begin();
         game.batch.draw(Assets.HUD, HUDarea.getX(), HUDarea.getY());
         Assets.font.draw(game.batch, "Time: " + Integer.toString((int) (world.time >0 ? world.time:0)), TIME_RENDER_X, TIME_RENDER_Y);
+        Assets.font.draw(game.batch, levelname, LEVELNAME_RENDER_X, LEVELNAME_RENDER_Y);
         switch (world.lives)
         {
             case 3:
