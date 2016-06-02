@@ -20,7 +20,7 @@ import java.util.Iterator;
 public class FileBrowser
 {
     public final String CUSTOM_FOLDER_NAME = "CUSTOM";
-    public final String DOWNLOAD_FOLDER_NAME = "DOWNLOAD";
+    public final String DOWNLOAD_FOLDER_NAME = "DOWNLOADED";
     public int LEVEL_LOAD_X ;
     public int LEVEL_LOAD_Y;
     public int LEVEL_LOAD_W ;
