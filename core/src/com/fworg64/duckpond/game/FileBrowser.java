@@ -20,6 +20,7 @@ import java.util.Iterator;
 public class FileBrowser
 {
     public final String CUSTOM_FOLDER_NAME = "CUSTOM";
+    public final String DOWNLOAD_FOLDER_NAME = "DOWNLOAD";
     public int LEVEL_LOAD_X ;
     public int LEVEL_LOAD_Y;
     public int LEVEL_LOAD_W ;
@@ -216,6 +217,14 @@ public class FileBrowser
     public void gocustom()
     {
         levelDir = Gdx.files.local(CUSTOM_FOLDER_NAME);
+        levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+        pagenumber =0;
+        Gdx.app.debug("currleveldir: ", levelDir.path());
+    }
+
+    public void godownld()
+    {
+        levelDir = Gdx.files.local(DOWNLOAD_FOLDER_NAME);
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         pagenumber =0;
         Gdx.app.debug("currleveldir: ", levelDir.path());

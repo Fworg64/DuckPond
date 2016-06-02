@@ -3,7 +3,6 @@ package com.fworg64.duckpond.game;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -39,6 +38,11 @@ public class LevelSelectionScreen extends ScreenAdapter
     int CUSTOMWORLD_W;
     int CUSTOMWORLD_H;
 
+    int DOWNLDBUTT_X;
+    int DOWNLDBUTT_Y;
+    int DOWNLDBUTT_W;
+    int DOWNLDBUTT_H;
+
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
     ShapeRenderer shapeRenderer;
@@ -47,6 +51,7 @@ public class LevelSelectionScreen extends ScreenAdapter
     Vector2 touchpoint;
 
     Rectangle customlevelbutt;
+    Rectangle downldlevelbutt;
     Rectangle leveleditbutt;
     Rectangle mainMenubutt;
     Rectangle getmorebutt;
@@ -70,6 +75,12 @@ public class LevelSelectionScreen extends ScreenAdapter
             GETMORE_W = 400;
             GETMORE_H = 200;
 
+            DOWNLDBUTT_X = 450;
+            DOWNLDBUTT_Y = 1920-405;
+            DOWNLDBUTT_W = 150;
+            DOWNLDBUTT_H = 200;
+
+
             CUSTOMWORLD_X = 80; //BOTTOM LEFT
             CUSTOMWORLD_Y = 25;
             CUSTOMWORLD_W = 400;
@@ -79,6 +90,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             WORLDMAKER_Y = 22;
             WORLDMAKER_W = 381;
             WORLDMAKER_H = 218;
+
 
         }
         else
@@ -92,6 +104,11 @@ public class LevelSelectionScreen extends ScreenAdapter
             GETMORE_Y = 960 -305;
             GETMORE_W = 237;
             GETMORE_H = 119;
+
+            DOWNLDBUTT_X = 200;
+            DOWNLDBUTT_Y = 960-305;
+            DOWNLDBUTT_W = 100;
+            DOWNLDBUTT_H = 119;
 
             CUSTOMWORLD_X = 47;
             CUSTOMWORLD_Y = 960-931;
@@ -120,6 +137,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         customlevelbutt = new Rectangle(CUSTOMWORLD_X, CUSTOMWORLD_Y, CUSTOMWORLD_W, CUSTOMWORLD_H);
         leveleditbutt = new Rectangle(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H);
         getmorebutt = new Rectangle(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H);
+        downldlevelbutt = new Rectangle(DOWNLDBUTT_X, DOWNLDBUTT_Y, DOWNLDBUTT_W, DOWNLDBUTT_H);
 
         leveleditPressed = false;
 
@@ -163,6 +181,13 @@ public class LevelSelectionScreen extends ScreenAdapter
                 fileBrowser.gocustom();
             }
             else game.setScreen(new GameScreen(game, Options.getCustom1()));
+        }
+        if (in.justTouched() && downldlevelbutt.contains(touchpoint))
+        {
+            if (Gdx.app.getType() != Application.ApplicationType.WebGL)
+            {
+                fileBrowser.godownld();
+            }
         }
         if (in.justTouched() && fileBrowser.upone.contains(touchpoint))
         {
