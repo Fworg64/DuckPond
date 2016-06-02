@@ -251,6 +251,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         for(Rectangle r: fileBrowser.levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
         shapeRenderer.rect(customlevelbutt.getX(), customlevelbutt.getY(), customlevelbutt.getWidth(), customlevelbutt.getHeight());
         shapeRenderer.rect(mainMenubutt.getX(), mainMenubutt.getY(), mainMenubutt.getWidth(), mainMenubutt.getHeight());
+        shapeRenderer.rect(downldlevelbutt.getX(), downldlevelbutt.getY(), downldlevelbutt.getWidth(), downldlevelbutt.getHeight());
         shapeRenderer.rect(fileBrowser.upone.getX(), fileBrowser.upone.getY(), fileBrowser.upone.getWidth(), fileBrowser.upone.getHeight());
         shapeRenderer.rect(fileBrowser.pageleftbutt.getX(), fileBrowser.pageleftbutt.getY(), fileBrowser.pageleftbutt.getWidth(), fileBrowser.pageleftbutt.getHeight());
         shapeRenderer.rect(fileBrowser.pagerightbutt.getX(), fileBrowser.pagerightbutt.getY(), fileBrowser.pagerightbutt.getWidth(), fileBrowser.pagerightbutt.getHeight());
