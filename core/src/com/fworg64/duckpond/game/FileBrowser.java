@@ -174,7 +174,7 @@ public class FileBrowser
 
     public void pageUp()
     {
-        if (levelDir.name().equals(CUSTOM_FOLDER_NAME))
+        if (levelDir.name().equals(CUSTOM_FOLDER_NAME) || levelDir.name().equals(DOWNLOAD_FOLDER_NAME))
         {
             levelDir = Gdx.files.internal("LEVELS");
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
