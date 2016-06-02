@@ -60,6 +60,7 @@ public class DuckPondGame extends Game {
 
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load_mainmenu();
@@ -68,8 +69,6 @@ public class DuckPondGame extends Game {
         mas.playMainMenu();
 
 		Gdx.input.setCatchBackKey(true);
-
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
 		setScreen(new MainMenuScreen(this));
 	}

@@ -122,14 +122,17 @@ public class FileBrowser
         pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
         upone = new Rectangle(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H);
 
-        levelDir = Gdx.files.internal("LEVELS\\");
+        levelDir = Gdx.files.internal("LEVELS"); 
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
         {
             FileHandle f = iterator.next();
+            Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
             if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
         }
         pagenumber =0;
+        
+        Gdx.app.debug("currleveldir: ", levelDir.path());
 
         renderUpOne = true;
     }
@@ -150,6 +153,7 @@ public class FileBrowser
         {
             levels.remove(0);
         }
+        Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
     public void pageLeft()
@@ -164,11 +168,24 @@ public class FileBrowser
         int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
         Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
         levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
+        Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
     public void pageUp()
     {
-        if (!levelDir.name().equals("LEVELS"))
+        if (levelDir.name().equals(CUSTOM_FOLDER_NAME))
+        {
+            levelDir = Gdx.files.internal("LEVELS");
+            levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+            for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
+            {
+                FileHandle f = iterator.next();
+                Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
+                if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+            }
+            pagenumber =0;
+        }
+        else if (!levelDir.name().equals("LEVELS"))
         {
             levelDir = levelDir.parent(); //take us to LEVELS
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
@@ -177,10 +194,12 @@ public class FileBrowser
                 FileHandle f = iterator.next();
                 if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
             }
+            pagenumber=0;
             int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
             Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
             levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
         }
+        Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
     public void pageInto(FileHandle f)
@@ -191,12 +210,15 @@ public class FileBrowser
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
             pagenumber =0;
         }
+        Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
     public void gocustom()
     {
-        levelDir = Gdx.files.local("LEVELS\\" + CUSTOM_FOLDER_NAME);
+        levelDir = Gdx.files.local(CUSTOM_FOLDER_NAME);
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+        pagenumber =0;
+        Gdx.app.debug("currleveldir: ", levelDir.path());
     }
     
     public void renderShapes(ShapeRenderer shapeRenderer)

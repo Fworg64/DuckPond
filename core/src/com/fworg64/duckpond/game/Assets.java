@@ -126,6 +126,7 @@ public class Assets
 
     public static void load_mainmenu()
     {
+        Gdx.app.debug("Assets: ", "MainMenu Loading");
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
@@ -321,8 +322,9 @@ public class Assets
     {
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
+        Gdx.app.debug("Assets: ", "Font Loading " + res);
 
-        font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"));
+        font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"), Gdx.files.internal(res + "font\\loisfont.png"), false, false);
     }
     public static void dispose_font()
     {

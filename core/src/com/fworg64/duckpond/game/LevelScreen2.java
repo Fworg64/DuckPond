@@ -190,7 +190,9 @@ public class LevelScreen2 extends ScreenAdapter
 
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
-            customDIR = Gdx.files.local("LEVELS\\CUSTOM\\");
+            customDIR = Gdx.files.local("CUSTOM");
+            customDIR.mkdirs();
+            if (customDIR.isDirectory()) Gdx.app.debug("we shoold be", "guut");
             customfiles = Arrays.asList(customDIR.list());
         }
         
@@ -274,13 +276,19 @@ public class LevelScreen2 extends ScreenAdapter
                 {
                     savefile = true;
                     defaultstate = false;
+                    Gdx.app.debug("Save", "Going to save file");
                 }
 
             }
             if (loadbutt.contains(touchpoint))
             {
-                loadfile = true;
-                defaultstate = false;
+            	if (defaultstate ==true)
+            	{
+            		loadfile = true;
+	                defaultstate = false;
+	                Gdx.app.debug("Load", "Goind to load");
+            	}
+                
             }
             if (trashbutt.contains(touchpoint))
             {
@@ -335,6 +343,7 @@ public class LevelScreen2 extends ScreenAdapter
             case 1:
                 Gdx.app.debug("screenstate", "exit");
                 Options.loadOptions();
+                in.hideKeyboard();
                 Assets.load_levelscreen();
                 Assets.dispose_navigation();
                 game.setScreen(new LevelSelectionScreen(game));
@@ -354,6 +363,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void savefile()
     {
         //get a name
+        
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
@@ -368,7 +378,12 @@ public class LevelScreen2 extends ScreenAdapter
             {
                 if (!filename.isEmpty())
                 {
-                    currfile = Gdx.files.local(customDIR.path() + '\\' + filename);
+                    currfile = Gdx.files.local(customDIR.path() + '/' + filename);
+                    //currfile.mkdirs(); this would make filename a dir
+                    Gdx.app.debug("Saving file as", currfile.path());
+                    Gdx.app.debug(currfile.parent().toString(), "is the parent");
+                    if (currfile.parent().exists()) Gdx.app.debug("it", "exists");
+                    if (currfile.parent().isDirectory()) Gdx.app.debug("and", "is a dir");
                     currfile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
                     for (Spawnable s : spawnables) {
                         currfile.writeString(s.toString() + '\n', true);
@@ -456,6 +471,7 @@ public class LevelScreen2 extends ScreenAdapter
 
             loadfile = false;
             defaultstate = true;
+            Gdx.app.debug("dont","show");
         }
         if (in.justTouched() && cancelbutt.contains(touchpoint))
         {
