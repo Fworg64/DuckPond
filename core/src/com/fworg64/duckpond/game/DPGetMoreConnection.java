@@ -160,7 +160,7 @@ public class DPGetMoreConnection extends Thread
             {
                 List<String> levelstrings;
                 levelstrings = getBlockFromServer();
-                writeStringsToFile(levelstrings, Gdx.files.local("LEVELS\\DOWNLOADED" + '\\' + userRequest + '\\' + levelRequest));
+                writeStringsToFile(levelstrings, Gdx.files.local("LEVELS/DOWNLOADED" + '/' + userRequest + '/' + levelRequest));
                 dlLevel = false;
                 getLevel = true;
             }
@@ -169,6 +169,7 @@ public class DPGetMoreConnection extends Thread
 
     private void writeStringsToFile(List<String> strings, FileHandle f)
     {
+    	f.parent().mkdirs();
         if (f.exists())
         {
             f.delete();
