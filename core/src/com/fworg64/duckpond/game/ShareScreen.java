@@ -26,6 +26,10 @@ public class ShareScreen extends ScreenAdapter
     public int USERNAMECHANGE_Y;
     public int USERNAMECHANGE_W;
     public int USERNAMECHANGE_H;
+    public int PINCHANGE_X;
+    public int PINCHANGE_Y;
+    public int PINCHANGE_W;
+    public int PINCHANGE_H;
 
     public int SAVECONFIRM_X;
     public int SAVECONFIRM_Y;
@@ -53,6 +57,7 @@ public class ShareScreen extends ScreenAdapter
     Rectangle saveconfirmbutt;
     Rectangle cancelbutt;
     Rectangle namechangebutt;
+    Rectangle pinchangebutt;
 
     InputListener in;
     Vector2 touchpoint;
@@ -72,6 +77,7 @@ public class ShareScreen extends ScreenAdapter
 
     public ShareScreen (DuckPondGame game)
     {
+        Gdx.app.debug("Screen Starting", " Share");
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
@@ -83,67 +89,75 @@ public class ShareScreen extends ScreenAdapter
 
         if (Options.isHighres())
         {
-            BACKBUTT_X =0;
-            BACKBUTT_Y = 1820;
-            BACKBUTT_W =100;
-            BACKBUTT_H = 100;
+            BACKBUTT_X = 62;
+            BACKBUTT_Y = 1920 - 385;
+            BACKBUTT_W =329;
+            BACKBUTT_H = 129;
 
             SHAREBUTT_X = 100;
             SHAREBUTT_Y = 100;
             SHAREBUTT_W = 100;
             SHAREBUTT_H = 100;
 
-            USERNAME_X = 200;
-            USERNAME_Y = 1800;
-            USERNAMECHANGE_X = 700;
-            USERNAMECHANGE_Y = 1800;
-            USERNAMECHANGE_W = 100;
-            USERNAMECHANGE_H = 100;
+            USERNAME_X = 400;
+            USERNAME_Y = 1920 - 250;
+            USERNAMECHANGE_X = 400;
+            USERNAMECHANGE_Y = 1920 - 1898;
+            USERNAMECHANGE_W = 300;
+            USERNAMECHANGE_H = 200;
+            PINCHANGE_X = 750;
+            PINCHANGE_Y = 1920 - 1898;
+            PINCHANGE_W = 300;
+            PINCHANGE_H = 200;
 
-            SAVECONFIRM_X = 700;
-            SAVECONFIRM_Y = 1600;
-            SAVECONFIRM_W = 100;
-            SAVECONFIRM_H = 100;
+            SAVECONFIRM_X = 603;
+            SAVECONFIRM_Y = 1920-700;
+            SAVECONFIRM_W = 126;
+            SAVECONFIRM_H = 126;
 
-            CANCEL_X = 300;
-            CANCEL_Y = 1600;
-            CANCEL_W = 100;
-            CANCEL_H = 100;
+            CANCEL_X = 351;
+            CANCEL_Y = 1920 - 700;
+            CANCEL_W = 126;
+            CANCEL_H = 126;
 
-            MESSAGE_X = 200;
-            MESSAGE_Y = 1700;
+            MESSAGE_X = 400;
+            MESSAGE_Y = 1920 - 385;
         }
         else
         {
-            BACKBUTT_X =0;
-            BACKBUTT_Y = 800;
-            BACKBUTT_W = 50;
-            BACKBUTT_H = 50;
+            BACKBUTT_X =30;
+            BACKBUTT_Y = 960 - 290;
+            BACKBUTT_W = 170;
+            BACKBUTT_H = 67;
 
             SHAREBUTT_X = 100;
             SHAREBUTT_Y = 100;
             SHAREBUTT_W = 100;
             SHAREBUTT_H = 100;
 
-            USERNAME_X = 100;
-            USERNAME_Y = 700;
-            USERNAMECHANGE_X = 500;
-            USERNAMECHANGE_Y = 800;
-            USERNAMECHANGE_W = 50;
-            USERNAMECHANGE_H = 50;
+            USERNAME_X = 210;
+            USERNAME_Y = 960 - 230;
+            USERNAMECHANGE_X = 250;
+            USERNAMECHANGE_Y = 960 - 935;
+            USERNAMECHANGE_W = 150;
+            USERNAMECHANGE_H = 100;
+            PINCHANGE_X = 440;
+            PINCHANGE_Y = 960 - 935;
+            PINCHANGE_W = 150;
+            PINCHANGE_H = 100;
 
-            SAVECONFIRM_X = 500;
-            SAVECONFIRM_Y = 700;
-            SAVECONFIRM_W = 50;
-            SAVECONFIRM_H = 50;
+            SAVECONFIRM_X = 209;
+            SAVECONFIRM_Y = 500;
+            SAVECONFIRM_W = 74;
+            SAVECONFIRM_H = 74;
 
-            CANCEL_X = 200;
-            CANCEL_Y = 700;
-            CANCEL_W = 50;
-            CANCEL_H = 50;
+            CANCEL_X = 357;
+            CANCEL_Y = 500;
+            CANCEL_W = 74;
+            CANCEL_H = 74;
 
-            MESSAGE_X = 100;
-            MESSAGE_Y = 800;
+            MESSAGE_X = 210;
+            MESSAGE_Y = 960 - 330;
         } //back, share=, namechange, saveconfirm, and cancel butt dims and pos
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
@@ -152,6 +166,7 @@ public class ShareScreen extends ScreenAdapter
         sharebutt = new Rectangle(SHAREBUTT_X, SHAREBUTT_Y, SHAREBUTT_W, SHAREBUTT_H);
         backbutt = new Rectangle(BACKBUTT_X, BACKBUTT_Y, BACKBUTT_W, BACKBUTT_H);
         namechangebutt = new Rectangle(USERNAMECHANGE_X, USERNAMECHANGE_Y, USERNAMECHANGE_W, USERNAMECHANGE_H);
+        pinchangebutt = new Rectangle(PINCHANGE_X, PINCHANGE_Y, PINCHANGE_W, PINCHANGE_H);
         saveconfirmbutt = new Rectangle(SAVECONFIRM_X, SAVECONFIRM_Y, SAVECONFIRM_W, SAVECONFIRM_H);
         cancelbutt = new Rectangle(CANCEL_X, CANCEL_Y, CANCEL_W, CANCEL_H);
 
@@ -277,13 +292,14 @@ public class ShareScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         //need assetes
-        Assets.font.draw(game.batch, "back", backbutt.getX(), backbutt.getY());
+        game.batch.draw(Assets.NavigationBack, backbutt.getX(), backbutt.getY());
         Assets.font.draw(game.batch, "share", sharebutt.getX(), sharebutt.getY());
-        Assets.font.draw(game.batch, "namechange", namechangebutt.getX(), namechangebutt.getY());
+        game.batch.draw(Assets.ShareChangeName, namechangebutt.getX(), namechangebutt.getY());
+        game.batch.draw(Assets.ShareChangePIN, pinchangebutt.getX(), pinchangebutt.getY());
         if (changename)
         {
-            Assets.font.draw(game.batch, "saveconfirm", saveconfirmbutt.getX(), saveconfirmbutt.getY());
-            Assets.font.draw(game.batch, "cancel", cancelbutt.getX(), cancelbutt.getY());
+            game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());
+            game.batch.draw(Assets.NavigationCancel, cancelbutt.getX(), cancelbutt.getY());
         }
         if (fileTransferCommunicator.isNeedfile())
         {

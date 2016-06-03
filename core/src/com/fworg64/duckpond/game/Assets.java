@@ -44,11 +44,15 @@ public class Assets
     public static Texture NavigationCancel;
     public static Texture NavigationConfirm;
     public static Texture NavigationWorldButt;
+    public static Texture NavigationBack;
 
     public static Texture LevelSelectionMainMenu;
     public static Texture LevelSelectionFolder;
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
+
+    public static Texture ShareChangeName;
+    public static Texture ShareChangePIN;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
@@ -299,6 +303,7 @@ public class Assets
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("stdres\\navigation\\levelbutt.png"));
+        NavigationBack = new Texture(Gdx.files.internal("stdres\\navigation\\back.png"));
     }
     public static void load_navigation_high()
     {
@@ -309,6 +314,8 @@ public class Assets
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("highres\\navigation\\levelbutt.png"));
+        NavigationBack = new Texture(Gdx.files.internal("highres\\navigation\\back.png"));
+
     }
     public static void dispose_navigation()
     {
@@ -317,6 +324,24 @@ public class Assets
         NavigationConfirm.dispose();
         NavigationUpone.dispose();
         NavigationWorldButt.dispose();
+        NavigationBack.dispose();
+    }
+
+    public static void load_share()
+    {
+        Gdx.app.debug("Assets: ", "sharescreen Loading");
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
+
+        ShareChangeName = new Texture(Gdx.files.internal((res + "share\\changename.png")));
+        ShareChangePIN = new Texture(Gdx.files.internal((res + "share\\changepin.png")));
+    }
+
+    public static void dispose_share()
+    {
+        ShareChangeName.dispose();
+        ShareChangePIN.dispose();
+        Gdx.app.debug("Assets: ", "disposed");
     }
     
     public static void load_font()
