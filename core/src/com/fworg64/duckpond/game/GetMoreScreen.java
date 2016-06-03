@@ -34,14 +34,14 @@ public class GetMoreScreen extends ScreenAdapter
     {
         if (Options.isHighres())
         {
-            BACKBUTT_X =0;
-            BACKBUTT_Y = 1820;
+            BACKBUTT_X =20;
+            BACKBUTT_Y = 1920 - 385;
             BACKBUTT_W =100;
             BACKBUTT_H = 100;
         }
         else
         {
-            BACKBUTT_X =0;
+            BACKBUTT_X =10;
             BACKBUTT_Y = 800;
             BACKBUTT_W = 50;
             BACKBUTT_H = 50;
