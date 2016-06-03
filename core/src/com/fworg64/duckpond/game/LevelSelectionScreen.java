@@ -216,11 +216,13 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             fileBrowser.pageRight();
         }
-        if (leveleditbutt.contains(touchpoint) && in.justTouched()) leveleditPressed = true;
+        if (leveleditbutt.contains(touchpoint) && in.justTouched()) {
+            leveleditPressed = true;
+            Assets.load_leveledit();
+        }
         if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
         if (leveleditPressed && !in.isTouched())
         {
-            Assets.load_leveledit();
             game.setScreen(new LevelScreen2(game));
             Assets.dispose_levelscreen();
             fileBrowser.dispose();

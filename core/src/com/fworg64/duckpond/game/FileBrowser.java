@@ -265,6 +265,6 @@ public class FileBrowser
 
     public void dispose()
     {
-        Assets.dispose_navigation();
+        //Assets.dispose_navigation();
     }
 }
