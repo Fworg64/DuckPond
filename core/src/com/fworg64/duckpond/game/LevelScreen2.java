@@ -35,10 +35,10 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
-    public static final int SHARE_X = 750;
-    public static final int SHARE_Y = 1920-300;
-    public static final int SHARE_W = 100;
-    public static final int SHARE_H = 300;
+    public static final int SHARE_X = 350;
+    public static final int SHARE_Y = 1920-308;
+    public static final int SHARE_W = 231;
+    public static final int SHARE_H = 96;
 
     public static final int LOWER_AREA_HEIGHT = 308;
     public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
@@ -80,7 +80,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_TIME_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int LEVEL_TIME_BUTTON_W = 40;
     public static final int LEVEL_TIME_BUTTON_H = 75;
-    public static final int LEVEL_TIME_BUTTON_XS = 380;
+    public static final int LEVEL_TIME_BUTTON_XS = 200;
 
     public static final int LEVEL_LIVES_BUTTON_X = 615;
     public static final int LEVEL_LIVES_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
@@ -88,14 +88,17 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_LIVES_BUTTON_H = 75;
     public static final int LEVEL_LIVES_BUTTON_XS = 380;
 
+    public static final int MESSAGE_X = 20;
+    public static final int MESSAGE_Y = 1920 - 190;
+
     public static final int LIVES_DISPLAY_X = 670;
     public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int LIVES_DISPLAY_S = 106;
 
-    public static final int T_TIME_DISPLAY_X = 150;
-    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT +100;
-    public static final int C_TIME_DISPLAY_X = 700;
-    public static final int C_TIME_DISPLAY_Y = 255;
+    public static final int T_TIME_DISPLAY_X = 100;
+    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT + 40;
+    public static final int C_TIME_DISPLAY_X = 800;
+    public static final int C_TIME_DISPLAY_Y = 100;
 
     public static final int CANCEL_X = 300;
     public static final int CANCEL_Y = 1920 - 500;
@@ -184,6 +187,7 @@ public class LevelScreen2 extends ScreenAdapter
     {
         //options has no effect on resolution
         Assets.load_navigation_high();
+        Assets.load_font_std();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -864,6 +868,7 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
         game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
         game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
+        game.batch.draw(Assets.LevelEditShare, sharebutt.getX(), sharebutt.getY());
         game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
         game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
         game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
@@ -894,11 +899,11 @@ public class LevelScreen2 extends ScreenAdapter
                 break;
         }
 
-        Assets.font.draw(game.batch, Message, .1f * gcam.viewportWidth, .9f * gcam.viewportHeight);
+        Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
         //Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
-        Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X + 100, T_TIME_DISPLAY_Y);
+        Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
         //Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y - 60);
-        Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X + 100, C_TIME_DISPLAY_Y - 60);
+        Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
             if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
