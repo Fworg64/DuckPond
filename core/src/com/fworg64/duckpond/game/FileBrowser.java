@@ -256,7 +256,7 @@ public class FileBrowser
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++)
         {
             batch.draw(Assets.NavigationWorldButt, levelbutts[i].getX(), levelbutts[i].getY());
-            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + levelbutts[i].getHeight());
+            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + .6f*levelbutts[i].getHeight());
         }
 
         batch.end();

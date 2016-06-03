@@ -70,20 +70,20 @@ public class LevelSelectionScreen extends ScreenAdapter
             MAINBUTT_W = 281;
             MAINBUTT_H = 160;
 
-            GETMORE_X = 614;
-            GETMORE_Y = 1920 -405;
-            GETMORE_W = 400;
-            GETMORE_H = 200;
+            GETMORE_X = 80; //BOTTOM LEFT
+            GETMORE_Y = 25;
+            GETMORE_W = 320;
+            GETMORE_H = 199;
 
-            DOWNLDBUTT_X = 450;
+
+            DOWNLDBUTT_X = 420;
             DOWNLDBUTT_Y = 1920-405;
-            DOWNLDBUTT_W = 150;
+            DOWNLDBUTT_W = 300;
             DOWNLDBUTT_H = 200;
 
-
-            CUSTOMWORLD_X = 80; //BOTTOM LEFT
-            CUSTOMWORLD_Y = 25;
-            CUSTOMWORLD_W = 400;
+            CUSTOMWORLD_X = 750;
+            CUSTOMWORLD_Y = 1920 -405;
+            CUSTOMWORLD_W = 300;
             CUSTOMWORLD_H = 200;
 
             WORLDMAKER_X = 619; //BOTTOM LEFT
@@ -95,25 +95,25 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         else
         {
-            MAINBUTT_X = 64;
+            MAINBUTT_X = 30;
             MAINBUTT_Y = 960 - 290;
             MAINBUTT_W = 167;
             MAINBUTT_H = 95;
 
-            GETMORE_X = 364;
-            GETMORE_Y = 960 -305;
-            GETMORE_W = 237;
-            GETMORE_H = 119;
+            GETMORE_X = 47;
+            GETMORE_Y = 960-931;
+            GETMORE_W = 179;
+            GETMORE_H = 108;
 
-            DOWNLDBUTT_X = 200;
+            DOWNLDBUTT_X = 250;
             DOWNLDBUTT_Y = 960-305;
-            DOWNLDBUTT_W = 100;
-            DOWNLDBUTT_H = 119;
+            DOWNLDBUTT_W = 150;
+            DOWNLDBUTT_H = 100;
 
-            CUSTOMWORLD_X = 47;
-            CUSTOMWORLD_Y = 960-931;
-            CUSTOMWORLD_W = 237;
-            CUSTOMWORLD_H = 119;
+            CUSTOMWORLD_X = 440;
+            CUSTOMWORLD_Y = 960 -305;
+            CUSTOMWORLD_W = 150;
+            CUSTOMWORLD_H = 100;
 
             WORLDMAKER_X = 367;
             WORLDMAKER_Y = 960 - 935;
@@ -240,8 +240,11 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.begin();
         game.batch.draw(Assets.LevelSelectionWorldMaker, leveleditbutt.getX(), leveleditbutt.getY());
         game.batch.draw(Assets.LevelSelectionMainMenu, mainMenubutt.getX(), mainMenubutt.getY());
-        game.batch.draw(Assets.LevelSelectionCustomWorld, customlevelbutt.getX(), customlevelbutt.getY());
+        game.batch.draw(Assets.LevelSelectionFolder, customlevelbutt.getX(), customlevelbutt.getY());
+        game.batch.draw(Assets.LevelSelectionFolder, downldlevelbutt.getX(), downldlevelbutt.getY());
         game.batch.draw(Assets.LevelSelectionGetMore, getmorebutt.getX(), getmorebutt.getY());
+        Assets.font.draw(game.batch, "CUSTOM", customlevelbutt.getX(), customlevelbutt.getY() + .6f*customlevelbutt.getHeight());
+        Assets.font.draw(game.batch, "DOWN\nLOADED", downldlevelbutt.getX(), downldlevelbutt.getY() + .9f*downldlevelbutt.getHeight());
         game.batch.end();
 
         fileBrowser.renderSprites(game.batch);

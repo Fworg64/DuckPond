@@ -45,7 +45,7 @@ public class Assets
     public static Texture NavigationWorldButt;
 
     public static Texture LevelSelectionMainMenu;
-    public static Texture LevelSelectionCustomWorld;
+    public static Texture LevelSelectionFolder;
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
 
@@ -270,8 +270,8 @@ public class Assets
         else res = "stdres\\";
 
         LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
-        LevelSelectionCustomWorld = new Texture(Gdx.files.internal(res + "levelselection\\custombutt.png"));
-        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\getmore.png"));
+        LevelSelectionFolder = new Texture(Gdx.files.internal(res + "levelselection\\folder.png"));
+        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\download.png"));
         LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
 
 
@@ -279,7 +279,7 @@ public class Assets
     public static void dispose_levelscreen()
     {
         LevelSelectionWorldMaker.dispose();
-        LevelSelectionCustomWorld.dispose();
+        LevelSelectionFolder.dispose();
         LevelSelectionGetMore.dispose();
         LevelSelectionMainMenu.dispose();
     }
