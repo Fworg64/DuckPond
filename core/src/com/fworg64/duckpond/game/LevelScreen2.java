@@ -101,7 +101,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int C_TIME_DISPLAY_Y = 100;
 
     public static final int CANCEL_X = 300;
-    public static final int CANCEL_Y = 1920 - 500;
+    public static final int CANCEL_Y = 1920 - 1500;
     public static final int CANCEL_W = 126;
     public static final int CANCEL_H = 126;
     public static final int SAVE_CONFIRM_X = 500;
@@ -907,7 +907,8 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y);
         if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
-            if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+            if (i<customfiles.size()) game.batch.draw(Assets.NavigationWorldButt, loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
+            if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY() + .6f*loadlevelbuttons[i].getHeight());
         }
         if (loadfile){
             game.batch.draw(Assets.NavigationFlechaIzq, loadpageleft.getX(), loadpageleft.getY());
