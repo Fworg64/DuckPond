@@ -87,6 +87,7 @@ public class DPClientConnection extends Thread
             Gdx.app.debug("Couldn't get I/O for the connection to", HOSTNAME);
             return -2;
         }
+        pinPad.setMessage("Connected!");
         return 0;
     }
 
