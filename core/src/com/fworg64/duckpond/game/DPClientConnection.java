@@ -1,7 +1,6 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
