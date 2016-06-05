@@ -139,19 +139,9 @@ public class FileBrowser
     public void pageRight()
     {
         int effectivelength = levelDir.list().length;
-        if (levelDir.name().equals("LEVELS")) effectivelength -=1;
         Gdx.app.debug("pagerighttocuh", Integer.toString(effectivelength) +" "+ Integer.toString(PAGE_SIZE) +" "+ Integer.toString(pagenumber));
         if (effectivelength > PAGE_SIZE*(pagenumber+1)) pagenumber++;
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-        for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
-        {
-            FileHandle f = iterator.next();
-            if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
-        }
-        for (int i =0; i<pagenumber*PAGE_SIZE; i++)
-        {
-            levels.remove(0);
-        }
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
@@ -159,11 +149,7 @@ public class FileBrowser
     {
         if (pagenumber>0) pagenumber--;
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-        for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
-        {
-            FileHandle f = iterator.next();
-            if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
-        }
+
         int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
         Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
         levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
@@ -176,23 +162,13 @@ public class FileBrowser
         {
             levelDir = Gdx.files.internal("LEVELS");
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-            for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
-            {
-                FileHandle f = iterator.next();
-                Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
-                if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
-            }
             pagenumber =0;
         }
-        else if (!levelDir.name().equals("LEVELS"))
+        else if (!levelDir.name().equals("LEVELS")) //we are in a downloaded users folder
         {
-            levelDir = levelDir.parent(); //take us to LEVELS
+            levelDir = levelDir.parent(); //take us to downloaded
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
-            for (Iterator<FileHandle> iterator = levels.iterator(); iterator.hasNext();) //remove custom folder from list
-            {
-                FileHandle f = iterator.next();
-                if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
-            }
+
             pagenumber=0;
             int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
             Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
