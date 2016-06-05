@@ -28,22 +28,26 @@ public class InputListener implements InputProcessor
     private Vector2 projTouch;// the touchpoint projected to the assumed camera
 
     private boolean keyboardshown;
+    /*
     static int textkeys[] = {Input.Keys.A, Input.Keys.B, Input.Keys.C, Input.Keys.D, Input.Keys.E, Input.Keys.F, Input.Keys.G,
             Input.Keys.H, Input.Keys.I, Input.Keys.J, Input.Keys.K, Input.Keys.L, Input.Keys.M, Input.Keys.N, Input.Keys.O, Input.Keys.P,
             Input.Keys.Q, Input.Keys.R, Input.Keys.S, Input.Keys.T, Input.Keys.U, Input.Keys.V, Input.Keys.W, Input.Keys.X, Input.Keys.Y, Input.Keys.Z,
             Input.Keys.NUM_0, Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4, Input.Keys.NUM_5, Input.Keys.NUM_6, Input.Keys.NUM_7,
             Input.Keys.NUM_8, Input.Keys.NUM_9};
+    */
     static char letters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','.',
             '0','1', '2', '3', '4', '5', '6', '7', '8', '9'};
     char tempchar;
     boolean keytyped;
+    boolean backspacetyped;
 
     public InputListener(int worldW, int worldH)
     {
         Gdx.input.setInputProcessor(this);
         keyboardshown = false;
         keytyped = false;
+        backspacetyped = false;
         worldw = worldW;
         worldh = worldH;
         Xscalefactor = (float)(worldw)/((float)Gdx.app.getGraphics().getWidth());
@@ -115,18 +119,21 @@ public class InputListener implements InputProcessor
     public char pollChar()
     {
         char tempChar = '\0'; //null char
-        for (int i=0; i<textkeys.length; i++)
-        {
-            if (keytyped) tempChar = tempchar;
-            keytyped = false;
-        }
+        if (keytyped) tempChar = tempchar;
+        keytyped = false;
         return tempChar;
     }
     public boolean enterJustPressed()
     {
         return Gdx.input.isKeyJustPressed(Input.Keys.ENTER);
     }
-    public boolean backspaceJustPressed() { return Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE);}
+    public boolean backspaceJustPressed() {
+        if (backspacetyped) {
+            backspacetyped = false;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean keyDown(int keycode)
@@ -141,6 +148,7 @@ public class InputListener implements InputProcessor
 
     @Override
     public boolean keyTyped(char character) {
+        if (new Character(character).hashCode() == 8) {backspacetyped = true;}
         for (char othertemp: letters)
         {
             if (othertemp == character) {

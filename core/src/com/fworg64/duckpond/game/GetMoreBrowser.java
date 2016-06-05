@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,6 +33,10 @@ public class GetMoreBrowser
     public int UP_ONE_W;
     public int UP_ONE_H;
 
+    public int LEVEL_LOAD_R;
+    public int LEVEL_LOAD_C;
+    public int PAGE_SIZE;
+
     private boolean needRequest;
     private boolean gotRequest;
     private boolean wasCancelled;
@@ -58,12 +61,12 @@ public class GetMoreBrowser
         //SIXBUTT DIMS
         if (Options.isHighres())
         {
-            SIXBUTT_W = 100;
-            SIXBUTT_H = 100;
-            SIXBUTT_X = 345;
-            SIXBUTT_Y = 1000;
-            SIXBUTT_XS = 180;
-            SIXBUTT_YS = 180;
+            SIXBUTT_X = 210;
+            SIXBUTT_Y = 1920-453;
+            SIXBUTT_W = 300;
+            SIXBUTT_H = 300;
+            SIXBUTT_XS = 360;
+            SIXBUTT_YS = 360;
 
             PAGE_RIGHT_X = 694;
             PAGE_RIGHT_Y = 420;
@@ -76,17 +79,21 @@ public class GetMoreBrowser
             UP_ONE_Y = 420;
             UP_ONE_W = 121;
             UP_ONE_H = 163;
+
+            LEVEL_LOAD_R = 3;
+            LEVEL_LOAD_C = 2;
+            PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
         }
         else
         {
-            SIXBUTT_W = 50;
-            SIXBUTT_H = 50;
-            SIXBUTT_X = 222;
-            SIXBUTT_Y = 400;
-            SIXBUTT_XS = 65;
-            SIXBUTT_YS = 65;
+            SIXBUTT_X = 65;
+            SIXBUTT_Y = 960-332;
+            SIXBUTT_W = 150;
+            SIXBUTT_H = 150;
+            SIXBUTT_XS = 180;
+            SIXBUTT_YS = 180;
 
-            PAGE_RIGHT_X = 441;
+            PAGE_RIGHT_X = 411;
             PAGE_RIGHT_Y = 960-687;
             PAGE_LEFT_X = 178;
             PAGE_LEFT_Y = 960-687;
@@ -97,16 +104,22 @@ public class GetMoreBrowser
             UP_ONE_Y = 960-687;
             UP_ONE_W = 71;
             UP_ONE_H = 96;
+
+            LEVEL_LOAD_R = 2;
+            LEVEL_LOAD_C = 3;
+            PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
         }
 
         needRequest = false;
         wasCancelled = false;
         gotRequest = false;
 
-        sixbutts = new Rectangle[6];
-        for (int i=0; i<6; i++)
-        {
-            sixbutts[i] = new Rectangle(SIXBUTT_X + (i % 2)* SIXBUTT_XS, SIXBUTT_Y - (i/2)* SIXBUTT_YS, SIXBUTT_W, SIXBUTT_H);
+        sixbutts = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
+        for (int i=0; i<LEVEL_LOAD_C; i++) {
+            for (int j=0; j<LEVEL_LOAD_R;j++)
+            {
+                sixbutts[i*(LEVEL_LOAD_R) + j] = new Rectangle(SIXBUTT_X + i*SIXBUTT_XS, SIXBUTT_Y - j*SIXBUTT_YS - SIXBUTT_H, SIXBUTT_W, SIXBUTT_H);
+            }
         }
         pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H);
         pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
@@ -239,12 +252,20 @@ public class GetMoreBrowser
     {
         batch.enableBlending();
         batch.begin();
+        batch.setColor(1,1,1,.2f);
+        batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
+        batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
+        batch.draw(Assets.NavigationUpone, pageupbutt.getX(), pageupbutt.getY());
+        batch.setColor(1,1,1,1);
         if (needRequest) {
-            for (int i =0; i< displayOptions.size(); i++) Assets.font.draw(batch, displayOptions.get(i), sixbutts[i].getX(), sixbutts[i].getY() + sixbutts[i].getHeight() * .5f);
+            for (int i =0; i< displayOptions.size(); i++) {
+                batch.draw(Assets.NavigationWorldButt, sixbutts[i].getX(), sixbutts[i].getY());
+                Assets.font.draw(batch, displayOptions.get(i), sixbutts[i].getX(), sixbutts[i].getY() + sixbutts[i].getHeight() * .5f);
+            }
         }
-        if (canPageLeft) Assets.font.draw(batch, "PageLeft", pageleftbutt.getX(), pageleftbutt.getY() + .5f*pageleftbutt.getHeight());
-        if (canPageRight) Assets.font.draw(batch, "PageRight", pagerightbutt.getX(), pagerightbutt.getY() + .5f*pagerightbutt.getHeight());
-        if (canPageUp) Assets.font.draw(batch, "PageUp", pageupbutt.getX(), pageupbutt.getY() + .5f*pageupbutt.getHeight());
+        if (canPageLeft) batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
+        if (canPageRight) batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
+        if (canPageUp) batch.draw(Assets.NavigationUpone, pageupbutt.getX(), pageupbutt.getY());
 
         batch.end();
     }

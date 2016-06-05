@@ -1,6 +1,5 @@
 package com.fworg64.duckpond.game;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 

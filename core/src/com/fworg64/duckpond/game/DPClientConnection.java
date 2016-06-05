@@ -1,7 +1,6 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,6 +86,7 @@ public class DPClientConnection extends Thread
             Gdx.app.debug("Couldn't get I/O for the connection to", HOSTNAME);
             return -2;
         }
+        pinPad.setMessage("Connected!");
         return 0;
     }
 

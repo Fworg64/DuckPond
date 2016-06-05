@@ -36,6 +36,7 @@ public class Assets
     public static Texture LevelEditTimeBar;
     public static Texture LevelEditLives;
     public static Texture LevelEditUnlives;
+    public static Texture LevelEditShare;
 
     public static Texture NavigationFlechaIzq;
     public static TextureRegion NavigationFlechaDer;
@@ -43,11 +44,15 @@ public class Assets
     public static Texture NavigationCancel;
     public static Texture NavigationConfirm;
     public static Texture NavigationWorldButt;
+    public static Texture NavigationBack;
 
     public static Texture LevelSelectionMainMenu;
-    public static Texture LevelSelectionCustomWorld;
+    public static Texture LevelSelectionFolder;
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
+
+    public static Texture ShareChangeName;
+    public static Texture ShareChangePIN;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
@@ -270,8 +275,8 @@ public class Assets
         else res = "stdres\\";
 
         LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
-        LevelSelectionCustomWorld = new Texture(Gdx.files.internal(res + "levelselection\\custombutt.png"));
-        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\getmore.png"));
+        LevelSelectionFolder = new Texture(Gdx.files.internal(res + "levelselection\\folder.png"));
+        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\download.png"));
         LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
 
 
@@ -279,7 +284,7 @@ public class Assets
     public static void dispose_levelscreen()
     {
         LevelSelectionWorldMaker.dispose();
-        LevelSelectionCustomWorld.dispose();
+        LevelSelectionFolder.dispose();
         LevelSelectionGetMore.dispose();
         LevelSelectionMainMenu.dispose();
     }
@@ -298,6 +303,7 @@ public class Assets
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("stdres\\navigation\\levelbutt.png"));
+        NavigationBack = new Texture(Gdx.files.internal("stdres\\navigation\\back.png"));
     }
     public static void load_navigation_high()
     {
@@ -308,6 +314,8 @@ public class Assets
         NavigationFlechaDer.flip(true, false);
         NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("highres\\navigation\\levelbutt.png"));
+        NavigationBack = new Texture(Gdx.files.internal("highres\\navigation\\back.png"));
+
     }
     public static void dispose_navigation()
     {
@@ -316,6 +324,24 @@ public class Assets
         NavigationConfirm.dispose();
         NavigationUpone.dispose();
         NavigationWorldButt.dispose();
+        NavigationBack.dispose();
+    }
+
+    public static void load_share()
+    {
+        Gdx.app.debug("Assets: ", "sharescreen Loading");
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
+
+        ShareChangeName = new Texture(Gdx.files.internal((res + "share\\changename.png")));
+        ShareChangePIN = new Texture(Gdx.files.internal((res + "share\\changepin.png")));
+    }
+
+    public static void dispose_share()
+    {
+        ShareChangeName.dispose();
+        ShareChangePIN.dispose();
+        Gdx.app.debug("Assets: ", "disposed");
     }
     
     public static void load_font()
@@ -326,14 +352,24 @@ public class Assets
 
         font = new BitmapFont(Gdx.files.internal(res + "font\\lois.fnt"), Gdx.files.internal(res + "font\\loisfont.png"), false, false);
     }
+    public static void load_font_std()
+    {
+        Gdx.app.debug("Assets: ", "Explicit loading std font");
+
+        font = new BitmapFont(Gdx.files.internal("stdres\\font\\lois.fnt"), Gdx.files.internal("stdres\\font\\loisfont.png"), false, false);
+    }
+    public static void load_font_high()
+    {
+        Gdx.app.debug("Assets: ", "Explicit loading high font");
+
+        font = new BitmapFont(Gdx.files.internal("highres\\font\\lois.fnt"), Gdx.files.internal("highres\\font\\loisfont.png"), false, false);
+    }
     public static void dispose_font()
     {
         font.dispose();
     }
     public static void load_leveledit()
     {
-        res = "stdres\\";
-
         load_font();
         LevelEditMapaAbajo = new Texture(Gdx.files.internal("leveledit\\mapaabajo.png"));
         LevelEditClock = new Texture(Gdx.files.internal("leveledit\\RELOJ.png"));
@@ -351,10 +387,11 @@ public class Assets
         LevelEditFlechaIzq = new Texture(Gdx.files.internal("leveledit\\flechaizq.png"));
         LevelEditFlechaDer = new TextureRegion(LevelEditFlechaIzq);
         LevelEditFlechaDer.flip(true, false);
+        LevelEditShare = new Texture(Gdx.files.internal("leveledit\\share.png"));
 
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
 
-        duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
+        duck = new Texture(Gdx.files.internal("stdres\\gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
         duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
         duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
@@ -375,7 +412,7 @@ public class Assets
         swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
 
-        shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
+        shark = new Texture(Gdx.files.internal("stdres\\gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
         sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
         sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3]};
@@ -395,7 +432,7 @@ public class Assets
         sharkSwimUpAnim = new Animation(.2f, sharkSwimUpFrames, Animation.PlayMode.LOOP);
         sharkSwimDownAnim = new Animation(.2f, sharkSwimDownFrames, Animation.PlayMode.LOOP);
 
-        lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
+        lily = new Texture(Gdx.files.internal("stdres\\gamescreen\\lily.png"));
         lilyframes = TextureRegion.split(lily, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
         lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
         lilyRotFrames = new Array<TextureRegion>(lilyRot);
@@ -421,5 +458,6 @@ public class Assets
         duck.dispose();
         shark.dispose();
         lily.dispose();
+        LevelEditShare.dispose();
     }
 }

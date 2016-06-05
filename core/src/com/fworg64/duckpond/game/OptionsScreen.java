@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -135,6 +134,8 @@ public class OptionsScreen extends ScreenAdapter
         if (returnPressed && !in.isTouched() || in.isBackPressed())
         {
             Options.save();
+            Assets.load_font();
+            Assets.load_mainmenu();
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_options();
         }
