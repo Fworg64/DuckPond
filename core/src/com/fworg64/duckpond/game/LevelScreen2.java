@@ -100,10 +100,14 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int C_TIME_DISPLAY_X = 800;
     public static final int C_TIME_DISPLAY_Y = 100;
 
-    public static final int CANCEL_X = 300;
-    public static final int CANCEL_Y = 1920 - 1500;
-    public static final int CANCEL_W = 126;
-    public static final int CANCEL_H = 126;
+    public static final int LOAD_CANCEL_X = 300;
+    public static final int LOAD_CANCEL_Y = 1920 - 1500;
+    public static final int LOAD_CANCEL_W = 126;
+    public static final int LOAD_CANCEL_H = 126;
+    public static final int SAVE_CANCEL_X = 300;
+    public static final int SAVE_CANCEL_Y = 1920 - 500;
+    public static final int SAVE_CANCEL_W = 126;
+    public static final int SAVE_CANCEL_H = 126;
     public static final int SAVE_CONFIRM_X = 500;
     public static final int SAVE_CONFIRM_Y = 1920 - 500;
     public static final int SAVE_CONFIRM_W = 126;
@@ -140,7 +144,8 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle exitbutt;
     Rectangle loadbutt;
     Rectangle savebutt;
-    Rectangle cancelbutt;
+    Rectangle savecancelbutt;
+    Rectangle loadcancelbutt;
     Rectangle saveconfirmbutt;
     Rectangle loadpageleft;
     Rectangle loadpageright;
@@ -219,7 +224,8 @@ public class LevelScreen2 extends ScreenAdapter
         exitbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         loadbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
         savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
-        cancelbutt = new Rectangle(CANCEL_X, CANCEL_Y, CANCEL_W, CANCEL_H);
+        loadcancelbutt = new Rectangle(LOAD_CANCEL_X, LOAD_CANCEL_Y, LOAD_CANCEL_W, LOAD_CANCEL_H);
+        savecancelbutt = new Rectangle(SAVE_CANCEL_X, SAVE_CANCEL_Y, SAVE_CANCEL_W, SAVE_CANCEL_H);
         saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
         loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
@@ -401,7 +407,7 @@ public class LevelScreen2 extends ScreenAdapter
                 in.hideKeyboard();
             }
 
-            if (in.justTouched() && cancelbutt.contains(touchpoint))
+            if (in.justTouched() && savecancelbutt.contains(touchpoint))
             {
                 in.hideKeyboard();
                 savefile = false;
@@ -479,7 +485,7 @@ public class LevelScreen2 extends ScreenAdapter
             defaultstate = true;
             Gdx.app.debug("dont","show");
         }
-        if (in.justTouched() && cancelbutt.contains(touchpoint))
+        if (in.justTouched() && loadcancelbutt.contains(touchpoint))
         {
             in.hideKeyboard();
             loadfile = false;
@@ -882,7 +888,8 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
         game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
 
-        if (savefile || loadfile) game.batch.draw(Assets.NavigationCancel, cancelbutt.getX(), cancelbutt.getY());
+        if (savefile) game.batch.draw(Assets.NavigationCancel, savecancelbutt.getX(), savecancelbutt.getY());
+        if (loadfile) game.batch.draw(Assets.NavigationCancel, loadcancelbutt.getX(), loadcancelbutt.getY());
         if (savefile) game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());
 
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);

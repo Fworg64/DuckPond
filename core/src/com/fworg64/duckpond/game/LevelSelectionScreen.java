@@ -263,7 +263,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.draw(Assets.LevelSelectionGetMore, getmorebutt.getX(), getmorebutt.getY());
         Assets.font.draw(game.batch, "CUSTOM", customlevelbutt.getX(), customlevelbutt.getY() + .6f*customlevelbutt.getHeight());
         Assets.font.draw(game.batch, "DOWN\nLOADED", downldlevelbutt.getX(), downldlevelbutt.getY() + .9f*downldlevelbutt.getHeight());
-        if (!filebrowsermade) Assets.font.draw(game.batch, "Press here please, test", makefilebrowser.getX(), makefilebrowser.getY() + .5f * makefilebrowser.getHeight());
+        if (!filebrowsermade) Assets.font.draw(game.batch, "Debug Rectangle\nPress Me", makefilebrowser.getX(), makefilebrowser.getY() + .5f * makefilebrowser.getHeight());
         game.batch.end();
 
         if (filebrowsermade) fileBrowser.renderSprites(game.batch);
