@@ -126,7 +126,11 @@ public class InputListener implements InputProcessor
     {
         return Gdx.input.isKeyJustPressed(Input.Keys.ENTER);
     }
-    public boolean backspaceJustPressed() { return Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE);}
+    public boolean backspaceJustPressed() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) return true;
+        if (keytyped && new Character(tempchar).hashCode() == 8) return true;
+        return false;
+    }
 
     @Override
     public boolean keyDown(int keycode)
