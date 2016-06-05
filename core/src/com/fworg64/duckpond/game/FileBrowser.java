@@ -142,6 +142,12 @@ public class FileBrowser
         Gdx.app.debug("pagerighttocuh", Integer.toString(effectivelength) +" "+ Integer.toString(PAGE_SIZE) +" "+ Integer.toString(pagenumber));
         if (effectivelength > PAGE_SIZE*(pagenumber+1)) pagenumber++;
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
+        int i =0;
+        for (Iterator<FileHandle> level = levels.iterator(); level.hasNext();)
+        {
+            FileHandle l = level.next();
+            if (i++ < PAGE_SIZE * pagenumber) level.remove(); //remove all levels on previous pages
+        }
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
