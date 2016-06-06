@@ -327,6 +327,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
                         Assets.load_levelscreen();
+                        Assets.load_navigation();
                         game.setScreen(new LevelSelectionScreen(game));
                         Assets.dispose_gamescreen();
                         this.dispose();
@@ -363,6 +364,7 @@ public class GameScreen extends ScreenAdapter
                         mas.stopCurrMusic();
                         mas.stopSfx();
                         Assets.load_levelscreen();
+                        Assets.load_navigation();
                         game.setScreen(new LevelSelectionScreen(game));
                         Assets.dispose_gamescreen();
                         this.dispose();                    }
@@ -398,6 +400,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
                         Assets.load_levelscreen();
+                        Assets.load_navigation();
                         game.setScreen(new LevelSelectionScreen(game));
                         Assets.dispose_gamescreen();
                         this.dispose();                    }

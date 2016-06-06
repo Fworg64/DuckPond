@@ -116,6 +116,7 @@ public class MainMenuScreen extends ScreenAdapter
 
         if (playbutt.isPressed()) {
             Assets.load_levelscreen();
+            Assets.load_navigation();
         }
         if (playbutt.isWasPressed())
         {

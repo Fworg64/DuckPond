@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,10 @@ public class FileBrowser
     FileHandle levelDir;
     ArrayList<FileHandle> levels;
     int pagenumber;
+
+    private String levelpicked;
+    private String namepicked;
+    private Boolean levelchosen;
 
     public volatile boolean renderUpOne;
 
@@ -107,7 +112,7 @@ public class FileBrowser
         }
         //endregion
 
-        Assets.load_navigation();
+
 
         levelbutts = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
@@ -134,9 +139,48 @@ public class FileBrowser
         Gdx.app.debug("currleveldir: ", levelDir.path());
 
         renderUpOne = true;
+
+        levelpicked = "";
+        namepicked = "";
+        levelchosen = false;
     }
 
-    public void pageRight()
+    public void touch(Vector2 touchpoint)
+    {
+        for(int i=0; i<levelbutts.length;i++) {
+            if (levelbutts[i].contains(touchpoint)) {
+                if (levels.size() > i) //if you picked a valid choice
+                {
+                    if (!levels.get(i).isDirectory()) { //if you picked a level
+                        levelpicked = levels.get(i).readString();
+                        namepicked = levels.get(i).nameWithoutExtension();
+                        levelchosen = true;
+                    } else //you picked a folder
+                    {
+                        pageInto(levels.get(i));
+                        break;
+                    }
+                }
+            }
+        }
+        if (upone.contains(touchpoint)) pageUp();
+        if (pageleftbutt.contains(touchpoint)) pageLeft();
+        if (pagerightbutt.contains(touchpoint)) pageRight();
+    }
+    public String getLevelPicked()
+    {
+        return levelpicked;
+    }
+    public String getNamePicked()
+    {
+        return namepicked;
+    }
+    public Boolean isLevelchosen()
+    {
+        return levelchosen;
+    }
+
+    private void pageRight()
     {
         int effectivelength = levelDir.list().length;
         Gdx.app.debug("pagerighttocuh", Integer.toString(effectivelength) +" "+ Integer.toString(PAGE_SIZE) +" "+ Integer.toString(pagenumber));
@@ -151,7 +195,7 @@ public class FileBrowser
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
-    public void pageLeft()
+    private void pageLeft()
     {
         if (pagenumber>0) pagenumber--;
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
@@ -162,7 +206,7 @@ public class FileBrowser
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
-    public void pageUp()
+    private void pageUp()
     {
         if (levelDir.name().equals(CUSTOM_FOLDER_NAME) || levelDir.name().equals(DOWNLOAD_FOLDER_NAME))
         {
@@ -183,7 +227,7 @@ public class FileBrowser
         Gdx.app.debug("currleveldir: ", levelDir.path());
     }
 
-    public void pageInto(FileHandle f)
+    private void pageInto(FileHandle f)
     {
         if (f.isDirectory())
         {
@@ -208,6 +252,13 @@ public class FileBrowser
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
         pagenumber =0;
         Gdx.app.debug("currleveldir: ", levelDir.path());
+    }
+
+    public void resetLevelChosen()
+    {
+        levelchosen = false;
+        levelpicked = "";
+        namepicked = "";
     }
     
     public void renderShapes(ShapeRenderer shapeRenderer)
@@ -243,10 +294,5 @@ public class FileBrowser
 
         batch.end();
 
-    }
-
-    public void dispose()
-    {
-        //Assets.dispose_navigation();
     }
 }

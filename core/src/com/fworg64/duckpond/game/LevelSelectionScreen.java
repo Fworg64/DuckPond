@@ -165,27 +165,13 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         else
         {
-            for(int i=0; i<fileBrowser.levelbutts.length;i++)
+            fileBrowser.touch(in.justTouched() ? touchpoint : new Vector2());
+            if (fileBrowser.isLevelchosen())
             {
-                if (in.justTouched() && fileBrowser.levelbutts[i].contains(touchpoint))
-                {
-                    if (fileBrowser.levels.size() > i) //if you picked a valid choice
-                    {
-                        if (!fileBrowser.levels.get(i).isDirectory()) { //if you picked a level
-                            Assets.load_gamescreen();
-                            game.setScreen(new GameScreen(game, fileBrowser.levels.get(i).readString(), fileBrowser.levels.get(i).nameWithoutExtension()));
-                            Assets.dispose_levelscreen();
-                            fileBrowser.dispose();
-                            this.dispose();
-                        }
-                        else //you picked a folder
-                        {
-                            fileBrowser.pageInto(fileBrowser.levels.get(i));
-                            break;
-                        }
-                    }
-                }
+                Assets.load_gamescreen();
+                game.setScreen(new GameScreen(game, fileBrowser.getLevelPicked(), fileBrowser.getNamePicked()));
             }
+
             for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
             if (customlevelbutt.isWasPressed())
             {
@@ -204,10 +190,6 @@ public class LevelSelectionScreen extends ScreenAdapter
                     downldlevelbutt.pressHandled();
                 }
             }
-            if (in.justTouched() && fileBrowser.upone.contains(touchpoint))
-            {
-                fileBrowser.pageUp();
-            }
             if (mainMenubutt.isPressed())
             {
                 Assets.load_mainmenu();
@@ -216,7 +198,6 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 game.setScreen(new MainMenuScreen(game));
                 Assets.dispose_levelscreen();
-                fileBrowser.dispose();
                 this.dispose();
             }
             if (in.isBackPressed())
@@ -224,23 +205,13 @@ public class LevelSelectionScreen extends ScreenAdapter
                 Assets.load_mainmenu();
                 game.setScreen(new MainMenuScreen(game));
                 Assets.dispose_levelscreen();
-                fileBrowser.dispose();
                 this.dispose();
             }
             if ((getmorebutt.isWasPressed()))
             {
                 game.setScreen(new GetMoreScreen(game));
                 Assets.dispose_levelscreen();
-                fileBrowser.dispose();
                 this.dispose();
-            }
-            if ((in.justTouched() && fileBrowser.pageleftbutt.contains(touchpoint)))
-            {
-                fileBrowser.pageLeft();
-            }
-            if ((in.justTouched() && fileBrowser.pagerightbutt.contains(touchpoint)))
-            {
-                fileBrowser.pageRight();
             }
             if (leveleditbutt.isPressed()) {
                 Assets.load_leveledit();
@@ -249,7 +220,6 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 game.setScreen(new LevelScreen2(game));
                 Assets.dispose_levelscreen();
-                fileBrowser.dispose();
                 this.dispose();
             }
         }
