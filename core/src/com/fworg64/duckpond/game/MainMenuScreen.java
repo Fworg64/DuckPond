@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
 
 
 /**
@@ -46,13 +47,8 @@ public class MainMenuScreen extends ScreenAdapter
     Vector2 touchpoint;
     boolean catchOtherBack;
 
-    Rectangle playbutt;
-    Rectangle optionbutt;
-    Rectangle exitbutt;
-
-    boolean playPressed;
-    boolean optionsPressed;
-    boolean exitPressed;
+    Button playbutt, optionbutt, exitbutt;
+    Button butts[];
 
     public MainMenuScreen (DuckPondGame game)
     {
@@ -95,13 +91,10 @@ public class MainMenuScreen extends ScreenAdapter
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
 
-        playbutt = new Rectangle(PLAY_X, PLAY_Y, PLAY_W, PLAY_H);
-        optionbutt = new Rectangle(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H);
-        exitbutt = new Rectangle(EXIT_X, EXIT_Y, EXIT_W, EXIT_H);
-
-        playPressed = false;
-        optionsPressed = false;
-        exitPressed = false;
+        playbutt = new Button(PLAY_X, PLAY_Y, PLAY_W, PLAY_H, Assets.MainMenuPlay);
+        optionbutt = new Button(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H, Assets.MainMenuOptions);
+        exitbutt = new Button(EXIT_X, EXIT_Y, EXIT_W, EXIT_H, Assets.MainMenuExit);
+        butts = new Button[] {playbutt, optionbutt, exitbutt};
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
@@ -115,36 +108,31 @@ public class MainMenuScreen extends ScreenAdapter
         }
     }
 
-    public int update() //FYOTB
+    public void update() //FYOTB
     {
         touchpoint.set(in.getTouchpoint());
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
+        for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
 
-        if (playbutt.contains(touchpoint) && in.justTouched()) {
-            playPressed = true;
+        if (playbutt.isPressed()) {
             Assets.load_levelscreen();
         }
-        if (playPressed && !playbutt.contains(touchpoint)) playPressed = false;
-        if (playPressed && !in.isTouched())
+        if (playbutt.isWasPressed())
         {
             game.setScreen(new LevelSelectionScreen(game));
             Assets.dispose_mainmenu();
-            return 2;
+            this.dispose();
         }
-        if (optionbutt.contains(touchpoint) && in.justTouched()) {
-            optionsPressed = true;
+        if (optionbutt.isPressed()) {
             Assets.load_options();
         }
-        if (optionsPressed && !optionbutt.contains(touchpoint)) optionsPressed = false;
-        if (optionsPressed && !in.isTouched())
+        if (optionbutt.isWasPressed())
         {
             game.setScreen(new OptionsScreen(game));
             Assets.dispose_mainmenu();
-            return 1;
+            this.dispose();
         }
-        if (exitbutt.contains(touchpoint) && in.justTouched()) exitPressed = true;
-        if (exitPressed && !exitbutt.contains(touchpoint)) exitPressed = false;
-        if (exitPressed && !in.isTouched())
+        if (exitbutt.isWasPressed())
         {
             Gdx.app.exit();
         }
@@ -153,7 +141,6 @@ public class MainMenuScreen extends ScreenAdapter
            if (!catchOtherBack) Gdx.app.exit();
         }
         if (!in.isBackPressed()) catchOtherBack = false;
-        return 0;
     }
 
     public void draw() //fyotb
@@ -168,52 +155,22 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(Assets.MainMenuTitle, TITTLE_X, TITTLE_Y);
-        game.batch.draw(Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
-        game.batch.draw(Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
-        game.batch.draw(Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
+        game.batch.end();
 
-        if (playPressed) {
-            game.batch.setColor(DuckPondGame.BlueButtTit);
-            game.batch.draw(Assets.MainMenuPlay, playbutt.getX(), playbutt.getY());
-        }
-        if (optionsPressed)
-        {
-            game.batch.setColor(DuckPondGame.GreenButtTit);
-            game.batch.draw(Assets.MainMenuOptions, optionbutt.getX(), optionbutt.getY());
-        }
-        if (exitPressed) {
-            game.batch.setColor(DuckPondGame.GreenButtTit);
-            game.batch.draw(Assets.MainMenuExit, exitbutt.getX(), exitbutt.getY());
-        }
+        for (Button butt: butts) butt.renderSprites(game.batch);
+
+        game.batch.begin();
         game.batch.setColor(1,1,1,1);
 
         Assets.font.draw(game.batch, DuckPondGame.version, 250, 100);
         game.batch.end();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        shapeRenderer.rect(playbutt.getX(), playbutt.getY(), playbutt.getWidth(), playbutt.getHeight());
-        shapeRenderer.rect(optionbutt.getX(), optionbutt.getY(), optionbutt.getWidth(), optionbutt.getHeight());
-        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
-        shapeRenderer.end();
 
     }
 
     @Override
     public void render (float delta)
     {
-        switch (update()) //because we can.
-        {
-            case 0:
-                break;
-            case 1:
-                this.dispose();
-                break;
-            case 2:
-                this.dispose();
-                break;
-        }
-
+        update();
         draw();
     }
 }
