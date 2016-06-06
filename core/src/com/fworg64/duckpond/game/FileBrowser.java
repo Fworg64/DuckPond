@@ -124,7 +124,7 @@ public class FileBrowser
         }
 
         pageleftbutt =  new Button(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H, Assets.NavigationFlechaIzq);
-        pagerightbutt = new Button(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H, Assets.NavigationFlechaDer.getTexture());
+        pagerightbutt = new Button(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H, Assets.NavigationFlechaDer);
         upone =         new Button(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H, Assets.NavigationUpone);
         butts = new Button[] {pageleftbutt, pagerightbutt, upone};
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -24,9 +25,9 @@ public class Button {
     private boolean available;
     private String butttext;
 
-    private Texture texture; //the texture to be drawn
+    private TextureRegion texture; //the texture to be drawn
 
-    public Button(float x, float y, float w, float h, Texture texture)
+    public Button(float x, float y, float w, float h, TextureRegion texture)
     {
         bounds = new Rectangle(x,y,w,h);
         this.texture = texture;
@@ -36,6 +37,17 @@ public class Button {
         available = true;
         butttext = "";
     }
+    public Button(float x, float y, float w, float h, Texture texture)
+    {
+        bounds = new Rectangle(x,y,w,h);
+        this.texture = new TextureRegion(texture);
+        justpressed = false;
+        pressed = false;
+        wasPressed = false;
+        available = true;
+        butttext = "";
+    }
+
 
     public void pollPress(Vector2 vector2) //call before checking states
     {
