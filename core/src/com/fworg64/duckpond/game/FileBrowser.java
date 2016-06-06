@@ -43,10 +43,11 @@ public class FileBrowser
     public int LEVEL_LOAD_C;
     public int PAGE_SIZE;
 
-    Rectangle[] levelbutts;
-    Rectangle pageleftbutt;
-    Rectangle pagerightbutt;
-    Rectangle upone;
+    Button[] levelbutts;
+    Button pageleftbutt;
+    Button pagerightbutt;
+    Button upone;
+    Button[] butts;
 
     FileHandle levelDir;
     ArrayList<FileHandle> levels;
@@ -114,17 +115,18 @@ public class FileBrowser
 
 
 
-        levelbutts = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
+        levelbutts = new Button[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
             for (int j=0; j<LEVEL_LOAD_R;j++)
             {
-                levelbutts[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS - LEVEL_LOAD_H, LEVEL_LOAD_W, LEVEL_LOAD_H);
+                levelbutts[i*(LEVEL_LOAD_R) + j] = new Button(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS - LEVEL_LOAD_H, LEVEL_LOAD_W, LEVEL_LOAD_H, Assets.NavigationWorldButt);
             }
         }
 
-        pageleftbutt = new Rectangle(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H);
-        pagerightbutt = new Rectangle(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H);
-        upone = new Rectangle(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H);
+        pageleftbutt =  new Button(PAGE_LEFT_X, PAGE_LEFT_Y - PAGE_H, PAGE_W, PAGE_H, Assets.NavigationFlechaIzq);
+        pagerightbutt = new Button(PAGE_RIGHT_X, PAGE_RIGHT_Y - PAGE_H, PAGE_W, PAGE_H, Assets.NavigationFlechaDer.getTexture());
+        upone =         new Button(UP_ONE_X, UP_ONE_Y - UP_ONE_H, UP_ONE_W, UP_ONE_H, Assets.NavigationUpone);
+        butts = new Button[] {pageleftbutt, pagerightbutt, upone};
 
         levelDir = Gdx.files.internal("LEVELS"); 
         levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
@@ -132,10 +134,10 @@ public class FileBrowser
         {
             FileHandle f = iterator.next();
             Gdx.app.debug("Found "+levels.size()+" Folders", f.name());
-            if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
+            //if (f.name().equals(CUSTOM_FOLDER_NAME)) iterator.remove();
         }
         pagenumber =0;
-        
+        setLevelButtNames();
         Gdx.app.debug("currleveldir: ", levelDir.path());
 
         renderUpOne = true;
@@ -147,8 +149,9 @@ public class FileBrowser
 
     public void touch(Vector2 touchpoint)
     {
+        for (int i=0; i<levelbutts.length;i++) levelbutts[i].pollPress(touchpoint);
         for(int i=0; i<levelbutts.length;i++) {
-            if (levelbutts[i].contains(touchpoint)) {
+            if (levelbutts[i].isWasPressed() && !levelbutts[i].isPressed()) {
                 if (levels.size() > i) //if you picked a valid choice
                 {
                     if (!levels.get(i).isDirectory()) { //if you picked a level
@@ -158,14 +161,16 @@ public class FileBrowser
                     } else //you picked a folder
                     {
                         pageInto(levels.get(i));
-                        break;
                     }
+                    levelbutts[i].pressHandled();
+                    break;
                 }
             }
         }
-        if (upone.contains(touchpoint)) pageUp();
-        if (pageleftbutt.contains(touchpoint)) pageLeft();
-        if (pagerightbutt.contains(touchpoint)) pageRight();
+        for (Button butt: butts) butt.pollPress(touchpoint);
+        if (upone.isWasPressed()) {pageUp(); upone.pressHandled();}
+        if (pageleftbutt.isWasPressed()) {pageLeft(); pageleftbutt.pressHandled();}
+        if (pagerightbutt.isWasPressed()) {pageRight(); pagerightbutt.pressHandled();}
     }
     public String getLevelPicked()
     {
@@ -192,7 +197,8 @@ public class FileBrowser
             FileHandle l = level.next();
             if (i++ < PAGE_SIZE * pagenumber) level.remove(); //remove all levels on previous pages
         }
-        Gdx.app.debug("currleveldir: ", levelDir.path());
+        setLevelButtNames();
+        Gdx.app.debug("Page Left currleveldir: ", levelDir.path());
     }
 
     private void pageLeft()
@@ -203,7 +209,8 @@ public class FileBrowser
         int safelength = ((pagenumber+1)*PAGE_SIZE > levels.size()) ? levels.size() : (pagenumber+1)*PAGE_SIZE;
         Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
         levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
-        Gdx.app.debug("currleveldir: ", levelDir.path());
+        setLevelButtNames();
+        Gdx.app.debug("Page Rightcurrleveldir: ", levelDir.path());
     }
 
     private void pageUp()
@@ -224,7 +231,8 @@ public class FileBrowser
             Gdx.app.debug(levelDir.name(), Integer.toString(safelength));
             levels = new ArrayList<FileHandle>(levels.subList(pagenumber * PAGE_SIZE, PAGE_SIZE* pagenumber + safelength));
         }
-        Gdx.app.debug("currleveldir: ", levelDir.path());
+        setLevelButtNames();
+        Gdx.app.debug("Page UPcurrleveldir: ", levelDir.path());
     }
 
     private void pageInto(FileHandle f)
@@ -235,7 +243,16 @@ public class FileBrowser
             levels = new ArrayList<FileHandle>(Arrays.asList(levelDir.list()));
             pagenumber =0;
         }
-        Gdx.app.debug("currleveldir: ", levelDir.path());
+        setLevelButtNames();
+        Gdx.app.debug("Pageinto currleveldir: ", levelDir.path());
+    }
+
+    private void setLevelButtNames()
+    {
+        for (int i =0; i< (levelbutts.length< levels.size() ? levelbutts.length: levels.size()); i++)
+        {
+            levelbutts[i].setButttext(levels.get(i).nameWithoutExtension());
+        }
     }
 
     public void gocustom()
@@ -263,36 +280,28 @@ public class FileBrowser
     
     public void renderShapes(ShapeRenderer shapeRenderer)
     {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        for(Rectangle r: levelbutts) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        if (renderUpOne) shapeRenderer.rect(upone.getX(), upone.getY(), upone.getWidth(), upone.getHeight());
-        shapeRenderer.rect(pageleftbutt.getX(), pageleftbutt.getY(), pageleftbutt.getWidth(), pageleftbutt.getHeight());
-        shapeRenderer.rect(pagerightbutt.getX(), pagerightbutt.getY(), pagerightbutt.getWidth(), pagerightbutt.getHeight());
-        shapeRenderer.end();
+        for (Button butt : levelbutts) butt.renderShapes(shapeRenderer);
+        for (Button butt : butts) butt.renderShapes(shapeRenderer);
     }
     
     public void renderSprites(SpriteBatch batch)
     {
         batch.enableBlending();
-        batch.begin();
-        batch.setColor(1,1,1,.2f);
-        if (renderUpOne) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
-        batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
-        batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
+        //batch.begin();
+        upone.setAvailable(!levelDir.name().equals("LEVELS"));
+        pageleftbutt.setAvailable(pagenumber!=0);
+        pagerightbutt.setAvailable(levelDir.list().length > (pagenumber +1)*PAGE_SIZE);
+        if (renderUpOne) upone.renderSprites(batch);
+        pageleftbutt.renderSprites(batch);
+        pagerightbutt.renderSprites(batch);
         batch.setColor(1,1,1,1f);
-
-        if (!levelDir.name().equals("LEVELS") && renderUpOne) batch.draw(Assets.NavigationUpone, upone.getX(), upone.getY());
-        if (pagenumber !=0) batch.draw(Assets.NavigationFlechaIzq, pageleftbutt.getX(), pageleftbutt.getY());
-        if (levelDir.list().length > (pagenumber +1)*PAGE_SIZE) batch.draw(Assets.NavigationFlechaDer, pagerightbutt.getX(), pagerightbutt.getY());
 
         for (int i=0; i< (levelbutts.length<levels.size() ? levelbutts.length : levels.size()); i++)
         {
-            batch.draw(Assets.NavigationWorldButt, levelbutts[i].getX(), levelbutts[i].getY());
-            Assets.font.draw(batch, levels.get(i).nameWithoutExtension(), levelbutts[i].getX(), levelbutts[i].getY() + .6f*levelbutts[i].getHeight());
+            levelbutts[i].renderSprites(batch);
         }
 
-        batch.end();
+        //batch.end();
 
     }
 }

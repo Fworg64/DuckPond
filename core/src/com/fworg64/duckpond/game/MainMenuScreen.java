@@ -114,7 +114,7 @@ public class MainMenuScreen extends ScreenAdapter
         if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
 
-        if (playbutt.isPressed()) {
+        if (playbutt.isJustPressed()) {
             Assets.load_levelscreen();
             Assets.load_navigation();
         }
@@ -124,7 +124,7 @@ public class MainMenuScreen extends ScreenAdapter
             Assets.dispose_mainmenu();
             this.dispose();
         }
-        if (optionbutt.isPressed()) {
+        if (optionbutt.isJustPressed()) {
             Assets.load_options();
         }
         if (optionbutt.isWasPressed())
@@ -156,11 +156,11 @@ public class MainMenuScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         game.batch.draw(Assets.MainMenuTitle, TITTLE_X, TITTLE_Y);
-        game.batch.end();
+        //game.batch.end();
 
         for (Button butt: butts) butt.renderSprites(game.batch);
 
-        game.batch.begin();
+        //game.batch.begin();
         game.batch.setColor(1,1,1,1);
 
         Assets.font.draw(game.batch, DuckPondGame.version, 250, 100);
