@@ -48,18 +48,17 @@ public class LevelSelectionScreen extends ScreenAdapter
     InputListener in;
     Vector2 touchpoint;
 
-    Rectangle customlevelbutt;
-    Rectangle downldlevelbutt;
-    Rectangle leveleditbutt;
-    Rectangle mainMenubutt;
-    Rectangle getmorebutt;
+    Button customlevelbutt;
+    Button downldlevelbutt;
+    Button leveleditbutt;
+    Button mainMenubutt;
+    Button getmorebutt;
+    Button[] butts;
 
     FileBrowser fileBrowser;
     boolean filebrowsermade;
     Rectangle makefilebrowser;
 
-
-    boolean leveleditPressed;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -134,13 +133,12 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.mas.playMainMenu();
 
-        mainMenubutt = new Rectangle(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H);
-        customlevelbutt = new Rectangle(CUSTOMWORLD_X, CUSTOMWORLD_Y, CUSTOMWORLD_W, CUSTOMWORLD_H);
-        leveleditbutt = new Rectangle(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H);
-        getmorebutt = new Rectangle(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H);
-        downldlevelbutt = new Rectangle(DOWNLDBUTT_X, DOWNLDBUTT_Y, DOWNLDBUTT_W, DOWNLDBUTT_H);
-
-        leveleditPressed = false;
+        mainMenubutt =      new Button(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H, Assets.LevelSelectionMainMenu);
+        customlevelbutt =   new Button(CUSTOMWORLD_X, CUSTOMWORLD_Y, CUSTOMWORLD_W, CUSTOMWORLD_H, Assets.LevelSelectionFolder);
+        leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
+        getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
+        downldlevelbutt =   new Button(DOWNLDBUTT_X, DOWNLDBUTT_Y, DOWNLDBUTT_W, DOWNLDBUTT_H, Assets.LevelSelectionFolder);
+        butts = new Button[] {mainMenubutt, customlevelbutt, leveleditbutt, getmorebutt, downldlevelbutt};
 
         filebrowsermade = false;
         makefilebrowser = new Rectangle(Options.screenWidth * .3f, Options.screenHeight * .3f, .3f*Options.screenWidth, .3f*Options.screenHeight);
@@ -188,26 +186,40 @@ public class LevelSelectionScreen extends ScreenAdapter
                     }
                 }
             }
-            if (in.justTouched() && customlevelbutt.contains(touchpoint))
+            for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
+            if (customlevelbutt.isWasPressed())
             {
                 if (Gdx.app.getType() != Application.ApplicationType.WebGL)
                 {
                     fileBrowser.gocustom();
+                    customlevelbutt.pressHandled();
                 }
                 else game.setScreen(new GameScreen(game, Options.getCustom1(), "Custom"));
             }
-            if (in.justTouched() && downldlevelbutt.contains(touchpoint))
+            if (downldlevelbutt.isWasPressed())
             {
                 if (Gdx.app.getType() != Application.ApplicationType.WebGL)
                 {
                     fileBrowser.godownld();
+                    downldlevelbutt.pressHandled();
                 }
             }
             if (in.justTouched() && fileBrowser.upone.contains(touchpoint))
             {
                 fileBrowser.pageUp();
             }
-            if ((in.justTouched() && mainMenubutt.contains(touchpoint)) || in.isBackPressed())
+            if (mainMenubutt.isPressed())
+            {
+                Assets.load_mainmenu();
+            }
+            if (mainMenubutt.isWasPressed())
+            {
+                game.setScreen(new MainMenuScreen(game));
+                Assets.dispose_levelscreen();
+                fileBrowser.dispose();
+                this.dispose();
+            }
+            if (in.isBackPressed())
             {
                 Assets.load_mainmenu();
                 game.setScreen(new MainMenuScreen(game));
@@ -215,7 +227,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                 fileBrowser.dispose();
                 this.dispose();
             }
-            if ((in.justTouched() && getmorebutt.contains(touchpoint)))
+            if ((getmorebutt.isWasPressed()))
             {
                 game.setScreen(new GetMoreScreen(game));
                 Assets.dispose_levelscreen();
@@ -230,12 +242,10 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 fileBrowser.pageRight();
             }
-            if (leveleditbutt.contains(touchpoint) && in.justTouched()) {
-                leveleditPressed = true;
+            if (leveleditbutt.isPressed()) {
                 Assets.load_leveledit();
             }
-            if (leveleditPressed && !leveleditbutt.contains(touchpoint)) leveleditPressed = false;
-            if (leveleditPressed && !in.isTouched())
+            if (leveleditbutt.isWasPressed())
             {
                 game.setScreen(new LevelScreen2(game));
                 Assets.dispose_levelscreen();
@@ -256,28 +266,20 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(Assets.LevelSelectionWorldMaker, leveleditbutt.getX(), leveleditbutt.getY());
-        game.batch.draw(Assets.LevelSelectionMainMenu, mainMenubutt.getX(), mainMenubutt.getY());
-        game.batch.draw(Assets.LevelSelectionFolder, customlevelbutt.getX(), customlevelbutt.getY());
-        game.batch.draw(Assets.LevelSelectionFolder, downldlevelbutt.getX(), downldlevelbutt.getY());
-        game.batch.draw(Assets.LevelSelectionGetMore, getmorebutt.getX(), getmorebutt.getY());
-        Assets.font.draw(game.batch, "CUSTOM", customlevelbutt.getX(), customlevelbutt.getY() + .6f*customlevelbutt.getHeight());
-        Assets.font.draw(game.batch, "DOWN\nLOADED", downldlevelbutt.getX(), downldlevelbutt.getY() + .9f*downldlevelbutt.getHeight());
+        Assets.font.draw(game.batch, "CUSTOM", CUSTOMWORLD_X, CUSTOMWORLD_Y + .6f*CUSTOMWORLD_H);
+        Assets.font.draw(game.batch, "DOWN\nLOADED", DOWNLDBUTT_X, DOWNLDBUTT_Y + .9f*DOWNLDBUTT_H);
         if (!filebrowsermade) Assets.font.draw(game.batch, "Debug Rectangle\nPress Me", makefilebrowser.getX(), makefilebrowser.getY() + .5f * makefilebrowser.getHeight());
         game.batch.end();
+
+        for (Button butt : butts) butt.renderSprites(game.batch);
 
         if (filebrowsermade) fileBrowser.renderSprites(game.batch);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
 
-        shapeRenderer.rect(customlevelbutt.getX(), customlevelbutt.getY(), customlevelbutt.getWidth(), customlevelbutt.getHeight());
-        shapeRenderer.rect(mainMenubutt.getX(), mainMenubutt.getY(), mainMenubutt.getWidth(), mainMenubutt.getHeight());
-        shapeRenderer.rect(downldlevelbutt.getX(), downldlevelbutt.getY(), downldlevelbutt.getWidth(), downldlevelbutt.getHeight());
-
         if (!filebrowsermade) shapeRenderer.rect(makefilebrowser.getX(), makefilebrowser.getY(), makefilebrowser.getWidth(), makefilebrowser.getHeight());
 
-        shapeRenderer.rect(leveleditbutt.getX(), leveleditbutt.getY(), leveleditbutt.getWidth(), leveleditbutt.getHeight());
         shapeRenderer.end();
 
         if (filebrowsermade) fileBrowser.renderShapes(shapeRenderer);
