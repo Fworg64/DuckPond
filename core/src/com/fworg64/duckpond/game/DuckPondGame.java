@@ -34,6 +34,10 @@ public class DuckPondGame extends Game {
 	public static Color BlueButtTit = new Color(.5f, .5f, .55f, 1);
 	public static Color GreenButtTit = new Color(.5f, .5f, .55f, 1);
 
+	public static final String customfolder = "CUSTOM";
+	public static final String downloadsfolder = "DOWNLOADED";
+	public static final String levelsfolder = "LEVELS";
+
 	public static final String version = "v1.1.5b";
 
 	public SpriteBatch batch;

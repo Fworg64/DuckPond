@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by fworg on 6/7/2016.
  */
-public abstract class Browser
+public class Browser
 {
     public int SIXBUTT_X ;
     public int SIXBUTT_Y;
@@ -130,6 +130,7 @@ public abstract class Browser
 
         this.browsable = browsable;
         updateAllOptions();
+        setButtNames();
 
         renderUpOne = true;
     }
@@ -138,10 +139,9 @@ public abstract class Browser
     {
         allOptions = this.browsable.getAllOptions();
         numpages = allOptions.size()/PAGE_SIZE + 1;
+        Gdx.app.debug("Browser", "allOptions updated " + allOptions.toString());
         pagenumber = 0;
         goToPage(pagenumber); //sets displayoptions
-        canPageLeft = false;
-        if (numpages>1) canPageRight = true;
     }
 
     private synchronized void goToPage(int page)
@@ -150,7 +150,11 @@ public abstract class Browser
         int safeend = PAGE_SIZE*(pagenumber+1) < allOptions.size() ? PAGE_SIZE*(pagenumber+1): allOptions.size();
         displayOptions =new ArrayList<String>(allOptions.subList(PAGE_SIZE * pagenumber, safeend));
         if (pagenumber == 0) canPageLeft = false;
-        if (pagenumber == numpages) canPageRight = false;
+        else canPageLeft = true;
+        if (pagenumber == numpages-1) canPageRight = false;
+        else canPageRight = true;
+        setButtNames();
+        Gdx.app.debug("Browser", "Went to a page");
     }
 
     public synchronized void touch(Vector2 touchpoint)
@@ -166,21 +170,36 @@ public abstract class Browser
                     itemchosen = true;
                     itempicked = browsable.getSelectionContents();
                     itemname = browsable.getSelectionName();
+                    Gdx.app.debug("Browser", "FinalItemPicked");
                 }
                 else
                 {
-                    updateAllOptions();
+                    updateAllOptions(); //calls go to page 0
                     setButtNames();
+                    Gdx.app.debug("Browser", "Paged Into Something");
                 }
-                Gdx.app.debug("button pressed", displayOptions.get(i));
+                //Gdx.app.debug("button pressed", displayOptions.get(i));
                 sixbutts[i].pressHandled();
             }
         }
         //check other buttons here as well
         for (Button butt: butts) butt.pollPress(touchpoint);
-        if (pageleftbutt.isWasPressed() && canPageLeft) goToPage(--pagenumber); //turn the paaaaaaggge
-        if (pagerightbutt.isWasPressed() && canPageRight) goToPage(++pagenumber);
-        if (pageupbutt.isWasPressed() && browsable.canPageUp()) {browsable.pageUp(); updateAllOptions();}
+        pageupbutt.setAvailable(browsable.canPageUp());
+        pageleftbutt.setAvailable(canPageLeft);
+        pagerightbutt.setAvailable(canPageRight);
+        if (pageleftbutt.isWasPressed() && canPageLeft) {
+            goToPage(--pagenumber);//turn the paaaaaaggge
+            pageleftbutt.pressHandled();
+        }
+        if (pagerightbutt.isWasPressed() && canPageRight) {
+            goToPage(++pagenumber);
+            pagerightbutt.pressHandled();
+        }
+        if (pageupbutt.isWasPressed() && browsable.canPageUp()) {
+            browsable.pageUp();
+            updateAllOptions();
+            setButtNames();
+            pageupbutt.pressHandled();}
     }
 
     private void setButtNames()
@@ -224,9 +243,6 @@ public abstract class Browser
     {
         batch.enableBlending();
         //batch.begin();
-        pageupbutt.setAvailable(browsable.canPageUp());
-        pageleftbutt.setAvailable(canPageLeft);
-        pagerightbutt.setAvailable(canPageRight);
         if (renderUpOne) pageupbutt.renderSprites(batch);
         pageleftbutt.renderSprites(batch);
         pagerightbutt.renderSprites(batch);

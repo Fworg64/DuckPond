@@ -51,51 +51,55 @@ public class Button {
 
     public void pollPress(Vector2 vector2) //call before checking states
     {
-        if (bounds.contains(vector2))
+        if (available)
         {
-            if (!pressed && !wasPressed) //pressed for the first time
+            if (bounds.contains(vector2))
             {
-                Gdx.app.debug("Button Just Pressed", Integer.toString(this.hashCode()));
-                justpressed = true;
-                pressed = true;
+                if (!pressed && !wasPressed) //pressed for the first time
+                {
+                    Gdx.app.debug("Button Just Pressed", Integer.toString(this.hashCode()));
+                    justpressed = true;
+                    pressed = true;
+                }
+                else if (!pressed && wasPressed)//this shouldnt run, touched again before waspressed was handled
+                {
+                    //pressed = true;
+                }
+                else if (pressed && !wasPressed) //still pressed
+                {
+                    //Gdx.app.debug("Button Still Pressed", Integer.toString(this.hashCode()));
+                    justpressed = false;
+                    //pressed = true;
+                }
+                else if (pressed && wasPressed) //also shouldnt run still pressed after being touched after an unhandled wasPressed
+                {
+                    //nothing
+                }
             }
-            else if (!pressed && wasPressed)//this shouldnt run, touched again before waspressed was handled
+            else //is not pressed
             {
-                //pressed = true;
-            }
-            else if (pressed && !wasPressed) //still pressed
-            {
-                //Gdx.app.debug("Button Still Pressed", Integer.toString(this.hashCode()));
-                justpressed = false;
-                //pressed = true;
-            }
-            else if (pressed && wasPressed) //also shouldnt run still pressed after being touched after an unhandled wasPressed
-            {
-                //nothing
+                if (pressed && wasPressed) //shouldn't happen
+                {
+                    //pressed = false;
+                }
+                else if (pressed && !wasPressed) //finger just released
+                {
+                    Gdx.app.debug("Button released", Integer.toString(this.hashCode()));
+                    justpressed = false; //safe guard, only will change anything if pressed and then next cycle released
+                    wasPressed = true;
+                    pressed = false;
+                }
+                else if (!pressed && wasPressed) //stable was pressed
+                {
+                    //do nothing
+                }
+                else if (!pressed && !wasPressed) //shouldn't happen
+                {
+                    //do nothing
+                }
             }
         }
-        else //is not pressed
-        {
-            if (pressed && wasPressed) //shouldn't happen
-            {
-                //pressed = false;
-            }
-            else if (pressed && !wasPressed) //finger just released
-            {
-                Gdx.app.debug("Button released", Integer.toString(this.hashCode()));
-                justpressed = false; //safe guard, only will change anything if pressed and then next cycle released
-                wasPressed = true;
-                pressed = false;
-            }
-            else if (!pressed && wasPressed) //stable was pressed
-            {
-                //do nothing
-            }
-            else if (!pressed && !wasPressed) //shouldn't happen
-            {
-                //do nothing
-            }
-        }
+
     }
 
     public boolean isPressed()

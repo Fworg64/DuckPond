@@ -55,7 +55,8 @@ public class LevelSelectionScreen extends ScreenAdapter
     Button getmorebutt;
     Button[] butts;
 
-    FileBrowser fileBrowser;
+    //FileBrowser fileBrowser;
+    Browser browser;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -139,7 +140,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         downldlevelbutt.setButttext("DOWN\nLOADED");
         butts = new Button[] {mainMenubutt, customlevelbutt, leveleditbutt, getmorebutt, downldlevelbutt};
 
-        fileBrowser = new FileBrowser();
+        //fileBrowser = new FileBrowser();
+        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true));
 
         if (Gdx.app.getType() == Application.ApplicationType.Android)
         {
@@ -151,11 +153,13 @@ public class LevelSelectionScreen extends ScreenAdapter
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
-        fileBrowser.touch(in.isTouched() ? touchpoint : new Vector2());
-        if (fileBrowser.isLevelchosen())
+        //fileBrowser.touch(in.isTouched() ? touchpoint : new Vector2());
+        browser.touch(in.isTouched() ? touchpoint : new Vector2());
+        if (browser.isItemchosen())//if (fileBrowser.isLevelchosen())
         {
             Assets.load_gamescreen();
-            game.setScreen(new GameScreen(game, fileBrowser.getLevelPicked(), fileBrowser.getNamePicked()));
+            //game.setScreen(new GameScreen(game, fileBrowser.getLevelPicked(), fileBrowser.getNamePicked()));
+            game.setScreen(new GameScreen(game, browser.getItempicked(), browser.getItemname()));
         }
 
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
@@ -163,7 +167,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (Gdx.app.getType() != Application.ApplicationType.WebGL)
             {
-                fileBrowser.gocustom();
+                //fileBrowser.gocustom();
+                browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false));
                 customlevelbutt.pressHandled();
             }
             else game.setScreen(new GameScreen(game, Options.getCustom1(), "Custom"));
@@ -172,7 +177,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (Gdx.app.getType() != Application.ApplicationType.WebGL)
             {
-                fileBrowser.godownld();
+                //fileBrowser.godownld();
+                browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false));
                 downldlevelbutt.pressHandled();
             }
         }
@@ -221,7 +227,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         for (Button butt : butts) butt.renderSprites(game.batch);
-        fileBrowser.renderSprites(game.batch);
+        //fileBrowser.renderSprites(game.batch);
+        browser.renderSprites(game.batch);
         game.batch.end();
     }
 
