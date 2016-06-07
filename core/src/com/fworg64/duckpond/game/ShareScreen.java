@@ -214,19 +214,13 @@ public class ShareScreen extends ScreenAdapter
 
     public void getFile()
     {
-        for(int i=0; i<fileBrowser.levelbutts.length;i++)
+        fileBrowser.touch(in.justTouched() ? touchpoint : new Vector2());
+        if (fileBrowser.isLevelchosen())
         {
-            if (in.justTouched() && fileBrowser.levelbutts[i].contains(touchpoint))
-            {
-                if (fileBrowser.levels.size() > i) //if you picked a valid choice
-                {
-                    fileTransferCommunicator.setThefile(fileBrowser.levels.get(i).name(), fileBrowser.levels.get(i).readString()); //this is the level
-                    Gdx.app.debug("filebrowser", "file pressed");
-                }
-            }
+            fileTransferCommunicator.setThefile(fileBrowser.getNamePicked(), fileBrowser.getLevelPicked()); //this is the level
+            Gdx.app.debug("filebrowser", "file pressed");
+            fileBrowser.resetLevelChosen();
         }
-        if (in.justTouched() && fileBrowser.pagerightbutt.contains(touchpoint)) fileBrowser.pageRight();
-        if (in.justTouched() && fileBrowser.pageleftbutt.contains(touchpoint)) fileBrowser.pageLeft();
     }
 
     public void changeName()

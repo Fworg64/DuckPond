@@ -75,11 +75,15 @@ public class Assets
     public static Texture HUDUnmute;
     public static Texture HUDlives;
 
-    public static Texture PauseMenu;
-    public static Texture ShowConfirmRestart;
-    public static Texture ShowConfirmExit;
-    public static Texture Victory;
-    public static Texture Defeat;
+    public static Texture GamePaused;
+    public static Texture GameContinue;
+    public static Texture GameRestart;
+    public static Texture GameQuit;
+    public static Texture GameVictory;
+    public static Texture GameDefeat;
+    public static Texture GameLevelSelect;
+    public static Texture GameTryAgain;
+    public static Texture GamePlay;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -187,11 +191,15 @@ public class Assets
         HUDMute = new Texture(Gdx.files.internal(res + "gamescreen\\mute.png"));
         HUDUnmute = new Texture(Gdx.files.internal(res + "gamescreen\\unmute.png"));
         HUDlives = new Texture(Gdx.files.internal(res + "gamescreen\\lives.png"));
-        PauseMenu = new Texture(Gdx.files.internal(res + "gamescreen\\pause.png"));
-        ShowConfirmExit = new Texture(Gdx.files.internal(res + "gamescreen\\exitconfirm.png"));
-        ShowConfirmRestart = new Texture(Gdx.files.internal(res + "gamescreen\\restartconfirm.png"));
-        Victory = new Texture(Gdx.files.internal(res + "gamescreen\\victory.png"));
-        Defeat = new Texture(Gdx.files.internal(res + "gamescreen\\defeat.png"));
+        GamePaused      = new Texture(Gdx.files.internal(res + "gamescreen\\paused.png"));
+        GameContinue    = new Texture(Gdx.files.internal(res + "gamescreen\\continue.png"));
+        GameRestart     = new Texture(Gdx.files.internal(res + "gamescreen\\restart.png"));
+        GameQuit        = new Texture(Gdx.files.internal(res + "gamescreen\\quit.png"));
+        GameVictory     = new Texture(Gdx.files.internal(res + "gamescreen\\youwon.png"));
+        GameDefeat      = new Texture(Gdx.files.internal(res + "gamescreen\\youlost.png"));
+        GameLevelSelect = new Texture(Gdx.files.internal(res + "gamescreen\\levelselect.png"));
+        GameTryAgain    = new Texture(Gdx.files.internal(res + "gamescreen\\tryagain.png"));
+        GamePlay        = new Texture(Gdx.files.internal(res + "gamescreen\\play.png"));
 
         duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
@@ -257,11 +265,15 @@ public class Assets
         HUDMute.dispose();
         HUDUnmute.dispose();
         HUDlives.dispose();
-        PauseMenu.dispose();
-        ShowConfirmExit.dispose();
-        ShowConfirmRestart.dispose();
-        Victory.dispose();
-        Defeat.dispose();
+        GamePaused.dispose();
+        GameContinue.dispose();
+        GameRestart.dispose();
+        GameQuit.dispose();
+        GameVictory.dispose();
+        GameDefeat.dispose();
+        GameLevelSelect.dispose();
+        GameTryAgain.dispose();
+        GamePlay.dispose();
 
         duck.dispose();
         lily.dispose();
