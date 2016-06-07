@@ -136,6 +136,7 @@ public class Button {
         else batch.setColor(1f,1f,1f,1f);
         batch.draw(texture, bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
         if (!butttext.equals("")) Assets.font.draw(batch, butttext, bounds.getX(), bounds.getY() + .8f * bounds.getHeight());
+        if (pressed || wasPressed || !available) batch.setColor(1f,1f,1f,1f);
         //batch.end();
     }
 
