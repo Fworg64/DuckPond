@@ -465,7 +465,6 @@ public class GameScreen extends ScreenAdapter
         {
             game.batch.enableBlending();
             game.batch.begin();
-            game.batch.draw(Assets.GameBoxOuter, BOXOUTER_X,BOXOUTER_Y);
             switch (menu)
             {
                 case PAUSEMENU:

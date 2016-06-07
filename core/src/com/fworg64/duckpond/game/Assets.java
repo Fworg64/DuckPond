@@ -75,7 +75,6 @@ public class Assets
     public static Texture HUDUnmute;
     public static Texture HUDlives;
 
-    public static Texture GameBoxOuter;
     public static Texture GamePaused;
     public static Texture GameContinue;
     public static Texture GameRestart;
@@ -192,7 +191,6 @@ public class Assets
         HUDMute = new Texture(Gdx.files.internal(res + "gamescreen\\mute.png"));
         HUDUnmute = new Texture(Gdx.files.internal(res + "gamescreen\\unmute.png"));
         HUDlives = new Texture(Gdx.files.internal(res + "gamescreen\\lives.png"));
-        GameBoxOuter    = new Texture(Gdx.files.internal(res + "gamescreen\\boxouter.png"));
         GamePaused      = new Texture(Gdx.files.internal(res + "gamescreen\\paused.png"));
         GameContinue    = new Texture(Gdx.files.internal(res + "gamescreen\\continue.png"));
         GameRestart     = new Texture(Gdx.files.internal(res + "gamescreen\\restart.png"));
@@ -267,7 +265,6 @@ public class Assets
         HUDMute.dispose();
         HUDUnmute.dispose();
         HUDlives.dispose();
-        GameBoxOuter.dispose();
         GamePaused.dispose();
         GameContinue.dispose();
         GameRestart.dispose();
