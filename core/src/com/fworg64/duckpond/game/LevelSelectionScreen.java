@@ -72,8 +72,6 @@ public class LevelSelectionScreen extends ScreenAdapter
             WORLDMAKER_Y = 22;
             WORLDMAKER_W = 381;
             WORLDMAKER_H = 218;
-
-
         }
         else
         {

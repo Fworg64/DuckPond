@@ -3,6 +3,7 @@ package com.fworg64.duckpond.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -24,6 +25,7 @@ public class Button {
 
     private boolean available;
     private String butttext;
+    GlyphLayout glyphLayout;
 
     private TextureRegion texture; //the texture to be drawn
 
@@ -132,7 +134,9 @@ public class Button {
         this.available = available;
     }
     public void setButttext(String butttext) {
+
         this.butttext = butttext;
+        glyphLayout = new GlyphLayout(Assets.font, butttext);
     }
     public boolean isJustPressed() {
         return justpressed;
@@ -145,8 +149,8 @@ public class Button {
         if (pressed || wasPressed) batch.setColor(dimmingColor);
         else if (!available) batch.setColor(unavailableColor);
         else batch.setColor(1f,1f,1f,1f);
-        batch.draw(texture, bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-        if (!butttext.equals("")) Assets.font.draw(batch, butttext, bounds.getX(), bounds.getY() + .8f * bounds.getHeight());
+        batch.draw(texture, bounds.getX(), bounds.getY());
+        if (!butttext.equals("")) Assets.font.draw(batch, butttext, bounds.getX() + bounds.getWidth()*.5f - glyphLayout.width*.5f, bounds.getY() + bounds.getHeight()*.5f + .5f*glyphLayout.height);
         if (pressed || wasPressed || !available) batch.setColor(1f,1f,1f,1f);
         //batch.end();
     }
