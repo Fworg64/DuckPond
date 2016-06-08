@@ -21,6 +21,7 @@ public class OptionsScreen extends ScreenAdapter
                                         +"Programing: \n     Austin F. Oltmanns\n     (Fworg64)\n\n"
                                         +"Privacy Policy:\n"
                                         +"Tcupdevelopment.me\\\n       privacypolicy.html\n\n"
+                                        +"  7-8.0<>:!?1234566\n"
                                         +"       Tap to close.";
 
     int OPTEXIT_X;
