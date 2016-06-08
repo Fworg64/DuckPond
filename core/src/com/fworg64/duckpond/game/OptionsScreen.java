@@ -15,6 +15,14 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class OptionsScreen extends ScreenAdapter
 {
+    public static final String credits = "Thank you BetaTesters.\n"
+                                        +"Thank you Players.\n\n"
+                                        +"Graphics/Design:\nLois S. Dilone\n\n"
+                                        +"Programing: \nAustin F. Oltmanns\n(Fworg64)\n\n"
+                                        +"Privacy Policy\n"
+                                        +"Tcupdevelopment.me/\n   privacypolicy.html\n\n"
+                                        +"Tap to close.";
+
     int OPTEXIT_X;
     int OPTEXIT_Y;
     int OPTWIDTH;
@@ -30,6 +38,8 @@ public class OptionsScreen extends ScreenAdapter
     int SLIDER_W;
     int SLIDER_L;
     int SLIDER_S;
+    int CREDITS_X;
+    int CREDITS_Y;
 
     Rectangle SaveReturn;
     Rectangle StdRes;
@@ -40,6 +50,8 @@ public class OptionsScreen extends ScreenAdapter
 
     boolean returnPressed;
     boolean creditsPressed;
+
+    boolean displaycredits;
 
     boolean slidingMusic;
     boolean slidingSfx;
@@ -73,6 +85,8 @@ public class OptionsScreen extends ScreenAdapter
             SLIDER_L = (int)(445f/1080f * Options.screenWidth);
             SLIDER_S = (int)(276f/1920f * Options.screenHeight);
             CreditsButt = new Rectangle(288, 1920-1761, 563, 170);
+            CREDITS_X = 50;
+            CREDITS_Y = 1920 - 200;
         }
         else
         {
@@ -92,6 +106,8 @@ public class OptionsScreen extends ScreenAdapter
             SLIDER_L = (int)(250f/640f * Options.screenWidth);
             SLIDER_S = (int)(156f/960f * Options.screenHeight);
             CreditsButt = new Rectangle(176, 960-918, 307, 93);
+            CREDITS_X = 35;
+            CREDITS_Y = 960 - 100;
         }
 
         returnPressed = false;
@@ -123,74 +139,82 @@ public class OptionsScreen extends ScreenAdapter
 
     public void update()
     {
-        touchpoint.set(in.getTouchpoint());
-        if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
+        if (!displaycredits)
+        {
+            touchpoint.set(in.getTouchpoint());
+            if (in.justTouched()) Gdx.app.debug("TOCUH", touchpoint.toString());
 
-        if (SaveReturn.contains(touchpoint) && in.justTouched()) {
-            returnPressed = true;
-            Assets.load_mainmenu();
+            if (SaveReturn.contains(touchpoint) && in.justTouched()) {
+                returnPressed = true;
+                Assets.load_mainmenu();
+            }
+            if (returnPressed && !SaveReturn.contains(touchpoint)) returnPressed = false;
+            if (returnPressed && !in.isTouched() || in.isBackPressed())
+            {
+                Options.save();
+                Assets.load_font();
+                Assets.load_mainmenu();
+                game.setScreen(new MainMenuScreen(game));
+                Assets.dispose_options();
+            }
+            if (CreditsButt.contains(touchpoint) && in.justTouched()) creditsPressed = true;
+            if (creditsPressed && !CreditsButt.contains(touchpoint)) creditsPressed = false;
+            if (creditsPressed && !in.isTouched())
+            {
+                displaycredits = true;
+            }
+
+            if (StdRes.contains(touchpoint) && in.justTouched() && Options.highres)
+            {
+                Options.setStdres();
+            }
+            if (HighRes.contains(touchpoint) && in.justTouched() && !Options.highres)
+            {
+                Options.setHighres();
+            }
+            if (MusicSlider.contains(touchpoint) && in.justTouched() && !slidingMusic) {
+                slidingMusic = true;
+            }
+            if (slidingMusic && in.isTouched())
+            {
+                MusicSlider.setX(touchpoint.x -MusicSlider.getWidth()*.5f);
+                if (touchpoint.x -MusicSlider.getWidth()*.5f< SLIDER_X) {MusicSlider.setX(SLIDER_X);}
+                if (touchpoint.x -MusicSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) {MusicSlider.setX(SLIDER_X + SLIDER_L);}
+                Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
+                game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X)/SLIDER_L);
+            }
+            if (slidingMusic && !in.isTouched())
+            {
+                slidingMusic = false;
+                Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
+                game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X) / SLIDER_L);
+                Gdx.app.debug("Volset", Float.toString((MusicSlider.getX() - SLIDER_X) / SLIDER_L));
+            }
+            if (SfxSlider.contains(touchpoint) && in.justTouched() && !slidingSfx)
+            {
+                slidingSfx = true;
+            }
+            if (slidingSfx && in.isTouched())
+            {
+                SfxSlider.setX(touchpoint.x- SfxSlider.getWidth()*.5f);
+                if (touchpoint.x - SfxSlider.getWidth()*.5f< SLIDER_X) SfxSlider.setX(SLIDER_X);
+                if (touchpoint.x - SfxSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) SfxSlider.setX(SLIDER_X +SLIDER_L);
+                Options.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
+                game.mas.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
+            }
+            if (slidingSfx && !in.isTouched())
+            {
+                slidingSfx = false;
+                Options.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
+                game.mas.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
+                Gdx.app.debug("Sfxset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_L));
+            }
         }
-        if (returnPressed && !SaveReturn.contains(touchpoint)) returnPressed = false;
-        if (returnPressed && !in.isTouched() || in.isBackPressed())
+        else
         {
-            Options.save();
-            Assets.load_font();
-            Assets.load_mainmenu();
-            game.setScreen(new MainMenuScreen(game));
-            Assets.dispose_options();
-        }
-        if (CreditsButt.contains(touchpoint) && in.justTouched()) creditsPressed = true;
-        if (creditsPressed && !CreditsButt.contains(touchpoint)) creditsPressed = false;
-        if (creditsPressed && !in.isTouched())
-        {
-            //display credits
+            if (in.justTouched()) displaycredits = false;
         }
 
-        if (StdRes.contains(touchpoint) && in.justTouched() && Options.highres)
-        {
-            Options.setStdres();
-        }
-        if (HighRes.contains(touchpoint) && in.justTouched() && !Options.highres)
-        {
-            Options.setHighres();
-        }
-        if (MusicSlider.contains(touchpoint) && in.justTouched() && !slidingMusic) {
-            slidingMusic = true;
-        }
-        if (slidingMusic && in.isTouched())
-        {
-            MusicSlider.setX(touchpoint.x -MusicSlider.getWidth()*.5f);
-            if (touchpoint.x -MusicSlider.getWidth()*.5f< SLIDER_X) {MusicSlider.setX(SLIDER_X);}
-            if (touchpoint.x -MusicSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) {MusicSlider.setX(SLIDER_X + SLIDER_L);}
-            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
-            game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X)/SLIDER_L);
-        }
-        if (slidingMusic && !in.isTouched())
-        {
-            slidingMusic = false;
-            Options.setMusicVol((MusicSlider.getX()-SLIDER_X)/SLIDER_L);
-            game.mas.setMusicVol((MusicSlider.getX() - SLIDER_X) / SLIDER_L);
-            Gdx.app.debug("Volset", Float.toString((MusicSlider.getX() - SLIDER_X) / SLIDER_L));
-        }
-        if (SfxSlider.contains(touchpoint) && in.justTouched() && !slidingSfx)
-        {
-            slidingSfx = true;
-        }
-        if (slidingSfx && in.isTouched())
-        {
-            SfxSlider.setX(touchpoint.x- SfxSlider.getWidth()*.5f);
-            if (touchpoint.x - SfxSlider.getWidth()*.5f< SLIDER_X) SfxSlider.setX(SLIDER_X);
-            if (touchpoint.x - SfxSlider.getWidth()*.5f> (SLIDER_X + SLIDER_L)) SfxSlider.setX(SLIDER_X +SLIDER_L);
-            Options.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
-            game.mas.setSfxVol((SfxSlider.getX() - SLIDER_X) / SLIDER_L);
-        }
-        if (slidingSfx && !in.isTouched())
-        {
-            slidingSfx = false;
-            Options.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
-            game.mas.setSfxVol((SfxSlider.getX()-SLIDER_X)/SLIDER_L);
-            Gdx.app.debug("Sfxset", Float.toString((SfxSlider.getX()-SLIDER_X)/SLIDER_L));
-        }
     }
 
     public void draw()
@@ -200,16 +224,24 @@ public class OptionsScreen extends ScreenAdapter
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
         gcam.update();
         game.batch.setProjectionMatrix(gcam.combined);
-
         game.batch.enableBlending();
         game.batch.begin();
-        game.batch.draw(Assets.OptionsMenu, 0, 0);
-        if (!Options.highres) game.batch.draw(Assets.OptionsMenuCheckMark, RES_X, RES_Y);
-        else game.batch.draw(Assets.OptionsMenuCheckMark, RES_X + RES_S, RES_Y);
-        if (returnPressed) game.batch.draw(Assets.OptionsMenuReturnPressed, SaveReturn.getX(), SaveReturn.getY());
-        if (creditsPressed) game.batch.draw(Assets.OptionsMenuCreditsPressed, CreditsButt.getX(), CreditsButt.getY());
-        game.batch.draw(slidingMusic ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, MusicSlider.getX(), MusicSlider.getY());
-        game.batch.draw(slidingSfx ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, SfxSlider.getX(), SfxSlider.getY());
+
+        if (!displaycredits)
+        {
+
+            game.batch.draw(Assets.OptionsMenu, 0, 0);
+            if (!Options.highres) game.batch.draw(Assets.OptionsMenuCheckMark, RES_X, RES_Y);
+            else game.batch.draw(Assets.OptionsMenuCheckMark, RES_X + RES_S, RES_Y);
+            if (returnPressed) game.batch.draw(Assets.OptionsMenuReturnPressed, SaveReturn.getX(), SaveReturn.getY());
+            if (creditsPressed) game.batch.draw(Assets.OptionsMenuCreditsPressed, CreditsButt.getX(), CreditsButt.getY());
+            game.batch.draw(slidingMusic ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, MusicSlider.getX(), MusicSlider.getY());
+            game.batch.draw(slidingSfx ? Assets.OptionsMenuSliderPressed: Assets.OptionsMenuSlider, SfxSlider.getX(), SfxSlider.getY());
+        }
+        else {
+            Assets.font.draw(game.batch, credits, CREDITS_X, CREDITS_Y);
+        }
+
         game.batch.end();
 
         /*shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
