@@ -82,12 +82,19 @@ public class Button {
                 {
                     //pressed = false;
                 }
-                else if (pressed && !wasPressed) //finger just released
+                else if (pressed && !wasPressed && vector2.isZero()) //finger just released
                 {
                     Gdx.app.debug("Button released", Integer.toString(this.hashCode()));
                     justpressed = false; //safe guard, only will change anything if pressed and then next cycle released
                     wasPressed = true;
                     pressed = false;
+                }
+                else if (pressed && !wasPressed && !vector2.isZero()) //finger slid off
+                {
+                    pressed = false;
+                    justpressed = false;//safe gaurd
+                    wasPressed = false;//shouldnt have been true
+                    //wasCancelled =true;
                 }
                 else if (!pressed && wasPressed) //stable was pressed
                 {
