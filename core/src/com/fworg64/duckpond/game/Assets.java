@@ -76,14 +76,10 @@ public class Assets
     public static Texture HUDlives;
 
     public static Texture GamePaused;
-    public static Texture GameContinue;
-    public static Texture GameRestart;
-    public static Texture GameQuit;
     public static Texture GameVictory;
     public static Texture GameDefeat;
-    public static Texture GameLevelSelect;
-    public static Texture GameTryAgain;
     public static Texture GamePlay;
+    public static Texture GameMenuButt;
 
     private static Texture duck;
     private static TextureRegion[][] duckframes;
@@ -192,14 +188,10 @@ public class Assets
         HUDUnmute = new Texture(Gdx.files.internal(res + "gamescreen\\unmute.png"));
         HUDlives = new Texture(Gdx.files.internal(res + "gamescreen\\lives.png"));
         GamePaused      = new Texture(Gdx.files.internal(res + "gamescreen\\paused.png"));
-        GameContinue    = new Texture(Gdx.files.internal(res + "gamescreen\\continue.png"));
-        GameRestart     = new Texture(Gdx.files.internal(res + "gamescreen\\restart.png"));
-        GameQuit        = new Texture(Gdx.files.internal(res + "gamescreen\\quit.png"));
         GameVictory     = new Texture(Gdx.files.internal(res + "gamescreen\\youwon.png"));
         GameDefeat      = new Texture(Gdx.files.internal(res + "gamescreen\\youlost.png"));
-        GameLevelSelect = new Texture(Gdx.files.internal(res + "gamescreen\\levelselect.png"));
-        GameTryAgain    = new Texture(Gdx.files.internal(res + "gamescreen\\tryagain.png"));
         GamePlay        = new Texture(Gdx.files.internal(res + "gamescreen\\play.png"));
+        GameMenuButt    = new Texture(Gdx.files.internal(res + "gamescreen\\menubutt.png"));
 
         duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
@@ -266,14 +258,10 @@ public class Assets
         HUDUnmute.dispose();
         HUDlives.dispose();
         GamePaused.dispose();
-        GameContinue.dispose();
-        GameRestart.dispose();
-        GameQuit.dispose();
         GameVictory.dispose();
         GameDefeat.dispose();
-        GameLevelSelect.dispose();
-        GameTryAgain.dispose();
         GamePlay.dispose();
+        GameMenuButt.dispose();
 
         duck.dispose();
         lily.dispose();

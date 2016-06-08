@@ -29,8 +29,6 @@ public class GameScreen extends ScreenAdapter
     public final static float SWYPE_ARROW_SCALE = 1.6f;
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
 
-    public static int BOXOUTER_X;
-    public static int BOXOUTER_Y;
     public static int PAUSETITLE_X;
     public static int PAUSETITLE_Y;
     public static int GOLTITLE_X;
@@ -165,13 +163,11 @@ public class GameScreen extends ScreenAdapter
 
         if (Options.highres)
         {
-            BOXOUTER_X = 200;
-            BOXOUTER_Y = 1920 - 1700;
-            PAUSETITLE_X = 250;
-            PAUSETITLE_Y = 1920 - 500;
+            PAUSETITLE_X = 255;
+            PAUSETITLE_Y = 1920 - 800;
             GOLTITLE_X = 250;
             GOLTITLE_Y = 1920 - 1100;
-            GOVTITLE_X = 250;
+            GOVTITLE_X = 190;
             GOVTITLE_Y = 1920 -1100;
 
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
@@ -179,53 +175,57 @@ public class GameScreen extends ScreenAdapter
             livesarea = new Rectangle(399, Options.screenHeight-Options.GUIHeight,216, 152 );
             mutebutt = new Rectangle(305, 1920-214, 133, 158);
 
-            PAUSEUnpauseButt        = new Button(400,   1920-800,   478,    122,    Assets.GameContinue);
-            PAUSERestartButt        = new Button(400,   1920-1000,  435,    111,    Assets.GameRestart);
-            PAUSELevelSelectionButt = new Button(400,   1920-1200,  428,    104,    Assets.GameQuit);
+            PAUSEUnpauseButt        = new Button(330,   1920-1000,   420, 100,    Assets.GameMenuButt);
+            PAUSERestartButt        = new Button(330,   1920-1200,  420, 100,    Assets.GameMenuButt);
+            PAUSELevelSelectionButt = new Button(330,   1920-1400,  420, 100,    Assets.GameMenuButt);
 
-            GOVLevelSelection = new Button(350,     1920 - 1300,     578, 147,   Assets.GameLevelSelect);
+            GOVLevelSelection = new Button(330,     1920 - 1300,     420, 100,      Assets.GameMenuButt);
+            GOLLevelSelection = new Button(330,     1920 - 1500,     420, 100,       Assets.GameMenuButt);
+            GOLrestart        = new Button(330,     1920 - 1300,     420, 100,      Assets.GameMenuButt);
 
-            GOLLevelSelection = new Button(350,     1920 - 1400,    578, 147,   Assets.GameLevelSelect);
-            GOLrestart        = new Button(350,     1920 - 1100,     435, 111,   Assets.GameTryAgain);
+            playbutt = new Button(316, 800, 420, 200, Assets.GamePlay);
 
-            playbutt = new Button(400, 800, 200, 100, Assets.GamePlay);
-
-            TIME_RENDER_X = 7;
+            TIME_RENDER_X = 17;
             TIME_RENDER_Y = 1920 - 310;
-            LEVELNAME_RENDER_X = 500;
+            LEVELNAME_RENDER_X = 530;
             LEVELNAME_RENDER_Y = 1920-150;
         }
         else
         {
-            BOXOUTER_X = 150;
-            BOXOUTER_Y = 960 - 800;
-            PAUSETITLE_X = 200;
-            PAUSETITLE_Y = 960 - 500;
-            GOLTITLE_X = 200;
-            GOLTITLE_Y = 960 - 500;
-            GOVTITLE_X = 200;
-            GOVTITLE_Y = 960 - 500;
+            PAUSETITLE_X = 178;
+            PAUSETITLE_Y = 960 - 400;
+            GOLTITLE_X = 173;
+            GOLTITLE_Y = 960 - 400;
+            GOVTITLE_X = 145;
+            GOVTITLE_Y = 960 - 400;
 
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,960-93,93, 93);
             livesarea = new Rectangle(407,Options.screenHeight-Options.GUIHeight,74 , 42 );
             mutebutt = new Rectangle(117, 960-73, 42, 48);
 
-            PAUSEUnpauseButt        = new Button(115, 350,  415, 120, Assets.GameContinue);
-            PAUSERestartButt        = new Button(115, 220,  415, 120, Assets.GameRestart);
-            PAUSELevelSelectionButt = new Button(115, 90,   415, 120 , Assets.GameQuit);
+            PAUSEUnpauseButt        = new Button(195, 960-480,  250, 50,    Assets.GameMenuButt);
+            PAUSERestartButt        = new Button(195, 960-565,  250, 50,    Assets.GameMenuButt);
+            PAUSELevelSelectionButt = new Button(195, 960-650,   250, 50,    Assets.GameMenuButt);
 
-            GOVLevelSelection = new Button(115, 350, 340, 86, Assets.GameLevelSelect);
-            GOLLevelSelection = new Button(115, 220, 340, 86, Assets.GameLevelSelect);
-            GOLrestart        = new Button(115, 350, 344, 114, Assets.GameTryAgain);
+            GOVLevelSelection = new Button(195, 960-480, 250, 50,           Assets.GameMenuButt);
+            GOLLevelSelection = new Button(195, 960-565, 250, 50,           Assets.GameMenuButt);
+            GOLrestart        = new Button(195, 960-480, 250, 50,           Assets.GameMenuButt);
 
-            playbutt = new Button(300, 300, 150, 75, Assets.GamePlay);
+            playbutt = new Button(188, 960-600, 263, 75, Assets.GamePlay);
 
-            TIME_RENDER_X = 400;
-            TIME_RENDER_Y = 960 - 20; //top left?
-            LEVELNAME_RENDER_X = 202;
+            TIME_RENDER_X = 410;
+            TIME_RENDER_Y = 960 - 15; //top left?
+            LEVELNAME_RENDER_X = 208;
             LEVELNAME_RENDER_Y = 960-50;
         }
+
+        PAUSEUnpauseButt.setButttext        ("Continue");
+        PAUSERestartButt.setButttext        ("Restart");
+        PAUSELevelSelectionButt.setButttext ("Quit");
+        GOVLevelSelection.setButttext       ("Hooray!");
+        GOLLevelSelection.setButttext       ("Aw, ok.");
+        GOLrestart.setButttext              ("Try Again");
 
         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();

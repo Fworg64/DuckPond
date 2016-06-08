@@ -31,15 +31,7 @@ public class LevelSelectionScreen extends ScreenAdapter
     int GETMORE_W;
     int GETMORE_H;
 
-    int CUSTOMWORLD_X;
-    int CUSTOMWORLD_Y;
-    int CUSTOMWORLD_W;
-    int CUSTOMWORLD_H;
-
-    int DOWNLDBUTT_X;
-    int DOWNLDBUTT_Y;
-    int DOWNLDBUTT_W;
-    int DOWNLDBUTT_H;
+    int TEXTBUTT_X, TEXTBUTT_Y, TEXTBUTT_W, TEXTBUTT_H;
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -48,14 +40,13 @@ public class LevelSelectionScreen extends ScreenAdapter
     InputListener in;
     Vector2 touchpoint;
 
-    Button customlevelbutt;
-    Button downldlevelbutt;
+    TextCycleButton textCycleButton;
     Button leveleditbutt;
     Button mainMenubutt;
     Button getmorebutt;
     Button[] butts;
 
-    FileBrowser fileBrowser;
+    Browser browser;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -72,23 +63,15 @@ public class LevelSelectionScreen extends ScreenAdapter
             GETMORE_W = 320;
             GETMORE_H = 199;
 
-
-            DOWNLDBUTT_X = 420;
-            DOWNLDBUTT_Y = 1920-405;
-            DOWNLDBUTT_W = 300;
-            DOWNLDBUTT_H = 200;
-
-            CUSTOMWORLD_X = 750;
-            CUSTOMWORLD_Y = 1920 -405;
-            CUSTOMWORLD_W = 300;
-            CUSTOMWORLD_H = 200;
+            TEXTBUTT_X = 420;
+            TEXTBUTT_Y = 1920 -425;
+            TEXTBUTT_W = 300;
+            TEXTBUTT_H = 225;
 
             WORLDMAKER_X = 619; //BOTTOM LEFT
             WORLDMAKER_Y = 22;
             WORLDMAKER_W = 381;
             WORLDMAKER_H = 218;
-
-
         }
         else
         {
@@ -102,15 +85,10 @@ public class LevelSelectionScreen extends ScreenAdapter
             GETMORE_W = 179;
             GETMORE_H = 108;
 
-            DOWNLDBUTT_X = 250;
-            DOWNLDBUTT_Y = 960-305;
-            DOWNLDBUTT_W = 150;
-            DOWNLDBUTT_H = 100;
-
-            CUSTOMWORLD_X = 440;
-            CUSTOMWORLD_Y = 960 -305;
-            CUSTOMWORLD_W = 150;
-            CUSTOMWORLD_H = 100;
+            TEXTBUTT_X = 250;
+            TEXTBUTT_Y = 960 -305;
+            TEXTBUTT_W = 150;
+            TEXTBUTT_H = 125;
 
             WORLDMAKER_X = 367;
             WORLDMAKER_Y = 960 - 935;
@@ -131,15 +109,14 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.mas.playMainMenu();
 
         mainMenubutt =      new Button(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H, Assets.LevelSelectionMainMenu);
-        customlevelbutt =   new Button(CUSTOMWORLD_X, CUSTOMWORLD_Y, CUSTOMWORLD_W, CUSTOMWORLD_H, Assets.LevelSelectionFolder);
-        customlevelbutt.setButttext("CUSTOM");
         leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
         getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
-        downldlevelbutt =   new Button(DOWNLDBUTT_X, DOWNLDBUTT_Y, DOWNLDBUTT_W, DOWNLDBUTT_H, Assets.LevelSelectionFolder);
-        downldlevelbutt.setButttext("DOWN\nLOADED");
-        butts = new Button[] {mainMenubutt, customlevelbutt, leveleditbutt, getmorebutt, downldlevelbutt};
 
-        fileBrowser = new FileBrowser();
+        butts = new Button[] {mainMenubutt, leveleditbutt, getmorebutt};
+        textCycleButton = new TextCycleButton(new String[] {"Stock", "Custom", "Downloaded"}, TEXTBUTT_X, TEXTBUTT_Y, TEXTBUTT_W, TEXTBUTT_H);
+
+        //fileBrowser = new FileBrowser();
+        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true));
 
         if (Gdx.app.getType() == Application.ApplicationType.Android)
         {
@@ -151,30 +128,30 @@ public class LevelSelectionScreen extends ScreenAdapter
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
-        fileBrowser.touch(in.isTouched() ? touchpoint : new Vector2());
-        if (fileBrowser.isLevelchosen())
+        browser.touch(in.isTouched() ? touchpoint : new Vector2());
+        if (browser.isItemchosen())//if (fileBrowser.isLevelchosen())
         {
             Assets.load_gamescreen();
-            game.setScreen(new GameScreen(game, fileBrowser.getLevelPicked(), fileBrowser.getNamePicked()));
+            game.setScreen(new GameScreen(game, browser.getItempicked(), browser.getItemname()));
         }
 
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
-        if (customlevelbutt.isWasPressed())
+        textCycleButton.pollPress(in.isTouched() ? touchpoint: new Vector2());
+        if (textCycleButton.isWasPressed())
         {
-            if (Gdx.app.getType() != Application.ApplicationType.WebGL)
+            switch (textCycleButton.getState())
             {
-                fileBrowser.gocustom();
-                customlevelbutt.pressHandled();
+                case 0:
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true));
+                    break;
+                case 1:
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false));
+                    break;
+                case 2:
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false));
+                    break;
             }
-            else game.setScreen(new GameScreen(game, Options.getCustom1(), "Custom"));
-        }
-        if (downldlevelbutt.isWasPressed())
-        {
-            if (Gdx.app.getType() != Application.ApplicationType.WebGL)
-            {
-                fileBrowser.godownld();
-                downldlevelbutt.pressHandled();
-            }
+            textCycleButton.pressHandled();
         }
         if (mainMenubutt.isJustPressed())
         {
@@ -221,7 +198,8 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.batch.enableBlending();
         game.batch.begin();
         for (Button butt : butts) butt.renderSprites(game.batch);
-        fileBrowser.renderSprites(game.batch);
+        textCycleButton.renderSprites(game.batch);
+        browser.renderSprites(game.batch);
         game.batch.end();
     }
 
