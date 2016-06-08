@@ -17,11 +17,11 @@ public class OptionsScreen extends ScreenAdapter
 {
     public static final String credits = "Thank you BetaTesters.\n"
                                         +"Thank you Players.\n\n"
-                                        +"Graphics/Design:\nLois S. Dilone\n\n"
-                                        +"Programing: \nAustin F. Oltmanns\n(Fworg64)\n\n"
-                                        +"Privacy Policy\n"
-                                        +"Tcupdevelopment.me/\n   privacypolicy.html\n\n"
-                                        +"Tap to close.";
+                                        +"Graphics\\Design:\n     Lois S. Dilone\n\n"
+                                        +"Programing: \n     Austin F. Oltmanns\n     (Fworg64)\n\n"
+                                        +"Privacy Policy:\n"
+                                        +"Tcupdevelopment.me\\\n       privacypolicy.html\n\n"
+                                        +"       Tap to close.";
 
     int OPTEXIT_X;
     int OPTEXIT_Y;
