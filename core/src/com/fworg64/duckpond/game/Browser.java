@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by fworg on 6/7/2016.
  */
-public class Browser
+public class Browser extends Thread
 {
     public int SIXBUTT_X ;
     public int SIXBUTT_Y;
@@ -36,11 +36,11 @@ public class Browser
     public int LEVEL_LOAD_C;
     public int PAGE_SIZE;
 
-    Button[] sixbutts;
-    Button pageleftbutt;
-    Button pagerightbutt;
-    Button pageupbutt;
-    Button[] butts;
+    private Button[] sixbutts;
+    private Button pageleftbutt;
+    private Button pagerightbutt;
+    private Button pageupbutt;
+    private Button[] butts;
 
     private String itempicked;
     private String itemname;
@@ -55,11 +55,12 @@ public class Browser
     private boolean canPageLeft;
     private boolean canPageRight;
 
+    private Browsable browsable;
+    private BrowserCommunicator bc;
 
-    Browsable browsable;
-
-    public Browser(Browsable browsable)
+    public Browser(Browsable browsable, BrowserCommunicator bc)
     {
+        super("Broswer");
         if (Options.isHighres())
         {
             SIXBUTT_X = 210;
@@ -110,6 +111,7 @@ public class Browser
             LEVEL_LOAD_C = 3;
             PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
         }//button dims and sizes
+        this.bc = bc;
         sixbutts = new Button[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
             for (int j=0; j<LEVEL_LOAD_R;j++)
@@ -135,6 +137,29 @@ public class Browser
         renderUpOne = true;
     }
 
+    @Override
+    public void run()
+    {
+        touch(bc.getTouchpoint());
+        if (itemchosen)
+        {
+            bc.setSelectionMade(true);
+            bc.setSelectionName(itemname);
+            bc.setSelectionContents(itempicked);
+        }
+        if (bc.isResetSelection())
+        {
+            resetPicked();
+            bc.setResetSelection(false);
+        }
+        if (bc.isClose())
+        {
+            close();
+            return;
+        }
+
+    }
+
     private void updateAllOptions()
     {
         allOptions = this.browsable.getAllOptions();
@@ -157,7 +182,7 @@ public class Browser
         Gdx.app.debug("Browser", "Went to a page");
     }
 
-    public synchronized void touch(Vector2 touchpoint)
+    private synchronized void touch(Vector2 touchpoint)
     {
         for (int i=0; i<sixbutts.length;i++) sixbutts[i].pollPress(touchpoint);
         for (int i =0; i<displayOptions.size(); i++)
@@ -217,43 +242,46 @@ public class Browser
         itemname = "";
     }
 
-    public String getItempicked() {
-        return itempicked;
-    }
-
-    public String getItemname() {
-        return itemname;
-    }
-
-    public boolean isItemchosen() {
-        return itemchosen;
-    }
-
-    public void close() {
+    private void close() {
         browsable.close();
     }
 
-    public void renderShapes(ShapeRenderer shapeRenderer)
+    public void renderShapes(final ShapeRenderer shapeRenderer)
     {
-        for (Button butt : sixbutts) butt.renderShapes(shapeRenderer);
-        for (Button butt : butts) butt.renderShapes(shapeRenderer);
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+                for (Button butt : sixbutts) butt.renderShapes(shapeRenderer);
+                for (Button butt : butts) butt.renderShapes(shapeRenderer);
+                shapeRenderer.end();
+            }
+        });
+
     }
 
-    public void renderSprites(SpriteBatch batch)
+    public void renderSprites(final SpriteBatch batch)
     {
-        batch.enableBlending();
-        //batch.begin();
-        if (renderUpOne) pageupbutt.renderSprites(batch);
-        pageleftbutt.renderSprites(batch);
-        pagerightbutt.renderSprites(batch);
-        batch.setColor(1,1,1,1f);
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                batch.enableBlending();
+                batch.begin();
+                if (renderUpOne) pageupbutt.renderSprites(batch);
+                pageleftbutt.renderSprites(batch);
+                pagerightbutt.renderSprites(batch);
+                batch.setColor(1,1,1,1f);
 
-        for (int i=0; i< displayOptions.size(); i++)
-        {
-            sixbutts[i].renderSprites(batch);
-        }
+                for (int i=0; i< displayOptions.size(); i++)
+                {
+                    sixbutts[i].renderSprites(batch);
+                }
 
-        //batch.end();
+                batch.end();
+            }
+        });
+
 
     }
 

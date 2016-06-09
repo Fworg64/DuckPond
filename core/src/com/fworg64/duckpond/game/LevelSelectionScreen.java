@@ -47,6 +47,7 @@ public class LevelSelectionScreen extends ScreenAdapter
     Button[] butts;
 
     Browser browser;
+    BrowserCommunicator browserCommunicator;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -116,7 +117,9 @@ public class LevelSelectionScreen extends ScreenAdapter
         textCycleButton = new TextCycleButton(new String[] {"Stock", "Custom", "Downloaded"}, TEXTBUTT_X, TEXTBUTT_Y, TEXTBUTT_W, TEXTBUTT_H);
 
         //fileBrowser = new FileBrowser();
-        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true));
+        browserCommunicator = new BrowserCommunicator();
+        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+        browser.start();
 
         if (Gdx.app.getType() == Application.ApplicationType.Android)
         {
@@ -128,29 +131,32 @@ public class LevelSelectionScreen extends ScreenAdapter
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
-        browser.touch(in.isTouched() ? touchpoint : new Vector2());
-        if (browser.isItemchosen())//if (fileBrowser.isLevelchosen())
+        browserCommunicator.setTouchpoint(in.isTouched() ? touchpoint : new Vector2());
+        if (browserCommunicator.isSelectionMade())//if (fileBrowser.isLevelchosen())
         {
             Assets.load_gamescreen();
-            game.setScreen(new GameScreen(game, browser.getItempicked(), browser.getItemname()));
+            game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName()));
         }
 
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
         textCycleButton.pollPress(in.isTouched() ? touchpoint: new Vector2());
         if (textCycleButton.isWasPressed())
         {
+            browserCommunicator.setClose(true);
+            browserCommunicator = new BrowserCommunicator(); //ditch the old shit
             switch (textCycleButton.getState())
             {
                 case 0:
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true));
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
                     break;
                 case 1:
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false));
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator);
                     break;
                 case 2:
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false));
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
                     break;
             }
+            browser.start();
             textCycleButton.pressHandled();
         }
         if (mainMenubutt.isJustPressed())

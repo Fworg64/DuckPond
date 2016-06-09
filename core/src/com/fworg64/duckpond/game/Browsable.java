@@ -17,7 +17,7 @@ public interface Browsable {
 
     public boolean canPageUp(); //true if the current level is not the top of the browsable item
 
-    public boolean isFinalSelection(); //true if the item picked is an item and not a folder or something
+    public boolean isFinalSelection(); //true if the item picked is an item and not a folder or something and is ready
 
     public String getSelectionName(); //returns the name of the selected item, only needs to be valid if isFinalSelection is true
 
