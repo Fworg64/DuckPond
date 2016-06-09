@@ -1,6 +1,8 @@
 package com.fworg64.duckpond.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -140,23 +142,27 @@ public class Browser extends Thread
     @Override
     public void run()
     {
-        touch(bc.getTouchpoint());
-        if (itemchosen)
+        while (true)
         {
-            bc.setSelectionMade(true);
-            bc.setSelectionName(itemname);
-            bc.setSelectionContents(itempicked);
+            touch(bc.getTouchpoint());
+            if (itemchosen)
+            {
+                bc.setSelectionMade(true);
+                bc.setSelectionName(itemname);
+                bc.setSelectionContents(itempicked);
+            }
+            if (bc.isResetSelection())
+            {
+                resetPicked();
+                bc.setResetSelection(false);
+            }
+            if (bc.isClose())
+            {
+                close();
+                return;
+            }
         }
-        if (bc.isResetSelection())
-        {
-            resetPicked();
-            bc.setResetSelection(false);
-        }
-        if (bc.isClose())
-        {
-            close();
-            return;
-        }
+
 
     }
 
@@ -184,6 +190,7 @@ public class Browser extends Thread
 
     private synchronized void touch(Vector2 touchpoint)
     {
+        //if (!touchpoint.isZero()) Gdx.app.debug("Browser","touched at " + touchpoint.toString());
         for (int i=0; i<sixbutts.length;i++) sixbutts[i].pollPress(touchpoint);
         for (int i =0; i<displayOptions.size(); i++)
         {
@@ -261,11 +268,17 @@ public class Browser extends Thread
 
     }
 
-    public void renderSprites(final SpriteBatch batch)
+    public void renderSprites(final SpriteBatch batch, final OrthographicCamera gcam)
     {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                GL20 gl = Gdx.gl;
+                gl.glClearColor(.27451f, .70588f, .83922f, 1);
+                gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
+                gcam.update();
+                batch.setProjectionMatrix(gcam.combined);
+
                 batch.enableBlending();
                 batch.begin();
                 if (renderUpOne) pageupbutt.renderSprites(batch);

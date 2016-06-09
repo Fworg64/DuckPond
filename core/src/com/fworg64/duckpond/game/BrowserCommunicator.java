@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -29,6 +30,7 @@ public class BrowserCommunicator {
     }
 
     public synchronized void setTouchpoint(Vector2 touchpoint) {
+        //if (!touchpoint.isZero()) Gdx.app.debug("BrowserCommunicator", "touched at " + touchpoint.toString());
         this.touchpoint = touchpoint;
     }
 
