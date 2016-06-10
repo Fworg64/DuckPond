@@ -24,6 +24,7 @@ public class Button {
     private boolean wasPressed; //ture if the button was pressed but now is not
 
     private boolean available;
+    private boolean visible;
     private String butttext;
     GlyphLayout glyphLayout;
 
@@ -38,6 +39,7 @@ public class Button {
         wasPressed = false;
         available = true;
         butttext = "";
+        visible = true;
     }
     public Button(float x, float y, float w, float h, Texture texture)
     {
@@ -48,12 +50,13 @@ public class Button {
         wasPressed = false;
         available = true;
         butttext = "";
+        visible = true;
     }
 
 
     public void pollPress(Vector2 vector2) //call before checking states
     {
-        if (available)
+        if (available && visible)
         {
             if (bounds.contains(vector2))
             {
@@ -133,6 +136,14 @@ public class Button {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+    public void hide() {
+        visible = false;
+    }
+    public void show() {
+        visible = true;
+    }
+
     public void setButttext(String butttext) {
 
         this.butttext = butttext;
@@ -146,12 +157,16 @@ public class Button {
     {
         //batch.enableBlending();
         //batch.begin();
-        if (pressed || wasPressed) batch.setColor(dimmingColor);
-        else if (!available) batch.setColor(unavailableColor);
-        else batch.setColor(1f,1f,1f,1f);
-        batch.draw(texture, bounds.getX(), bounds.getY());
-        if (!butttext.equals("")) Assets.font.draw(batch, butttext, bounds.getX() + bounds.getWidth()*.5f - glyphLayout.width*.5f, bounds.getY() + bounds.getHeight()*.5f + .5f*glyphLayout.height);
-        if (pressed || wasPressed || !available) batch.setColor(1f,1f,1f,1f);
+        if (visible)
+        {
+            if (pressed || wasPressed) batch.setColor(dimmingColor);
+            else if (!available) batch.setColor(unavailableColor);
+            else batch.setColor(1f,1f,1f,1f);
+            batch.draw(texture, bounds.getX(), bounds.getY());
+            if (!butttext.equals("")) Assets.font.draw(batch, butttext, bounds.getX() + bounds.getWidth()*.5f - glyphLayout.width*.5f, bounds.getY() + bounds.getHeight()*.5f + .5f*glyphLayout.height);
+            if (pressed || wasPressed || !available) batch.setColor(1f,1f,1f,1f);
+        }
+
         //batch.end();
     }
 
