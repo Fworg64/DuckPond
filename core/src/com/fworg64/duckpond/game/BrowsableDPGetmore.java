@@ -71,15 +71,27 @@ public class BrowsableDPGetmore implements Browsable{
         if (allOptions.size() >0)
         {
             String temp = allOptions.get(0);
-            if (temp.equals("toplevel")) canPageUp = false;
-            if (temp.equals("choices")) canPageUp = true;
+            if (temp.equals("toplevel")) {
+                canPageUp = false;
+                allOptions.remove(0);
+            }
+            if (temp.equals("choices")) {
+                canPageUp = true;
+                allOptions.remove(0);
+            }
             if (temp.equals("level"))
             {
                 isFinalSelection = true;
-                selectionName = allOptions.get(1);
-                selectionContents = allOptions.get(2);
+                selectionName = allOptions.get(1).replace("SERVERFILES", DuckPondGame.downloadsfolder);
+                selectionContents = "";
+                for(int i =0; i<allOptions.size(); i++)
+                {
+                    Gdx.app.debug("BroswableDPGM levelalloptions", allOptions.get(i));
+                    if (i >=2) selectionContents+=allOptions.get(i)+"\n";
+                }
+                pageUp();
             }
-            allOptions.remove(0);
+
         }
         else
         {
@@ -97,6 +109,10 @@ public class BrowsableDPGetmore implements Browsable{
     public void pageUp() {
         out.println("\5"); //go up signal
         allOptions = getBlockFromServer();
+        String temp = allOptions.get(0);
+        if (temp.equals("toplevel")) canPageUp = false;
+        if (temp.equals("choices")) canPageUp = true;
+        allOptions.remove(0);
 
     }
 

@@ -154,6 +154,9 @@ public class Browser extends Thread
             if (bc.isResetSelection())
             {
                 resetPicked();
+                bc.setSelectionMade(false);
+                bc.setSelectionName("");
+                bc.setSelectionContents("");
                 bc.setResetSelection(false);
             }
             if (bc.isClose())
