@@ -105,6 +105,16 @@ public class TextCycleButton {
         return state;
     }
 
+    public void setStateDirect(int i)
+    {
+        state =i;
+    }
+
+    public void goNoState()
+    {
+        state =-1;
+    }
+
     public void renderSprites(SpriteBatch batch)
     {
         //batch.enableBlending();
