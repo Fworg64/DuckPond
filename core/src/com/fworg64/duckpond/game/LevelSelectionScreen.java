@@ -16,21 +16,9 @@ import com.badlogic.gdx.math.Vector2;
 public class LevelSelectionScreen extends ScreenAdapter
 {
     //button dims defs
-    int WORLDMAKER_X;
-    int WORLDMAKER_Y;
-    int WORLDMAKER_W;
-    int WORLDMAKER_H;
-
-    int MAINBUTT_X;
-    int MAINBUTT_Y;
-    int MAINBUTT_W;
-    int MAINBUTT_H;
-
-    int GETMORE_X;
-    int GETMORE_Y;
-    int GETMORE_W;
-    int GETMORE_H;
-
+    int WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H;
+    int MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H;
+    int GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H;
     int TEXTBUTT_X, TEXTBUTT_Y, TEXTBUTT_W, TEXTBUTT_H;
 
     DuckPondGame game; //from example
@@ -48,6 +36,8 @@ public class LevelSelectionScreen extends ScreenAdapter
 
     Browser browser;
     BrowserCommunicator browserCommunicator;
+    volatile BrowsableDPGetmore downloadBrowsable;
+    Thread networkBrosableMaker;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -120,12 +110,18 @@ public class LevelSelectionScreen extends ScreenAdapter
         browserCommunicator = new BrowserCommunicator();
         browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
         browser.start();
+        downloadBrowsable = null;
+        networkBrosableMaker = null;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android)
         {
             Gdx.app.debug("AD","LEVELSELETCSHOW");
             this.game.adStateListener.ShowBannerAd();
         }
+
+        getmorebutt.hide();
+        leveleditbutt.hide();
+
     }
 
     public void update()
@@ -148,12 +144,18 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 case 0:
                     browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+                    getmorebutt.hide();
+                    leveleditbutt.hide();
                     break;
                 case 1:
                     browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator);
+                    leveleditbutt.show();
+                    getmorebutt.hide();
                     break;
                 case 2:
                     browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
+                    getmorebutt.show();
+                    leveleditbutt.hide();
                     break;
             }
             browser.start();
@@ -176,11 +178,29 @@ public class LevelSelectionScreen extends ScreenAdapter
             Assets.dispose_levelscreen();
             this.dispose();
         }
+        if (getmorebutt.isJustPressed())
+        {
+            networkBrosableMaker = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Gdx.app.debug("networkBrowsableMaker", "Starting");
+                    downloadBrowsable = new BrowsableDPGetmore();
+                    Gdx.app.debug("networkBrowsableMaker", "Finished");
+                }
+            });
+            networkBrosableMaker.start();
+        }
         if ((getmorebutt.isWasPressed()))
         {
-            game.setScreen(new GetMoreScreen(game));
-            Assets.dispose_levelscreen();
-            this.dispose();
+            if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
+                browserCommunicator.setClose(true);
+                browserCommunicator = new BrowserCommunicator();
+                browser = new Browser(downloadBrowsable, browserCommunicator);
+                browser.start();
+                getmorebutt.pressHandled();
+                getmorebutt.hide();
+
+            }
         }
         if (leveleditbutt.isJustPressed()) {
             Assets.load_leveledit();

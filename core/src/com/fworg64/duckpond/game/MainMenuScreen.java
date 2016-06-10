@@ -55,7 +55,7 @@ public class MainMenuScreen extends ScreenAdapter
         if (Options.highres)
         {
             PLAY_X = (int)(220f/1080f* Options.screenWidth);
-            PLAY_Y = (int)((1- 1226f/1920f)* Options.screenHeight);
+            PLAY_Y = 1920-1150;
             OPTIONS_X = (int)(80f/1080f* Options.screenWidth);
             OPTIONS_Y = (int)((1- 1665f/1920f)* Options.screenHeight);
             EXIT_X = (int)(820/1080f* Options.screenWidth);
@@ -66,7 +66,7 @@ public class MainMenuScreen extends ScreenAdapter
         else
         {
             PLAY_X = (int)(130f/640f* Options.screenWidth);
-            PLAY_Y = (int)((1- 684f/960f)* Options.screenHeight);
+            PLAY_Y = 960-650;
             OPTIONS_X = (int)(50f/640f* Options.screenWidth);
             OPTIONS_Y = (int)((1-875f/960f)* Options.screenHeight);
             EXIT_X = (int)(478f/640f* Options.screenWidth);
