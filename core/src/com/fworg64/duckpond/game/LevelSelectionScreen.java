@@ -151,7 +151,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         leveleditbutt.hide();
         backtodlbutt.hide();
 
-        message = "Press the >cycler< for more";
+        message = "\nPress the >cycler< for more";
     }
 
     public void update()
@@ -200,14 +200,14 @@ public class LevelSelectionScreen extends ScreenAdapter
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 1:
-                    message = "Make and share:";
+                    message = "\nMake and share";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator);
                     leveleditbutt.show();
                     getmorebutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 2:
-                    message = "Get more with:";
+                    message = "\nGet more with";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
                     getmorebutt.show();
                     leveleditbutt.hide();
@@ -271,7 +271,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             browser.start();
             handleSelection = HandleSelection.PLAY;
             backtodlbutt.pressHandled();
-            message = " Get more with:";
+            message = "\nGet more with";
             backtodlbutt.hide();
             getmorebutt.show();
 
