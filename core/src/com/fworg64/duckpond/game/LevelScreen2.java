@@ -367,7 +367,9 @@ public class LevelScreen2 extends ScreenAdapter
                 Gdx.app.debug("screenstate", "sharescreen");
                 Options.loadOptions();
                 Assets.load_share();
-                game.setScreen(new ShareScreen(game));
+                Assets.load_navigation();
+                Assets.load_font();
+                game.setScreen(new ShareScreen2(game));
                 Assets.dispose_leveledit();
                 this.dispose();
         }

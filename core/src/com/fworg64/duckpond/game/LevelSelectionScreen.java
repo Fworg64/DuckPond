@@ -127,7 +127,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         mainMenubutt =      new Button(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H, Assets.LevelSelectionMainMenu);
         leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
         getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
-        backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.LevelSelectionFolder);
+        backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.NavigationFolder);
         backtodlbutt.setButttext("Back\nto DL'd");
 
         butts = new Button[] {mainMenubutt, leveleditbutt, getmorebutt, backtodlbutt};

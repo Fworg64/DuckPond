@@ -45,9 +45,9 @@ public class Assets
     public static Texture NavigationConfirm;
     public static Texture NavigationWorldButt;
     public static Texture NavigationBack;
+    public static Texture NavigationFolder;
 
     public static Texture LevelSelectionMainMenu;
-    public static Texture LevelSelectionFolder;
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
 
@@ -275,7 +275,6 @@ public class Assets
         else res = "stdres\\";
 
         LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
-        LevelSelectionFolder = new Texture(Gdx.files.internal(res + "levelselection\\folder.png"));
         LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\download.png"));
         LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
 
@@ -284,7 +283,6 @@ public class Assets
     public static void dispose_levelscreen()
     {
         LevelSelectionWorldMaker.dispose();
-        LevelSelectionFolder.dispose();
         LevelSelectionGetMore.dispose();
         LevelSelectionMainMenu.dispose();
     }
@@ -304,6 +302,7 @@ public class Assets
         NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("stdres\\navigation\\levelbutt.png"));
         NavigationBack = new Texture(Gdx.files.internal("stdres\\navigation\\back.png"));
+        NavigationFolder = new Texture(Gdx.files.internal("stdres\\navigation\\folder.png"));
     }
     public static void load_navigation_high()
     {
@@ -315,6 +314,8 @@ public class Assets
         NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("highres\\navigation\\levelbutt.png"));
         NavigationBack = new Texture(Gdx.files.internal("highres\\navigation\\back.png"));
+        NavigationFolder = new Texture(Gdx.files.internal("highres\\navigation\\folder.png"));
+
 
     }
     public static void dispose_navigation()
@@ -325,6 +326,7 @@ public class Assets
         NavigationUpone.dispose();
         NavigationWorldButt.dispose();
         NavigationBack.dispose();
+        NavigationFolder.dispose();
     }
 
     public static void load_share()
