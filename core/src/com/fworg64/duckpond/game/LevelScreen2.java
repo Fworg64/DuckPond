@@ -62,7 +62,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TKNOB_H = 96;
 
     public static final int DUCKLING_SELECT_X = 918;
-    public static final int DUCKLING_SELECT_Y = 1920-350;
+    public static final int DUCKLING_SELECT_Y = 1920-450;
     public static final int DUCKLING_SELECT_S = 110;
     public static final int DUCKLING_SELECT_W = 96;
     public static final int DUCKLING_SELECT_H = 96;
@@ -89,16 +89,18 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_LIVES_BUTTON_XS = 380;
 
     public static final int MESSAGE_X = 20;
-    public static final int MESSAGE_Y = 1920 - 190;
+    public static final int MESSAGE_Y = 1920 - 150;
+    public static final int MESSAGE2_X =350;
+    public static final int MESSAGE3_X =700;
 
     public static final int LIVES_DISPLAY_X = 670;
     public static final int LIVES_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int LIVES_DISPLAY_S = 106;
 
     public static final int T_TIME_DISPLAY_X = 100;
-    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT + 40;
+    public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT + 60;
     public static final int C_TIME_DISPLAY_X = 800;
-    public static final int C_TIME_DISPLAY_Y = 100;
+    public static final int C_TIME_DISPLAY_Y = 120;
 
     public static final int LOAD_CANCEL_X = 300;
     public static final int LOAD_CANCEL_Y = 1920 - 1500;
@@ -192,7 +194,7 @@ public class LevelScreen2 extends ScreenAdapter
     {
         //options has no effect on resolution
         Assets.load_navigation_high();
-        Assets.load_font_std();
+        Assets.load_font_high();
         this.game = game;
         gcam = new OrthographicCamera(DuckPondGame.highresScreenW,DuckPondGame.highresScreenH); //let us place things outside the map
         gcam.position.set(DuckPondGame.highresScreenW * .5f, DuckPondGame.highresScreenH * .5f, 0); //high res mode but assets at stdres for zoomout
@@ -508,22 +510,23 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void Choose2Destroy()
     {
-        Message = "choose to destroy";
+        Message = "Choose to remove";
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched())
         {
             for (Spawnable s: spawnables)
             {
-                    float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
-                    float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
-                    if (touchpoint.x<(del_X + DuckPondGame.stdspriteW) && touchpoint.x > del_X) //x matches
+                float del_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn() >0 ? tempt2s-s.getTime2spawn(): 0);
+                float del_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn() >0 ? tempt2s-s.getTime2spawn(): 0);
+                if (touchpoint.x<(del_X + DuckPondGame.stdspriteW) && touchpoint.x > del_X) //x matches
+                {
+                    if (touchpoint.y<(del_Y + DuckPondGame.stdspriteH) && touchpoint.y > del_Y)//y matches
                     {
-                        if (touchpoint.y<(del_Y + DuckPondGame.stdspriteH) && touchpoint.y > del_Y)//y matches
-                        {
-                            Message = s.getObjtype() + "\nDestroyed";
-                            spawnables.removeValue(s,true);
-                        }
+                        Message = s.getObjtype() + "\nDestroyed";
+                        spawnables.removeValue(s,true);
                     }
+                }
+
             }
         }
         if (in.justTouched() && !trashbutt.contains(touchpoint)) {
@@ -582,7 +585,7 @@ public class LevelScreen2 extends ScreenAdapter
             }
             else {
                 ready2confirm = true;
-                Message = "Press confirm when you like the position";
+                Message = "Position: Press Confirm";
             }
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
@@ -601,12 +604,12 @@ public class LevelScreen2 extends ScreenAdapter
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
             tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 200));
-            Message = tempguy.getVel().toString() + "\nSpeed:" + Float.toString(tempguy.getVel().len());
+            Message = tempguy.getVel().toString().substring(0,4) + "  Speed:" + Float.toString(tempguy.getVel().len()).substring(0,4);
         }
         if (!in.isTouched() && !tempguy.getVel().isZero()) //vel was set
         {
             ready2confirm = true;
-            Message = "Press confirm when Velocity is set";
+            Message = "Velocity: Press Confirm";
         }
         if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
         {
@@ -619,7 +622,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void ChooseT()
     {
         updateTempt2s();
-        Message = "Drag slider and press confirm for SpawnTime: " + Float.toString(tempt2s);
+        Message = "Spawntime: Drag Slider";
         touchpoint.set(in.getTouchpoint());
         if (!in.isTouched()) ready2confirm = true;
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
@@ -631,6 +634,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             gettingT = false;
             ready2confirm = true;
+            Message = "Spawntime: Press Confirm";
         }
         if (ready2confirm && in.justTouched() && Confirm.contains(touchpoint))
         {
@@ -638,7 +642,7 @@ public class LevelScreen2 extends ScreenAdapter
             tempguy.setTime2spawn(tempt2s);
             if (!getD) {
                 spawnables.add(tempguy);
-                Message = tempguy.toString();
+                //Message = tempguy.toString();
                 tempguy = new Spawnable();
                 temppos.setZero();
             }
@@ -681,7 +685,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void ChooseD()
     {
         if (tempducks ==0) Message = "Select number of ducklings";
-        else Message = Integer.toString(tempducks) + " ducklings. Press Confirm to confirm";
+        else Message = Integer.toString(tempducks) + " ducklings, Press Confirm";
         touchpoint.set(in.getTouchpoint());
         for (int i=0; i<MAX_DUCKLINGS; i++)
         {
@@ -695,11 +699,12 @@ public class LevelScreen2 extends ScreenAdapter
         {
             tempguy.setNumducks(tempducks);
             spawnables.add(tempguy);
-            Message = tempguy.toString();
+            //Message = tempguy.toString();
             tempguy = new Spawnable();
             temppos.setZero();
             getD = false;
             defaultstate = true;
+            tempducks =0;
         }
     }
 

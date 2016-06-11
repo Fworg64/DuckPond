@@ -98,7 +98,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             TEXTBUTT_W = 150;
             TEXTBUTT_H = 125;
 
-            WORLDMAKER_X = 420;
+            WORLDMAKER_X = 400;
             WORLDMAKER_Y = 960 - 935;
             WORLDMAKER_W = 226;
             WORLDMAKER_H = 129;
