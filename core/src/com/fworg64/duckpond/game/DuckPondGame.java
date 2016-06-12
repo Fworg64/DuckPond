@@ -38,7 +38,7 @@ public class DuckPondGame extends Game {
 	public static final String downloadsfolder = "DOWNLOADED";
 	public static final String levelsfolder = "LEVELS";
 
-	public static final String version = "v1.1.7b";
+	public static final String version = "v1.1.8b";
 
 	public SpriteBatch batch;
     public MusicAndSounds mas;

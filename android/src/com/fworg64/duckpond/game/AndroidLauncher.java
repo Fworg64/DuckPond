@@ -20,6 +20,8 @@ public class AndroidLauncher extends AndroidApplication {
     DuckPondGame game;
     DuckPondGame.DuckPondGameAdStateListener adStateListener;
 
+    boolean showAd;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,6 +38,7 @@ public class AndroidLauncher extends AndroidApplication {
         View gameView = initializeForView(game, config);
         layout.addView(gameView);
 
+        showAd = true;
         adView = new AdView(this);
         adView.setAdSize(AdSize.SMART_BANNER);
         adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
@@ -51,7 +54,12 @@ public class AndroidLauncher extends AndroidApplication {
         adView.setAdListener(new AdListener() {
             public void onAdLoaded() {
                 Log.i("Ads", "onAdLoaded");
-                adView.bringToFront();
+                if (showAd)
+                {
+                    adView.bringToFront();
+                }
+                else Log.i("Ads", "Loaded but not shown");
+
             }
         });
 
@@ -64,7 +72,8 @@ public class AndroidLauncher extends AndroidApplication {
 
             @Override
             public void ShowBannerAd() {
-                if (!adIsShown) {
+                showAd = true;
+                if (!adIsShown && showAd) {
                     runOnUiThread(new Runnable() //run on ui thread
                     {
                         public void run() {
@@ -87,6 +96,7 @@ public class AndroidLauncher extends AndroidApplication {
                     });
                     adIsShown = false;
                 }
+                showAd = false; //prevent ad from showing on load
             }
         };
 
