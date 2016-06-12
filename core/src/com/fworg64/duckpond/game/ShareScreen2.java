@@ -11,12 +11,16 @@ import com.badlogic.gdx.math.Vector2;
  * Created by fworg on 6/11/2016.
  */
 public class ShareScreen2 extends ScreenAdapter{
+    public enum PINSTATE {NEEDPIN1, NEEDPIN2, PINSNOTMATCH, PINSENT};
+    PINSTATE pinstate;
+
     int BACKBUTT_X, BACKBUTT_Y, BACKBUTT_W, BACKBUTT_H;
     int MESSAGE_X, MESSAGE_Y;
     int USERNAME_X, USERNAME_Y;
     int CONFIRMNAMECHANGE_X, CONFIRMNAMECHANGE_Y, CONFIRMNAMECHANGE_W, CONFIRMNAMECHANGE_H;
     int CANCELNAMECHANGE_X, CANCELNAMECHANGE_Y, CANCELNAMECHANGE_W, CANCELNAMECHANGE_H;
     int CHANGEUSERNAME_X, CHANGEUSERNAME_Y, CHANGEUSERNAME_W, CHANGEUSERNAME_H;
+    int CONNECT_X, CONNECT_Y, CONNECT_W, CONNECT_H;
     
     String username;
     String pin;
@@ -33,13 +37,24 @@ public class ShareScreen2 extends ScreenAdapter{
     Button confirmnamechangebutt;
     Button cancelnamechangebutt;
     Button changeusername;
+    Button connectbutt;
     Button butts[];
 
+    Thread networkMaker;
+    DPUploadCommunicator DPU;
+    DPUploader dpUploader;
+
+    PinPad2 pp2;
+    String temppin1;
+    String temppin2;
+
     boolean needUsername;
-    public enum PINSTATE {NEEDPIN1, NEEDPIN2, PINSNOTMATCH};
-    
+    boolean showpinpad;
+
     public ShareScreen2(DuckPondGame game)
     {
+        Assets.load_share(); //just the big ast
+
         this.game = game;
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
@@ -76,6 +91,11 @@ public class ShareScreen2 extends ScreenAdapter{
             CHANGEUSERNAME_Y = 1920 - 1898;
             CHANGEUSERNAME_W = 300;
             CHANGEUSERNAME_H = 200;
+
+            CONNECT_X = 420;
+            CONNECT_Y = 1920-1898;
+            CONNECT_W = 300;
+            CONNECT_H = 200;
         }
         else
         {
@@ -103,15 +123,23 @@ public class ShareScreen2 extends ScreenAdapter{
             CHANGEUSERNAME_Y = 960 - 935;
             CHANGEUSERNAME_W = 150;
             CHANGEUSERNAME_H = 100;
+
+            CONNECT_X = 280;
+            CONNECT_Y = 960-935;
+            CONNECT_W = 150;
+            CONNECT_H = 100;
         }
         
         backbutt = new Button(BACKBUTT_X, BACKBUTT_Y, BACKBUTT_W, BACKBUTT_H, Assets.NavigationBack);
         confirmnamechangebutt = new Button(CONFIRMNAMECHANGE_X, CONFIRMNAMECHANGE_Y, CONFIRMNAMECHANGE_W, CONFIRMNAMECHANGE_H, Assets.NavigationConfirm);
         cancelnamechangebutt = new Button(CANCELNAMECHANGE_X, CANCELNAMECHANGE_Y, CANCELNAMECHANGE_W, CANCELNAMECHANGE_H, Assets.NavigationCancel);
         changeusername = new Button(CHANGEUSERNAME_X, CHANGEUSERNAME_Y, CHANGEUSERNAME_W, CHANGEUSERNAME_H, Assets.NavigationFolder);
-        butts = new Button[] {backbutt, confirmnamechangebutt, cancelnamechangebutt, changeusername};
+        connectbutt = new Button(CONNECT_X, CONNECT_Y, CONNECT_W, CONNECT_H, Assets.NavigationFolder);
+        butts = new Button[] {backbutt, confirmnamechangebutt, cancelnamechangebutt, changeusername, connectbutt};
 
         changeusername.setButttext("Change\nName");
+        connectbutt.setButttext("Connect");
+        connectbutt.hide();
         confirmnamechangebutt.hide();
         cancelnamechangebutt.hide();
 
@@ -120,6 +148,13 @@ public class ShareScreen2 extends ScreenAdapter{
         pin = Options.getSavedPin();
         
         if (username.equals("")) needUsername = true;
+        else connectbutt.show();
+
+        DPU = new DPUploadCommunicator();
+
+        pinstate = PINSTATE.NEEDPIN1;
+        showpinpad = false;
+        pp2 = new PinPad2();
     }
 
     public void update()
@@ -135,6 +170,7 @@ public class ShareScreen2 extends ScreenAdapter{
         {
             //go leveledit
             game.setScreen(new LevelScreen2(game));
+            Assets.dispose_share(); //just the bigast
             this.dispose();
         }
         if (changeusername.isWasPressed()) {
@@ -142,6 +178,105 @@ public class ShareScreen2 extends ScreenAdapter{
             changeusername.pressHandled();
         }
         if (needUsername) changeUsername();
+        if (connectbutt.isJustPressed())
+        {
+            //make thread communicator
+            //new thread make connection
+            networkMaker = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Gdx.app.debug("dpUploaderMaker", "Starting");
+                    dpUploader = new DPUploader(DPU, username);
+                    Gdx.app.debug("dpUploaderMakerMaker", "Finished");
+                }
+            });
+            networkMaker.start();
+            //connectbutt.setAvailable(false);
+
+        }
+        if (connectbutt.isWasPressed())
+        {
+            //say connecting until connected
+            Message = "Connecting...";
+            if(networkMaker.getState()==Thread.State.TERMINATED){
+                Message = "Connected!";
+                connectbutt.hide();
+                changeusername.hide();
+                connectbutt.pressHandled();
+                dpUploader.start();
+            }
+        }
+        if (DPU.getState() == DPUploadCommunicator.State.NEEDNEWPIN)
+        {
+            //Gdx.app.debug("Share", "Need new Pin");
+            showpinpad = true;
+            pp2.pollPress(in.isTouched() ? touchpoint : new Vector2());
+            if (pinstate == PINSTATE.NEEDPIN1)
+            {
+                //Gdx.app.debug("Share", "NeedPin1");
+                Message = "Enter a PIN";
+                if (pp2.isPinReady()) {
+                    temppin1 = pp2.getPin();
+                    Gdx.app.debug("Share, Pin1Got", temppin1);
+                    pp2.resetPin();
+                    pinstate = PINSTATE.NEEDPIN2;
+                }
+            }
+            if (pinstate == PINSTATE.NEEDPIN2) {
+                //Gdx.app.debug("Share", "NeedPin2");
+                Message = "Please Confirm";
+                if (pp2.isPinReady()) {
+                    temppin2 = pp2.getPin();
+                    Gdx.app.debug("Share, Pin2Got", temppin2);
+                    pp2.resetPin();
+                    if (temppin2.equals(temppin1)) {
+                        DPU.sendPin(temppin2);
+                        Options.setSavedPin(temppin2);
+                        Gdx.app.debug("Share", "NewPinSent: " + temppin2);
+                        pinstate = PINSTATE.PINSENT;
+                    }
+                    else pinstate = PINSTATE.PINSNOTMATCH;
+                }
+            }
+            if (pinstate == PINSTATE.PINSNOTMATCH)
+            {
+
+                Message = "PINs did not match";
+                if (pp2.isPinReady()) {
+                    temppin1 = pp2.getPin();
+                    pp2.resetPin();
+                    pinstate = PINSTATE.NEEDPIN2;
+                }
+            }
+            if (pinstate == PINSTATE.PINSENT)
+            {
+                Gdx.app.debug("Share", "PinSent");
+                showpinpad = false;
+                Message = "herp";
+                //do nothing?
+            }
+
+        }
+        if (DPU.getState() == DPUploadCommunicator.State.NEEDCURRPIN)
+        {
+            //Gdx.app.debug("Share", "Need curr Pin");
+            Message = "Enter Pin";
+            showpinpad = true;
+            pp2.pollPress(in.isTouched() ? touchpoint : new Vector2());
+            if (pp2.isPinReady())
+            {
+                Options.setSavedPin(pp2.getPin());
+                DPU.sendPin(pp2.getPin());
+                Gdx.app.debug("Share", "CurrPinSent: " + pp2.getPin());
+                pp2.resetPin();
+                showpinpad = false;
+            }
+
+        }
+        if (DPU.getState() == DPUploadCommunicator.State.NEEDFILE)
+        {
+            Gdx.app.debug("Share", "Send in the clowns, files whatever");
+        }
     }
 
     public void changeUsername()
@@ -200,6 +335,7 @@ public class ShareScreen2 extends ScreenAdapter{
         for ( Button butt : butts) butt.renderSprites(game.batch);
         Assets.font.draw(game.batch, username, USERNAME_X, USERNAME_Y);
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
+        if (showpinpad) pp2.renderSprites(game.batch);
         game.batch.end();
     }
     

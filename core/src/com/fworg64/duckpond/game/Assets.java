@@ -51,8 +51,7 @@ public class Assets
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
 
-    public static Texture ShareChangeName;
-    public static Texture ShareChangePIN;
+    public static Texture ShareBigAst;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
@@ -335,14 +334,12 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        ShareChangeName = new Texture(Gdx.files.internal((res + "share\\changename.png")));
-        ShareChangePIN = new Texture(Gdx.files.internal((res + "share\\changepin.png")));
+        ShareBigAst = new Texture(Gdx.files.internal((res + "share\\bigast.png")));
     }
 
     public static void dispose_share()
     {
-        ShareChangeName.dispose();
-        ShareChangePIN.dispose();
+        ShareBigAst.dispose();
         Gdx.app.debug("Assets: ", "disposed");
     }
     
