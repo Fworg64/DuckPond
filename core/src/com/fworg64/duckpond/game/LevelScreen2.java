@@ -35,21 +35,22 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TOPBUTTONS_W = 255;
     public static final int TOPBUTTONS_H = 110;
     public static final int TOPBUTTONS_S = TOPBUTTONS_W + 100;
+
+    public static final int LOWER_AREA_HEIGHT = 258;
+    public static final int UPPER_AREA_HEIGHT = 358; //should add up to 308 + 308
+
     public static final int SHARE_X = 350;
-    public static final int SHARE_Y = 1920-308;
+    public static final int SHARE_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int SHARE_W = 231;
     public static final int SHARE_H = 96;
 
-    public static final int LOWER_AREA_HEIGHT = 308;
-    public static final int UPPER_AREA_HEIGHT = 308; //should add up to 308 + 308
-
     public static final int CHARACTER_BUTTON_X = 355;
-    public static final int CHARACTER_BUTTON_Y = 1920 -1737;
+    public static final int CHARACTER_BUTTON_Y = 1920 -1777;
     public static final int CHARACTER_BUTTON_S = 150;
     public static final int TRASH_X = 55;
-    public static final int TRASH_Y = 1920-1737;
+    public static final int TRASH_Y = 1920-1777;
     public static final int CONFIRM_X = 800;
-    public static final int CONFIRM_Y = 1920-1737;
+    public static final int CONFIRM_Y = 1920-1777;
 
     public static final int LOWER_AREA_BUTTON_W = 250;
     public static final int LOWER_AREA_BUTTON_H = 100;
@@ -57,12 +58,12 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TSLIDER_X = 100;
     public static final int TSLIDER_W = 650;
     public static final int TSLIDER_H = 20;
-    public static final int TSLIDER_Y = 90;
+    public static final int TSLIDER_Y = 50;
     public static final int TKNOB_W = 96;
     public static final int TKNOB_H = 96;
 
     public static final int DUCKLING_SELECT_X = 918;
-    public static final int DUCKLING_SELECT_Y = 1920-450;
+    public static final int DUCKLING_SELECT_Y = 1920-500;
     public static final int DUCKLING_SELECT_S = 110;
     public static final int DUCKLING_SELECT_W = 96;
     public static final int DUCKLING_SELECT_H = 96;
@@ -89,7 +90,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LEVEL_LIVES_BUTTON_XS = 380;
 
     public static final int MESSAGE_X = 20;
-    public static final int MESSAGE_Y = 1920 - 150;
+    public static final int MESSAGE_Y = 1920 - 175;
     public static final int MESSAGE2_X =350;
     public static final int MESSAGE3_X =700;
 
@@ -100,7 +101,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int T_TIME_DISPLAY_X = 100;
     public static final int T_TIME_DISPLAY_Y = 1920-UPPER_AREA_HEIGHT + 60;
     public static final int C_TIME_DISPLAY_X = 800;
-    public static final int C_TIME_DISPLAY_Y = 120;
+    public static final int C_TIME_DISPLAY_Y = 80;
 
     public static final int LOAD_CANCEL_X = 300;
     public static final int LOAD_CANCEL_Y = 1920 - 1500;
@@ -120,7 +121,7 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int LOAD_PAGE_LEFT_H = 163;
     public static final int LOAD_PAGE_LEFT_XS = 330;
 
-    public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1392);
+    public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1442);
     public static final float VELOCITY_INPUT_SCALE = .7f;
     public static final float SPRITE_ALPHA_BEFORE_SPAWN = .2f;
     public static final int MAX_DUCKLINGS = 10;
@@ -143,16 +144,24 @@ public class LevelScreen2 extends ScreenAdapter
     boolean savefile;
     boolean loadfile;
 
-    Rectangle exitbutt;
-    Rectangle loadbutt;
-    Rectangle savebutt;
     Rectangle savecancelbutt;
     Rectangle loadcancelbutt;
     Rectangle saveconfirmbutt;
     Rectangle loadpageleft;
     Rectangle loadpageright;
     int pagenumber;
-    Rectangle sharebutt;
+
+    Button exitbutt;
+    Button loadbutt;
+    Button savebutt;
+    Button sharebutt;
+    Button trashbutt;
+    Button TtimeUp;
+    Button TtimeDown;
+    Button LivesUp;
+    Button LivesDown;
+    Button Confirm;
+    Button butts[];
 
     Array<Spawnable> spawnables;
     Spawnable tempguy;
@@ -165,18 +174,13 @@ public class LevelScreen2 extends ScreenAdapter
     String Message;
     Rectangle Tknob;
     Rectangle Tslider;
-    Rectangle Confirm;
-    Rectangle trashbutt;
+
     Rectangle[] ducklingNumber;
     Rectangle[] loadlevelbuttons;
-    Rectangle TtimeUp;
-    Rectangle TtimeDown;
-    Rectangle LivesUp;
-    Rectangle LivesDown;
 
-    Rectangle ducks;
-    Rectangle sharks;
-    Rectangle lillies;
+    Button ducks;
+    Button sharks;
+    Button lillies;
 
     Rectangle playarea;
     Rectangle placementarea;
@@ -187,6 +191,15 @@ public class LevelScreen2 extends ScreenAdapter
     FileHandle currfile;
     String filename;
     List<FileHandle> customfiles;
+
+    int halfobj = (int) (.5f*DuckPondGame.objWandH);
+    Rectangle   goodleft   ;
+    Rectangle   goodright  ;
+    Rectangle   goodtop    ;
+    Rectangle   goodbottom ;
+    Rectangle[] goodouts   ;
+    Rectangle   goodin     ;
+
 
     private ShapeRenderer shapeRenderer;
 
@@ -219,27 +232,34 @@ public class LevelScreen2 extends ScreenAdapter
         lowerarea = new Rectangle(0, 0, DuckPondGame.highresScreenW, LOWER_AREA_HEIGHT);
         upperarea = new Rectangle(0, 1920 - UPPER_AREA_HEIGHT, DuckPondGame.highresScreenW, UPPER_AREA_HEIGHT);
         placementarea = new Rectangle(0, LOWER_AREA_HEIGHT, DuckPondGame.highresScreenW, DuckPondGame.highresScreenH-LOWER_AREA_HEIGHT-UPPER_AREA_HEIGHT);
-        ducks = new Rectangle(CHARACTER_BUTTON_X, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
-        sharks = new Rectangle(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
-        lillies = new Rectangle(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH);
+        ducks   = new Button(CHARACTER_BUTTON_X, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH, Assets.LevelEditDuck);
+        sharks  = new Button(CHARACTER_BUTTON_X + CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH, Assets.LevelEditShark);
+        lillies = new Button(CHARACTER_BUTTON_X + 2* CHARACTER_BUTTON_S, CHARACTER_BUTTON_Y, DuckPondGame.objWandH, DuckPondGame.objWandH, Assets.LevelEditLily);
 
-        exitbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
-        loadbutt = new Rectangle(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
-        savebutt = new Rectangle(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H);
+        goodleft   = new Rectangle(placementarea.getX() + halfobj, placementarea.getY() + halfobj,playarea.getX() - 2*halfobj, placementarea.getHeight() - 2*halfobj);
+        goodright  = new Rectangle(playarea.getX() + playarea.getWidth() + halfobj, placementarea.getY() + halfobj, goodleft.getWidth(), goodleft.getHeight());
+        goodbottom = new Rectangle(goodleft.getX(), placementarea.getY() + halfobj, placementarea.getWidth() - 2*halfobj, playarea.getY()-placementarea.getY() - 2*halfobj);
+        goodtop    = new Rectangle(goodleft.getX(), playarea.getY() + playarea.getHeight() + halfobj, goodbottom.getWidth(), goodbottom.getHeight());
+        goodouts   = new Rectangle[]{goodbottom, goodleft, goodright, goodtop};
+        goodin     = new Rectangle(playarea.getX() + halfobj, playarea.getY() + halfobj, playarea.getWidth() - 2*halfobj, playarea.getHeight() - 2*halfobj);
+
+        exitbutt  = new Button(TOPBUTTONS_X + TOPBUTTONS_S*2, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H, Assets.LevelEditExit);
+        loadbutt  = new Button(TOPBUTTONS_X + TOPBUTTONS_S, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H, Assets.LevelEditLOAD);
+        savebutt  = new Button(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H, Assets.LevelEditSave);
+        sharebutt = new Button(SHARE_X, SHARE_Y, SHARE_W, SHARE_H, Assets.LevelEditShare);
+        Confirm   = new Button(CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H, Assets.LevelEditConfirm);
         loadcancelbutt = new Rectangle(LOAD_CANCEL_X, LOAD_CANCEL_Y, LOAD_CANCEL_W, LOAD_CANCEL_H);
         savecancelbutt = new Rectangle(SAVE_CANCEL_X, SAVE_CANCEL_Y, SAVE_CANCEL_W, SAVE_CANCEL_H);
         saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
         loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
         pagenumber =0;
-        sharebutt = new Rectangle(SHARE_X, SHARE_Y, SHARE_W, SHARE_H);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
         Message = "heerp";
-        Tknob = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
+        Tknob   = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
-        Confirm = new Rectangle(CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
         ducklingNumber = new Rectangle[MAX_DUCKLINGS];
         for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H );}
         loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
@@ -249,11 +269,13 @@ public class LevelScreen2 extends ScreenAdapter
                 loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
             }
         }
-        trashbutt = new Rectangle(TRASH_X,TRASH_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H);
-        TtimeUp = new Rectangle(LEVEL_TIME_BUTTON_X + LEVEL_TIME_BUTTON_XS, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
-        TtimeDown = new Rectangle(LEVEL_TIME_BUTTON_X, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H);
-        LivesUp = new Rectangle(LEVEL_LIVES_BUTTON_X + LEVEL_LIVES_BUTTON_XS, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
-        LivesDown = new Rectangle(LEVEL_LIVES_BUTTON_X, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H);
+        trashbutt   = new Button(TRASH_X,TRASH_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H, Assets.LevelEditRemoveItem);
+        TtimeUp     = new Button(LEVEL_TIME_BUTTON_X + LEVEL_TIME_BUTTON_XS, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H, Assets.LevelEditFlechaDer);
+        TtimeDown   = new Button(LEVEL_TIME_BUTTON_X, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H, Assets.LevelEditFlechaIzq);
+        LivesUp     = new Button(LEVEL_LIVES_BUTTON_X + LEVEL_LIVES_BUTTON_XS, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H, Assets.LevelEditFlechaDer);
+        LivesDown   = new Button(LEVEL_LIVES_BUTTON_X, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H, Assets.LevelEditFlechaIzq);
+
+        butts = new Button[] {exitbutt, loadbutt, savebutt, sharebutt, trashbutt, TtimeDown, TtimeUp, LivesUp, LivesDown, ducks, sharks, lillies, Confirm};
 
         defaultstate = true;
         getD = false;
@@ -275,46 +297,104 @@ public class LevelScreen2 extends ScreenAdapter
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
     }
 
-    public int update()
+    public void update()
     {
+        touchpoint.set(in.getTouchpoint());
+        for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
+        if (exitbutt.isJustPressed())
+        {
+            Gdx.app.debug("screenstate", "exit");
+            Options.loadOptions();
+            in.hideKeyboard();
+            Assets.load_levelscreen();
+            Assets.load_navigation();
+            Assets.load_font();
+        }
+        if (exitbutt.isWasPressed()) {
+
+            game.setScreen(new LevelSelectionScreen(game));
+            Assets.dispose_leveledit();
+            this.dispose();
+            exitbutt.pressHandled();
+        }
+        if (in.isBackPressed())
+        {
+            Gdx.app.debug("screenstate", "exit");
+            Options.loadOptions();
+            in.hideKeyboard();
+            Assets.load_levelscreen();
+            Assets.load_navigation();
+            Assets.load_font();
+            game.setScreen(new LevelSelectionScreen(game));
+            Assets.dispose_leveledit();
+            this.dispose();
+            exitbutt.pressHandled();
+        }
+        if (savebutt.isWasPressed()) {
+            if (defaultstate == true) {
+                savefile = true;
+                defaultstate = false;
+                Gdx.app.debug("Save", "Going to save file");
+            }
+            savebutt.pressHandled();
+        }
+        if (loadbutt.isWasPressed()) {
+            if (defaultstate ==true) {
+                loadfile = true;
+                defaultstate = false;
+                Gdx.app.debug("Load", "Goind to load");
+            }
+            loadbutt.pressHandled();
+        }
+        if (sharebutt.isWasPressed()){
+            Gdx.app.debug("screenstate", "sharescreen");
+            Options.loadOptions();
+            Assets.load_share();
+            Assets.load_navigation();
+            Assets.load_font();
+            game.setScreen(new ShareScreen2(game));
+            Assets.dispose_leveledit();
+            this.dispose();
+            sharebutt.pressHandled();
+        }
+        if (trashbutt.isWasPressed()) {
+            if (defaultstate){
+                Gdx.app.debug("choicedestroy", "heatinup");
+                choiceDestroy = true;
+                defaultstate = false;
+            }
+            else DestroyCurrent();
+            trashbutt.pressHandled();
+        }
+        TtimeUp.setAvailable(time<120);
+        if (TtimeUp.isWasPressed()){
+            time+=10;
+            updateTempt2s();
+            TtimeUp.pressHandled();
+        }
+        TtimeDown.setAvailable(time>20);
+        if (TtimeDown.isWasPressed())
+        {
+            time-=10;
+            updateTempt2s();
+            TtimeDown.pressHandled();
+        }
+        LivesUp.setAvailable(lives<MAX_LIVES);
+        if (LivesUp.isWasPressed())
+        {
+            lives++;
+            LivesUp.pressHandled();
+        }
+        LivesDown.setAvailable(lives>1);
+        if (LivesDown.isWasPressed())
+        {
+            lives--;
+            LivesDown.pressHandled();
+        }
         if (in.justTouched())
         {
             touchpoint.set(in.getTouchpoint());
-            if (exitbutt.contains(touchpoint)) return 1;
-            if (sharebutt.contains(touchpoint)) return 2;
-            if (savebutt.contains(touchpoint))
-            {
-                if (defaultstate == true)
-                {
-                    savefile = true;
-                    defaultstate = false;
-                    Gdx.app.debug("Save", "Going to save file");
-                }
 
-            }
-            if (loadbutt.contains(touchpoint))
-            {
-            	if (defaultstate ==true)
-            	{
-            		loadfile = true;
-	                defaultstate = false;
-	                Gdx.app.debug("Load", "Goind to load");
-            	}
-                
-            }
-            if (trashbutt.contains(touchpoint))
-            {
-                if (defaultstate){
-                    Gdx.app.debug("choicedestroy", "heatinup");
-                    choiceDestroy = true;
-                    defaultstate = false;
-                }
-                else DestroyCurrent();
-            }
-            if (TtimeUp.contains(touchpoint) && time < 120) {time+=30; updateTempt2s();}
-            if (TtimeDown.contains(touchpoint) && time>30) {time-=30; updateTempt2s();}
-            if (LivesUp.contains(touchpoint) && lives <MAX_LIVES) lives++;
-            if (LivesDown.contains(touchpoint) && lives >1) lives--;
             if (Tknob.contains(touchpoint) && defaultstate)
             {
                 globalTAdjust = true;
@@ -322,7 +402,7 @@ public class LevelScreen2 extends ScreenAdapter
             }
             Gdx.app.debug("Tocuh", touchpoint.toString());
         }
-        if (in.isBackPressed()) return 1;
+        Confirm.setAvailable(ready2confirm);
         if (choiceDestroy)
         {Choose2Destroy();}
         if (defaultstate)
@@ -341,45 +421,19 @@ public class LevelScreen2 extends ScreenAdapter
         {savefile();}
         if (loadfile)
         {LoadFile();}
-
-        return 0;
     }
 
     @Override
     public void render(float delta) //this function gets called about 30 times a second automatically, delta is the time elapsed between calls
     {
-        switch (update())
-        {
-            case 0:
-                break;
-            case 1:
-                Gdx.app.debug("screenstate", "exit");
-                Options.loadOptions();
-                in.hideKeyboard();
-                Assets.load_levelscreen();
-                Assets.load_navigation();
-                Assets.load_font();
-                game.setScreen(new LevelSelectionScreen(game));
-                Assets.dispose_leveledit();
-                this.dispose();
-                break;
-            case 2:
-                Gdx.app.debug("screenstate", "sharescreen");
-                Options.loadOptions();
-                Assets.load_share();
-                Assets.load_navigation();
-                Assets.load_font();
-                game.setScreen(new ShareScreen2(game));
-                Assets.dispose_leveledit();
-                this.dispose();
-        }
+        update();
         draw();
     }
 
     public void savefile()
     {
         //get a name
-        
+        Gdx.app.debug("Savefile", "derrrpppp");
         char tempChar;
         if (Gdx.app.getType() != Application.ApplicationType.WebGL)
         {
@@ -405,10 +459,12 @@ public class LevelScreen2 extends ScreenAdapter
                         currfile.writeString(s.toString() + '\n', true);
                     }
                 }
+                else Gdx.app.debug("Savefile", "Skipped due to empty name");
 
                 savefile = false;
                 defaultstate = true;
                 in.hideKeyboard();
+
             }
 
             if (in.justTouched() && savecancelbutt.contains(touchpoint))
@@ -507,6 +563,12 @@ public class LevelScreen2 extends ScreenAdapter
         getPos = false;
         getD = false;
         defaultstate = true;
+        ducks.setAvailable(true);
+        sharks.setAvailable(true);
+        lillies.setAvailable(true);
+        loadbutt.setAvailable(true);
+        savebutt.setAvailable(true);
+        sharebutt.setAvailable(true);
         //Gdx.app.debug("OH", "2");
     }
 
@@ -531,29 +593,60 @@ public class LevelScreen2 extends ScreenAdapter
 
             }
         }
-        if (in.justTouched() && !trashbutt.contains(touchpoint)) {
+        if (in.justTouched()) {
             choiceDestroy = false;
             defaultstate = true;
+            ducks.setAvailable(true);
+            sharks.setAvailable(true);
+            lillies.setAvailable(true);
+            loadbutt.setAvailable(true);
+            savebutt.setAvailable(true);
+            sharebutt.setAvailable(true);
         }
     }
 
     public void ChooseActor()
     {
         Message = "Choose an object to place";
-        if (in.justTouched() && ducks.contains(touchpoint)) {
+        if (ducks.isWasPressed()) {
             tempguy.setObjtype("Duck");
+            tempguy.setPos(new Vector2(placementarea.getX() + .5f*DuckPondGame.objWandH, placementarea.getY() + .5f*DuckPondGame.objWandH).sub(EDITOR_OFFSET));
             getPos = true;
             defaultstate = false;
+            ducks.pressHandled();
+            ducks.setAvailable(false);
+            sharks.setAvailable(false);
+            lillies.setAvailable(false);
+            savebutt.setAvailable(false);
+            loadbutt.setAvailable(false);
+            sharebutt.setAvailable(false);
         }
-        else if (in.justTouched() && sharks.contains(touchpoint)) {
+        else if (sharks.isWasPressed()) {
             tempguy.setObjtype("Shark");
+            tempguy.setPos(new Vector2(placementarea.getX() + .5f*DuckPondGame.objWandH, placementarea.getY() + .5f*DuckPondGame.objWandH).sub(EDITOR_OFFSET));
             getPos = true;
             defaultstate = false;
+            sharks.pressHandled();
+            ducks.setAvailable(false);
+            sharks.setAvailable(false);
+            lillies.setAvailable(false);
+            savebutt.setAvailable(false);
+            loadbutt.setAvailable(false);
+            sharebutt.setAvailable(false);
         }
-        else if (in.justTouched() && lillies.contains(touchpoint)) {
+        else if (lillies.isWasPressed()) {
             tempguy.setObjtype("Lily");
+            tempguy.setPos(new Vector2(playarea.getX() + .5f*DuckPondGame.objWandH, playarea.getY() + .5f*DuckPondGame.objWandH).sub(EDITOR_OFFSET));
+
             getPos = true;
             defaultstate = false;
+            lillies.pressHandled();
+            ducks.setAvailable(false);
+            sharks.setAvailable(false);
+            lillies.setAvailable(false);
+            savebutt.setAvailable(false);
+            loadbutt.setAvailable(false);
+            sharebutt.setAvailable(false);
         }
     }
 
@@ -561,41 +654,74 @@ public class LevelScreen2 extends ScreenAdapter
     {
         Message = "Drag to position";
         touchpoint.set(in.getTouchpoint());
-        if (in.isTouched() && !tempguy.getObjtype().equals("Invalid")&& placementarea.contains(touchpoint)) {
-            float tempx;
-            if (touchpoint.x -DuckPondGame.objWandH *.5f <= 0) {tempx = DuckPondGame.objWandH *.5f;}
-            else if (touchpoint.x +DuckPondGame.objWandH *.5f >= placementarea.getWidth()) {tempx = placementarea.getWidth() - DuckPondGame.objWandH *.5f;}
-            else tempx = touchpoint.x;
-            float tempy;
-            if (touchpoint.y -DuckPondGame.objWandH *.5f <= placementarea.getY()) tempy = DuckPondGame.objWandH *.5f + placementarea.getY();
-            else if (touchpoint.y +DuckPondGame.objWandH *.5f >= placementarea.getHeight() + placementarea.getY()) tempy = placementarea.getHeight()+placementarea.getY() - DuckPondGame.objWandH *.5f;
-            else tempy = touchpoint.y;
+        if (tempguy.getObjtype().equals("Invalid")) Gdx.app.debug("ChoosePos", "Given Invalid temp");
 
-            tempguy.setPos(new Vector2(tempx - .5f * DuckPondGame.objWandH, tempy - .5f * DuckPondGame.objWandH).sub(EDITOR_OFFSET));
+        if (in.isTouched() && placementarea.contains(touchpoint)) {
+            ready2confirm = false;
+            trashbutt.setAvailable(false);
+            if (tempguy.getObjtype().equals("Shark") || tempguy.getObjtype().equals("Duck"))
+            {
+                //keep stuff out of play area
+                for (Rectangle rect:goodouts)
+                {
+                    if (rect.contains(touchpoint)) {
+                        tempguy.setPos(new Vector2(touchpoint.x - halfobj, touchpoint.y - halfobj).sub(EDITOR_OFFSET));
+                        break;
+                    }
+                    else
+                    {
+                        Vector2 temmmp =new Vector2(tempguy.getPos().add(EDITOR_OFFSET.x + halfobj, EDITOR_OFFSET.y + halfobj));
+                        if (goodbottom.contains(temmmp) || goodtop.contains(temmmp))
+                        {
+                            tempguy.setPos(new Vector2(touchpoint.x - EDITOR_OFFSET.x - halfobj, temmmp.y - EDITOR_OFFSET.y - halfobj));
+
+                        }
+                        else if (goodleft.contains(temmmp) || goodright.contains(temmmp))
+                        {
+                            tempguy.setPos(new Vector2(temmmp.x - EDITOR_OFFSET.x - halfobj, touchpoint.y - EDITOR_OFFSET.y - halfobj));
+
+                        }
+                    }
+                }
+            }
+            else //lily
+            {
+                //keep stuff in play area
+                if (goodin.contains(touchpoint)) {
+                    tempguy.setPos(new Vector2(touchpoint.x - halfobj, touchpoint.y - halfobj).sub(EDITOR_OFFSET));
+                    ready2confirm = true;
+                }
+                else
+                {
+                    if (touchpoint.x < goodin.getX()) tempguy.setPos(new Vector2(goodin.getX() - halfobj, touchpoint.y - halfobj).sub(EDITOR_OFFSET));
+                    else if (touchpoint.x > goodin.getX() +goodin.getWidth()) tempguy.setPos(new Vector2(goodin.getX() + goodin.getWidth() - halfobj, touchpoint.y - halfobj).sub(EDITOR_OFFSET));
+                    if (touchpoint.y < goodin.getY()) tempguy.setPos(new Vector2(touchpoint.x - halfobj, goodin.getY() - halfobj).sub(EDITOR_OFFSET));
+                    else if (touchpoint.y > goodin.getY() + goodin.getHeight()) tempguy.setPos(new Vector2(touchpoint.x - halfobj, goodin.getY() + goodin.getHeight() - halfobj).sub(EDITOR_OFFSET));
+                    if (touchpoint.x < goodin.getX())
+                    {
+                        if (touchpoint.y < goodin.getY()) tempguy.setPos(new Vector2(goodin.getX() - halfobj, goodin.getY() - halfobj).sub(EDITOR_OFFSET));
+                        if (touchpoint.y > goodin.getY() + goodin.getHeight()) tempguy.setPos(new Vector2(goodin.getX() - halfobj, goodin.getY() + goodin.getHeight() - halfobj).sub(EDITOR_OFFSET));
+                    }
+                    else if (touchpoint.x > goodin.getX() + goodin.getWidth())
+                    {
+                        if (touchpoint.y < goodin.getY()) tempguy.setPos(new Vector2(goodin.getX() + goodin.getWidth() - halfobj, goodin.getY()-halfobj).sub(EDITOR_OFFSET));
+                        if (touchpoint.y > goodin.getY() + goodin.getHeight()) tempguy.setPos(new Vector2(goodin.getX() + goodin.getWidth() - halfobj, goodin.getY() + goodin.getHeight()- halfobj).sub(EDITOR_OFFSET));
+                    }
+                }
+            }
             Message = tempguy.getPos().toString();
         }
-        if (!in.isTouched() && !tempguy.getObjtype().equals("Invalid")) {
-            Rectangle tempprint = new Rectangle(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y +EDITOR_OFFSET.y, DuckPondGame.objWandH, DuckPondGame.objWandH);
-
-            if ((tempguy.getObjtype().equals("Duck") || tempguy.getObjtype().equals("Shark")) && tempprint.overlaps(playarea))
-            {
-                Message = "Sharks and ducks must start outside viewing area";
-            }
-            else if ((tempguy.getObjtype().equals("Lily")) && !playarea.contains(tempprint))
-            {
-                Message = "Lilies must be placed in play area";
-            }
-            else {
-                ready2confirm = true;
-                Message = "Position: Press Confirm";
-            }
+        else {
+            ready2confirm = true;
+            trashbutt.setAvailable(true);
         }
-        if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
+        if (ready2confirm && Confirm.isWasPressed())
         {
             getVel = true;
             if (tempguy.getObjtype().equals("Lily")) {getVel = false; getT = true;}
             getPos = false;
             ready2confirm = false;
+            Confirm.pressHandled();
         }
     }
 
@@ -613,11 +739,12 @@ public class LevelScreen2 extends ScreenAdapter
             ready2confirm = true;
             Message = "Velocity: Press Confirm";
         }
-        if (ready2confirm && Confirm.contains(touchpoint) && in.justTouched())
+        if (ready2confirm && Confirm.isWasPressed())
         {
             getVel = false;
             getT = true;
             ready2confirm = false;
+            Confirm.pressHandled();
         }
     }
 
@@ -638,7 +765,7 @@ public class LevelScreen2 extends ScreenAdapter
             ready2confirm = true;
             Message = "Spawntime: Press Confirm";
         }
-        if (ready2confirm && in.justTouched() && Confirm.contains(touchpoint))
+        if (ready2confirm &&Confirm.isWasPressed())
         {
             if (tempguy.getObjtype().equals("Duck")) {getD = true; Gdx.app.debug("We", "a duck");}
             tempguy.setTime2spawn(tempt2s);
@@ -647,10 +774,18 @@ public class LevelScreen2 extends ScreenAdapter
                 //Message = tempguy.toString();
                 tempguy = new Spawnable();
                 temppos.setZero();
+                ducks.setAvailable(true);
+                sharks.setAvailable(true);
+                lillies.setAvailable(true);
+                loadbutt.setAvailable(true);
+                savebutt.setAvailable(true);
+                sharebutt.setAvailable(true);
             }
             getT = false;
             ready2confirm = false;
             defaultstate = true;
+
+            Confirm.pressHandled();
         }
     }
 
@@ -697,7 +832,7 @@ public class LevelScreen2 extends ScreenAdapter
                 ready2confirm = true;
             }
         }
-        if (ready2confirm && in.justTouched() && Confirm.contains(touchpoint))
+        if (ready2confirm && Confirm.isWasPressed())
         {
             tempguy.setNumducks(tempducks);
             spawnables.add(tempguy);
@@ -707,6 +842,13 @@ public class LevelScreen2 extends ScreenAdapter
             getD = false;
             defaultstate = true;
             tempducks =0;
+            Confirm.pressHandled();
+            ducks.setAvailable(true);
+            sharks.setAvailable(true);
+            lillies.setAvailable(true);
+            loadbutt.setAvailable(true);
+            savebutt.setAvailable(true);
+            sharebutt.setAvailable(true);
         }
     }
 
@@ -876,24 +1018,12 @@ public class LevelScreen2 extends ScreenAdapter
             }
         }
 
-        game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY());
-        game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY());
-        game.batch.draw(Assets.LevelEditConfirm, Confirm.getX(), Confirm.getY());
-        game.batch.draw(Assets.LevelEditSave, savebutt.getX(), savebutt.getY());
-        game.batch.draw(Assets.LevelEditLOAD, loadbutt.getX(), loadbutt.getY());
-        game.batch.draw(Assets.LevelEditExit, exitbutt.getX(), exitbutt.getY());
-        game.batch.draw(Assets.LevelEditShare, sharebutt.getX(), sharebutt.getY());
-        game.batch.draw(Assets.LevelEditDuck, ducks.getX(), ducks.getY());
-        game.batch.draw(Assets.LevelEditShark, sharks.getX(), sharks.getY());
-        game.batch.draw(Assets.LevelEditLily, lillies.getX(), lillies.getY());
-        game.batch.draw(Assets.LevelEditFlechaIzq, TtimeDown.getX(), TtimeDown.getY());
-        game.batch.draw(Assets.LevelEditFlechaDer, TtimeUp.getX(), TtimeUp.getY());
-        game.batch.draw(Assets.LevelEditFlechaIzq, LivesDown.getX(), LivesDown.getY());
-        game.batch.draw(Assets.LevelEditFlechaDer, LivesUp.getX(), LivesUp.getY());
+        game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY(), lowerarea.getWidth(), lowerarea.getHeight());
+        game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY(), upperarea.getWidth(), upperarea.getHeight());
+        for (Button butt: butts) butt.renderSprites(game.batch);
 
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
-        game.batch.draw(Assets.LevelEditRemoveItem, trashbutt.getX(), trashbutt.getY());
 
         if (savefile) game.batch.draw(Assets.NavigationCancel, savecancelbutt.getX(), savecancelbutt.getY());
         if (loadfile) game.batch.draw(Assets.NavigationCancel, loadcancelbutt.getX(), loadcancelbutt.getY());
@@ -934,23 +1064,17 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(.5f, .2f, .2f, .5f);
         //draw detection bounds here for debugging
-        shapeRenderer.rect(exitbutt.getX(), exitbutt.getY(), exitbutt.getWidth(), exitbutt.getHeight());
-        shapeRenderer.rect(loadbutt.getX(), loadbutt.getY(), loadbutt.getWidth(), loadbutt.getHeight());
-        shapeRenderer.rect(savebutt.getX(), savebutt.getY(), savebutt.getWidth(), savebutt.getHeight());
-        shapeRenderer.rect(ducks.getX(), ducks.getY(), ducks.getWidth(), ducks.getHeight());
-        shapeRenderer.rect(sharks.getX(), sharks.getY(), sharks.getWidth(), sharks.getHeight());
-        shapeRenderer.rect(lillies.getX(), lillies.getY(), lillies.getWidth(), lillies.getHeight());
+        for(Button butt: butts) butt.renderShapes(shapeRenderer);
         shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
         shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        shapeRenderer.rect(Confirm.getX(), Confirm.getY(), Confirm.getWidth(), Confirm.getHeight());
         if (getD) for (Rectangle r: ducklingNumber) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
         if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        shapeRenderer.rect(trashbutt.getX(), trashbutt.getY(), trashbutt.getWidth(), trashbutt.getHeight());
-        shapeRenderer.rect(TtimeUp.getX(), TtimeUp.getY(), TtimeUp.getWidth(), TtimeUp.getHeight());
-        shapeRenderer.rect(TtimeDown.getX(), TtimeDown.getY(), TtimeDown.getWidth(), TtimeDown.getHeight());
-        shapeRenderer.rect(LivesUp.getX(), LivesUp.getY(), LivesUp.getWidth(), LivesUp.getHeight());
-        shapeRenderer.rect(LivesDown.getX(), LivesDown.getY(), LivesDown.getWidth(), LivesDown.getHeight());
-        shapeRenderer.rect(sharebutt.getX(), sharebutt.getY(), sharebutt.getWidth(), sharebutt.getHeight());
+
+        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());
+
+        //shapeRenderer.rect(placementarea.getX(), placementarea.getY(), placementarea.getWidth(), placementarea.getHeight());
+        //shapeRenderer.rect(playarea.getX(), playarea.getY(), playarea.getWidth(), playarea.getHeight());
 
         shapeRenderer.end();
 

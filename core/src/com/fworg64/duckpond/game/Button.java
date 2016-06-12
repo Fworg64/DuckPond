@@ -96,6 +96,7 @@ public class Button {
                 }
                 else if (pressed && !wasPressed && !vector2.isZero()) //finger slid off
                 {
+                    Gdx.app.debug("Button cancelled", Integer.toString(this.hashCode()));
                     pressed = false;
                     justpressed = false;//safe gaurd
                     wasPressed = false;//shouldnt have been true
