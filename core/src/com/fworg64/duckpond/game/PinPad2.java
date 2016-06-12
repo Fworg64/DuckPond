@@ -41,12 +41,12 @@ public class PinPad2 {
         {
             PINBUTT_W = 150;
             PINBUTT_H = 100;
-            PINBUTT_X = 20;
-            PINBUTT_Y = 400;
+            PINBUTT_X = 70;
+            PINBUTT_Y = 420;
             PINBUTT_XS = 175;
-            PINBUTT_YS = 65;
+            PINBUTT_YS = 110;
             BIGAST_X = 30;
-            BIGAST_Y = 550;
+            BIGAST_Y = 560;
             BIGAST_XS = 150;
         }
 

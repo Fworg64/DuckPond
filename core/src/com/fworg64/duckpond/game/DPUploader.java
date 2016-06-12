@@ -75,12 +75,24 @@ public class DPUploader extends Thread{
                         DPU.setState(DPUploadCommunicator.State.NEEDFILE);
                     }
                     else {
-                        DPU.setState(DPUploadCommunicator.State.NEEDCURRPIN);
-                        needPin = true;
+                        Gdx.app.debug("DPUploader", "Pin Sent, but rejected");
                         DPU.sendPin("");
+                        DPU.setState(DPUploadCommunicator.State.WRONGPIN);
+                        needPin = true;
                     }
                 }
             }
+            else
+            {
+                if (!DPU.getFilename().equals("")) //send the file
+                {
+                    sendString(DPU.getFilename());
+                    sendString(DPU.getFilecontents());
+                    sendString("\4");
+                    DPU.resetFile();
+                }
+            }
+            if (DPU.getState() == DPUploadCommunicator.State.CLOSE) return;
         }
     }
 

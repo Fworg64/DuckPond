@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
  * Created by fworg on 6/11/2016.
  */
 public class DPUploadCommunicator {
-    public enum State {NEEDNEWPIN, NEEDCURRPIN, NEEDFILE, BUSY, ERROR, CLOSE};
+    public enum State {NEEDNEWPIN, NEEDCURRPIN, NEEDFILE, BUSY, ERROR, CLOSE, WRONGPIN};
 
     private State state;
 
@@ -52,6 +52,12 @@ public class DPUploadCommunicator {
 
     public synchronized String getFilecontents() {
         return filecontents;
+    }
+
+    public synchronized void resetFile()
+    {
+        filename = "";
+        filecontents = "";
     }
 
 }

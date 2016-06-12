@@ -48,6 +48,11 @@ public class ShareScreen2 extends ScreenAdapter{
     String temppin1;
     String temppin2;
 
+    Browser browser;
+    BrowsableFolder folder;
+    BrowserCommunicator BC;
+    boolean showBrowser;
+
     boolean needUsername;
     boolean showpinpad;
 
@@ -155,6 +160,12 @@ public class ShareScreen2 extends ScreenAdapter{
         pinstate = PINSTATE.NEEDPIN1;
         showpinpad = false;
         pp2 = new PinPad2();
+
+        folder = new BrowsableFolder(DuckPondGame.customfolder, false);
+        BC = new BrowserCommunicator();
+        browser = new Browser(folder, BC);
+        showBrowser = false;
+        browser.start();
     }
 
     public void update()
@@ -164,6 +175,7 @@ public class ShareScreen2 extends ScreenAdapter{
         if (backbutt.isJustPressed())
         {
             //loadleveledit
+            DPU.setState(DPUploadCommunicator.State.CLOSE);
             Assets.load_leveledit();
         }
         if (backbutt.isWasPressed())
@@ -232,6 +244,7 @@ public class ShareScreen2 extends ScreenAdapter{
                     if (temppin2.equals(temppin1)) {
                         DPU.sendPin(temppin2);
                         Options.setSavedPin(temppin2);
+                        Options.save();
                         Gdx.app.debug("Share", "NewPinSent: " + temppin2);
                         pinstate = PINSTATE.PINSENT;
                     }
@@ -260,22 +273,56 @@ public class ShareScreen2 extends ScreenAdapter{
         if (DPU.getState() == DPUploadCommunicator.State.NEEDCURRPIN)
         {
             //Gdx.app.debug("Share", "Need curr Pin");
-            Message = "Enter Pin";
+            if (pin.equals(""))
+            {
+                Message = "Enter Pin";
+                showpinpad = true;
+                pp2.pollPress(in.isTouched() ? touchpoint : new Vector2());
+                if (pp2.isPinReady())
+                {
+                    Options.setSavedPin(pp2.getPin());
+                    Options.save();
+                    DPU.sendPin(pp2.getPin());
+                    Gdx.app.debug("Share", "CurrPinSent: " + pp2.getPin());
+                    pp2.resetPin();
+                    showpinpad = false;
+                }
+            }
+            else{
+                DPU.sendPin(pin);
+            }
+        }
+        if (DPU.getState() == DPUploadCommunicator.State.WRONGPIN)
+        {
+            //Gdx.app.debug("Share", "HELLLOOOOOOO!!!");
+            Message = "Enter PIN.";
             showpinpad = true;
             pp2.pollPress(in.isTouched() ? touchpoint : new Vector2());
             if (pp2.isPinReady())
             {
                 Options.setSavedPin(pp2.getPin());
+                Options.save();
                 DPU.sendPin(pp2.getPin());
-                Gdx.app.debug("Share", "CurrPinSent: " + pp2.getPin());
+                Gdx.app.debug("Share", "PinRESent: " + pp2.getPin());
                 pp2.resetPin();
                 showpinpad = false;
             }
-
         }
         if (DPU.getState() == DPUploadCommunicator.State.NEEDFILE)
         {
-            Gdx.app.debug("Share", "Send in the clowns, files whatever");
+            //Gdx.app.debug("Share", "Send in the clowns, files whatever");
+            showBrowser = true;
+            BC.setTouchpoint(in.isTouched() ? touchpoint : new Vector2());
+            if (BC.isSelectionMade())
+            {
+                DPU.setFile(BC.getSelectionName(), BC.getSelectionContents());
+                BC.setResetSelection(true);
+                Message = BC.getSelectionName() + " Sent!";
+            }
+        }
+        if (DPU.getState() == DPUploadCommunicator.State.ERROR)
+        {
+            Message = "Network Error";
         }
     }
 
@@ -324,11 +371,14 @@ public class ShareScreen2 extends ScreenAdapter{
     
     public void draw()
     {
-        GL20 gl = Gdx.gl;
-        gl.glClearColor(.27451f, .70588f, .83922f, 1);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
-        gcam.update();
-        game.batch.setProjectionMatrix(gcam.combined);
+        if (!showBrowser)
+        {
+            GL20 gl = Gdx.gl;
+            gl.glClearColor(.27451f, .70588f, .83922f, 1);
+            gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
+            gcam.update();
+            game.batch.setProjectionMatrix(gcam.combined);
+        }
 
         game.batch.enableBlending();
         game.batch.begin();
@@ -337,6 +387,7 @@ public class ShareScreen2 extends ScreenAdapter{
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
         if (showpinpad) pp2.renderSprites(game.batch);
         game.batch.end();
+        if (showBrowser) browser.renderSprites(game.batch, gcam);
     }
     
     @Override
