@@ -36,7 +36,7 @@ public class Options
         if (!prefs.contains("isDefault")) //options not present
         {
             prefs.putBoolean("isDefault", true);
-            prefs.putBoolean("highres", false);
+            prefs.putBoolean("highres", true);
             prefs.putFloat("sfxVol", 1f);
             prefs.putFloat("musicVol", 1f);
             prefs.putString("custom1", "60 2\n" +

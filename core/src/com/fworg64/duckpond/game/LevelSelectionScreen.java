@@ -16,6 +16,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class LevelSelectionScreen extends ScreenAdapter
 {
+    public static final String tutorialtext = "Welcome to DuckPond!\n\n"
+                                             +"Swipe Ducks toward Lilies\n"
+                                             +"Avoid Sharks and Ducks\n"
+                                             +"Be Quick and Careful\n\n"
+                                             +"Good Luck and Have Fun.\n"
+            ;
+
     //button dims defs
     int WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H;
     int BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H;
@@ -43,10 +50,12 @@ public class LevelSelectionScreen extends ScreenAdapter
     volatile BrowsableDPGetmore downloadBrowsable;
     Thread networkBrosableMaker;
 
-    public enum HandleSelection {PLAY,DOWNLOAD, UPLOAD };
+    public enum HandleSelection {PLAY,DOWNLOAD, UPLOAD }
     HandleSelection handleSelection;
 
     String message;
+
+    FileHandle file;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -98,7 +107,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             TEXTBUTT_W = 150;
             TEXTBUTT_H = 125;
 
-            WORLDMAKER_X = 420;
+            WORLDMAKER_X = 400;
             WORLDMAKER_Y = 960 - 935;
             WORLDMAKER_W = 226;
             WORLDMAKER_H = 129;
@@ -127,7 +136,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         mainMenubutt =      new Button(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H, Assets.LevelSelectionMainMenu);
         leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
         getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
-        backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.LevelSelectionFolder);
+        backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.NavigationFolder);
         backtodlbutt.setButttext("Back\nto DL'd");
 
         butts = new Button[] {mainMenubutt, leveleditbutt, getmorebutt, backtodlbutt};
@@ -135,7 +144,7 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         //fileBrowser = new FileBrowser();
         browserCommunicator = new BrowserCommunicator();
-        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
         browser.start();
         downloadBrowsable = null;
         networkBrosableMaker = null;
@@ -162,14 +171,18 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (handleSelection == HandleSelection.PLAY)
             {
-                    Assets.load_gamescreen();
-                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName()));
-                    Assets.dispose_navigation();
-                    Assets.dispose_levelscreen();
+                Assets.load_gamescreen();
+                if (browserCommunicator.getSelectionName().equals("level1-1"))
+                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), tutorialtext));
+                else
+                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), ""));
+                browserCommunicator.setClose(true);
+                Assets.dispose_navigation();
+                Assets.dispose_levelscreen();
             }
             else if (handleSelection == HandleSelection.DOWNLOAD)
             {
-                FileHandle file = Gdx.files.local(browserCommunicator.getSelectionName());
+                file = Gdx.files.local(browserCommunicator.getSelectionName());
                 file.parent().mkdirs();
                 file.writeString(browserCommunicator.getSelectionContents(), false);
                 message = browserCommunicator.getSelectionName().substring(2).replaceFirst("/", "\n").replaceAll("/", ": ");
@@ -193,22 +206,22 @@ public class LevelSelectionScreen extends ScreenAdapter
             switch (textCycleButton.getState())
             {
                 case 0:
-                    message = "";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+                    if (!message.equals("")) message = "";
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
                     getmorebutt.hide();
                     leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 1:
-                    message = "\nMake and share";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator);
+                    if (!message.equals("\nMake and share")) message = "\nMake and share";
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator, false);
                     leveleditbutt.show();
                     getmorebutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 2:
-                    message = "\nGet more with";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
+                    if (!message.equals("\nGet more with")) message = "\nGet more with";
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
                     getmorebutt.show();
                     leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
@@ -223,6 +236,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if (mainMenubutt.isWasPressed())
         {
+            browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_levelscreen();
             this.dispose();
@@ -230,6 +244,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         if (in.isBackPressed())
         {
             Assets.load_mainmenu();
+            browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_levelscreen();
             this.dispose();
@@ -249,15 +264,15 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if ((getmorebutt.isWasPressed()))
         {
-            message = "GET MORE\nConnecting...";
+            if(!message.equals("GET MORE\nConnecting...")) message = "GET MORE\nConnecting...";
             if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
                 browserCommunicator.setClose(true);
                 browserCommunicator = new BrowserCommunicator();
-                browser = new Browser(downloadBrowsable, browserCommunicator);
+                browser = new Browser(downloadBrowsable, browserCommunicator, false);
                 browser.start();
                 handleSelection = HandleSelection.DOWNLOAD;
                 getmorebutt.pressHandled();
-                message = "GET MORE\nConnected!";
+                if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
                 getmorebutt.hide();
                 backtodlbutt.show();
             }
@@ -267,11 +282,11 @@ public class LevelSelectionScreen extends ScreenAdapter
             textCycleButton.setStateDirect(2);
             browserCommunicator.setClose(true);
             browserCommunicator = new BrowserCommunicator();
-            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
+            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
             browser.start();
             handleSelection = HandleSelection.PLAY;
             backtodlbutt.pressHandled();
-            message = "\nGet more with";
+            if (!message.equals("\nGet more with")) message = "\nGet more with";
             backtodlbutt.hide();
             getmorebutt.show();
 
@@ -281,6 +296,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if (leveleditbutt.isWasPressed())
         {
+            browserCommunicator.setClose(true);
             game.setScreen(new LevelScreen2(game));
             Assets.dispose_levelscreen();
             this.dispose();
@@ -289,19 +305,20 @@ public class LevelSelectionScreen extends ScreenAdapter
 
     public void draw()
     {
-//        GL20 gl = Gdx.gl;
-//        gl.glClearColor(.27451f, .70588f, .83922f, 1);
-//        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
-//        gcam.update();
-//        game.batch.setProjectionMatrix(gcam.combined);
+        GL20 gl = Gdx.gl;
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
+        gcam.update();
+        game.batch.setProjectionMatrix(gcam.combined);
 
         game.batch.enableBlending();
         game.batch.begin();
         for (Button butt : butts) butt.renderSprites(game.batch);
         textCycleButton.renderSprites(game.batch);
         Assets.font.draw(game.batch, message, MESSAGE_X, MESSAGE_Y);
+        browser.renderSprites(game.batch);
         game.batch.end();
-        browser.renderSprites(game.batch, gcam);
+
     }
 
     @Override

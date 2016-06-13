@@ -273,8 +273,8 @@ public class ShareScreen extends ScreenAdapter
         game.batch.begin();
         //need assetes
         game.batch.draw(Assets.NavigationBack, backbutt.getX(), backbutt.getY());
-        game.batch.draw(Assets.ShareChangeName, namechangebutt.getX(), namechangebutt.getY());
-        game.batch.draw(Assets.ShareChangePIN, pinchangebutt.getX(), pinchangebutt.getY());
+        //game.batch.draw(Assets.ShareChangeName, namechangebutt.getX(), namechangebutt.getY());
+        //game.batch.draw(Assets.ShareChangePIN, pinchangebutt.getX(), pinchangebutt.getY());
         if (changename)
         {
             game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());

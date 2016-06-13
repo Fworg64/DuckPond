@@ -35,6 +35,8 @@ public class GameScreen extends ScreenAdapter
     public static int GOLTITLE_Y;
     public static int GOVTITLE_X;
     public static int GOVTITLE_Y;
+    public static int STARTTEXT_X;
+    public static int STARTTEXT_Y;
 
     DuckPondGame game;
     OrthographicCamera gcam;
@@ -90,8 +92,9 @@ public class GameScreen extends ScreenAdapter
     private boolean saydegeat;
 
     private String levelname;
+    private String starttext;
 
-    GameScreen(DuckPondGame game, String level, String levelname)
+    GameScreen(DuckPondGame game, String level, String levelname, String starttext)
     {
         this.game = game;
         this.mas = game.mas;
@@ -169,6 +172,8 @@ public class GameScreen extends ScreenAdapter
             GOLTITLE_Y = 1920 - 1100;
             GOVTITLE_X = 190;
             GOVTITLE_Y = 1920 -1100;
+            STARTTEXT_X = 50;
+            STARTTEXT_Y = 1920 - 800;
 
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,1920-241,241, 241);
@@ -183,7 +188,7 @@ public class GameScreen extends ScreenAdapter
             GOLLevelSelection = new Button(330,     1920 - 1500,     420, 100,       Assets.GameMenuButt);
             GOLrestart        = new Button(330,     1920 - 1300,     420, 100,      Assets.GameMenuButt);
 
-            playbutt = new Button(316, 800, 420, 200, Assets.GamePlay);
+            playbutt = new Button(316, 1920 - 1700, 420, 200, Assets.GamePlay);
 
             TIME_RENDER_X = 17;
             TIME_RENDER_Y = 1920 - 310;
@@ -198,6 +203,8 @@ public class GameScreen extends ScreenAdapter
             GOLTITLE_Y = 960 - 400;
             GOVTITLE_X = 145;
             GOVTITLE_Y = 960 - 400;
+            STARTTEXT_X = 25;
+            STARTTEXT_Y = 960 - 300;
 
             HUDarea = new Rectangle(0, Options.screenHeight-Options.GUIHeight, Options.screenWidth, Options.GUIHeight);
             pausebutt = new Rectangle(0,960-93,93, 93);
@@ -212,7 +219,7 @@ public class GameScreen extends ScreenAdapter
             GOLLevelSelection = new Button(195, 960-565, 250, 50,           Assets.GameMenuButt);
             GOLrestart        = new Button(195, 960-480, 250, 50,           Assets.GameMenuButt);
 
-            playbutt = new Button(188, 960-600, 263, 75, Assets.GamePlay);
+            playbutt = new Button(188, 960-800, 263, 75, Assets.GamePlay);
 
             TIME_RENDER_X = 410;
             TIME_RENDER_Y = 960 - 15; //top left?
@@ -231,6 +238,7 @@ public class GameScreen extends ScreenAdapter
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
 
         this.levelname = levelname;
+        this.starttext = starttext;
     }
 
     public void update(float delta)
@@ -306,7 +314,7 @@ public class GameScreen extends ScreenAdapter
                 Gdx.app.debug("Swipe Registered", swipestart.toString() + '\n' + swipeend.toString() + '\n' + Float.toString(swipeend.cpy().sub(swipestart).len2()));
             } else world.update(delta, swipestart, swipestart.cpy()); //probably a better way to implement this
 
-            if ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed())
+            if (ready2go && ((pausebutt.contains(screenIn.getTouchpoint()) && screenIn.justTouched()) || screenIn.isBackPressed()))
             {
                 isPaused = true;
                 menu = Menus.PAUSEMENU;
@@ -502,27 +510,27 @@ public class GameScreen extends ScreenAdapter
             }
         }
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
-        shapeRenderer.rect(HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
-        switch (menu)
-        {
-            case PAUSEMENU:
-                PAUSEUnpauseButt.renderShapes(shapeRenderer);
-                PAUSERestartButt.renderShapes(shapeRenderer);
-                PAUSELevelSelectionButt.renderShapes(shapeRenderer);
-                break;
-            case GMLOSE:
-                GOLLevelSelection.renderShapes(shapeRenderer);
-                GOLrestart.renderShapes(shapeRenderer);
-                break;
-            case GMVICTORY:
-                GOVLevelSelection.renderShapes(shapeRenderer);
-                break;
-        }
-
-        shapeRenderer.end();
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+//        //shapeRenderer.rect(pausebutt.getX(), pausebutt.getY(), pausebutt.getWidth(), pausebutt.getHeight());
+//        //shapeRenderer.rect(HUDarea.getX(), HUDarea.getY(), HUDarea.getWidth(), HUDarea.getHeight());
+//        switch (menu)
+//        {
+//            case PAUSEMENU:
+//                PAUSEUnpauseButt.renderShapes(shapeRenderer);
+//                PAUSERestartButt.renderShapes(shapeRenderer);
+//                PAUSELevelSelectionButt.renderShapes(shapeRenderer);
+//                break;
+//            case GMLOSE:
+//                GOLLevelSelection.renderShapes(shapeRenderer);
+//                GOLrestart.renderShapes(shapeRenderer);
+//                break;
+//            case GMVICTORY:
+//                GOVLevelSelection.renderShapes(shapeRenderer);
+//                break;
+//        }
+//
+//        shapeRenderer.end();
 
     }
 
@@ -540,11 +548,12 @@ public class GameScreen extends ScreenAdapter
             }
 
             draw(0);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            playbutt.renderShapes(shapeRenderer);
-            shapeRenderer.end();
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//            playbutt.renderShapes(shapeRenderer);
+//            shapeRenderer.end();
             game.batch.enableBlending();
             game.batch.begin();
+            Assets.font.draw(game.batch, starttext, STARTTEXT_X, STARTTEXT_Y);
             playbutt.renderSprites(game.batch);
             game.batch.end();
         }

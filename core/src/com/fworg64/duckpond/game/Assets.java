@@ -37,6 +37,7 @@ public class Assets
     public static Texture LevelEditLives;
     public static Texture LevelEditUnlives;
     public static Texture LevelEditShare;
+    public static Texture LevelEditNumblock;
 
     public static Texture NavigationFlechaIzq;
     public static TextureRegion NavigationFlechaDer;
@@ -45,14 +46,13 @@ public class Assets
     public static Texture NavigationConfirm;
     public static Texture NavigationWorldButt;
     public static Texture NavigationBack;
+    public static Texture NavigationFolder;
 
     public static Texture LevelSelectionMainMenu;
-    public static Texture LevelSelectionFolder;
     public static Texture LevelSelectionGetMore;
     public static Texture LevelSelectionWorldMaker;
 
-    public static Texture ShareChangeName;
-    public static Texture ShareChangePIN;
+    public static Texture ShareBigAst;
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
@@ -275,7 +275,6 @@ public class Assets
         else res = "stdres\\";
 
         LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
-        LevelSelectionFolder = new Texture(Gdx.files.internal(res + "levelselection\\folder.png"));
         LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\download.png"));
         LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
 
@@ -284,7 +283,6 @@ public class Assets
     public static void dispose_levelscreen()
     {
         LevelSelectionWorldMaker.dispose();
-        LevelSelectionFolder.dispose();
         LevelSelectionGetMore.dispose();
         LevelSelectionMainMenu.dispose();
     }
@@ -304,6 +302,7 @@ public class Assets
         NavigationUpone = new Texture(Gdx.files.internal("stdres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("stdres\\navigation\\levelbutt.png"));
         NavigationBack = new Texture(Gdx.files.internal("stdres\\navigation\\back.png"));
+        NavigationFolder = new Texture(Gdx.files.internal("stdres\\navigation\\folder.png"));
     }
     public static void load_navigation_high()
     {
@@ -315,6 +314,8 @@ public class Assets
         NavigationUpone = new Texture(Gdx.files.internal("highres\\navigation\\upone.png"));
         NavigationWorldButt = new Texture(Gdx.files.internal("highres\\navigation\\levelbutt.png"));
         NavigationBack = new Texture(Gdx.files.internal("highres\\navigation\\back.png"));
+        NavigationFolder = new Texture(Gdx.files.internal("highres\\navigation\\folder.png"));
+
 
     }
     public static void dispose_navigation()
@@ -325,6 +326,7 @@ public class Assets
         NavigationUpone.dispose();
         NavigationWorldButt.dispose();
         NavigationBack.dispose();
+        NavigationFolder.dispose();
     }
 
     public static void load_share()
@@ -333,14 +335,12 @@ public class Assets
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        ShareChangeName = new Texture(Gdx.files.internal((res + "share\\changename.png")));
-        ShareChangePIN = new Texture(Gdx.files.internal((res + "share\\changepin.png")));
+        ShareBigAst = new Texture(Gdx.files.internal((res + "share\\bigast.png")));
     }
 
     public static void dispose_share()
     {
-        ShareChangeName.dispose();
-        ShareChangePIN.dispose();
+        ShareBigAst.dispose();
         Gdx.app.debug("Assets: ", "disposed");
     }
     
@@ -388,6 +388,7 @@ public class Assets
         LevelEditFlechaDer = new TextureRegion(LevelEditFlechaIzq);
         LevelEditFlechaDer.flip(true, false);
         LevelEditShare = new Texture(Gdx.files.internal("leveledit\\share.png"));
+        LevelEditNumblock = new Texture(Gdx.files.internal("leveledit\\numblock.png"));
 
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
 
@@ -459,5 +460,6 @@ public class Assets
         shark.dispose();
         lily.dispose();
         LevelEditShare.dispose();
+        LevelEditNumblock.dispose();
     }
 }

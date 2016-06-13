@@ -102,8 +102,8 @@ public class Duckling
                 pos.setPosition(posv.cpy());
                 col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
 
-                Gdx.app.debug(checkpoints.get(2).toString(), checkpoints.get(1).toString());
-                Gdx.app.debug("vel",vel.toString());
+                //Gdx.app.debug(checkpoints.get(2).toString(), checkpoints.get(1).toString());
+                //Gdx.app.debug("vel",vel.toString());
                 checkpoints.remove(0); //this doesnt run fast enough to be done by the next line maybe
             }
             else
@@ -111,7 +111,7 @@ public class Duckling
                 posv.set(checkpoints.get(0).cpy().lerp(checkpoints.get(1), followclock/CRUMB_SPACE_TIME));
                 pos.setPosition(posv.cpy());
                 col.setPosition(pos.getX()+ 1.0f * pos.getWidth(), pos.getY() + 1.0f* pos.getHeight());
-                Gdx.app.debug("vel", vel.toString());
+                //Gdx.app.debug("vel", vel.toString());
             }
         }
 
