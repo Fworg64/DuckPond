@@ -258,47 +258,22 @@ public class Browser extends Thread
 
     public void renderShapes(final ShapeRenderer shapeRenderer)
     {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-                for (Button butt : sixbutts) butt.renderShapes(shapeRenderer);
-                for (Button butt : butts) butt.renderShapes(shapeRenderer);
-                shapeRenderer.end();
-            }
-        });
-
+        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+        for (Button butt : sixbutts) butt.renderShapes(shapeRenderer);
+        for (Button butt : butts) butt.renderShapes(shapeRenderer);
     }
 
-    public void renderSprites(final SpriteBatch batch, final OrthographicCamera gcam)
+    public void renderSprites(SpriteBatch batch)
     {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                GL20 gl = Gdx.gl;
-                gl.glClearColor(.27451f, .70588f, .83922f, 1);
-                gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
-                gcam.update();
-                batch.setProjectionMatrix(gcam.combined);
+        if (renderUpOne) pageupbutt.renderSprites(batch);
+        pageleftbutt.renderSprites(batch);
+        pagerightbutt.renderSprites(batch);
+        batch.setColor(1,1,1,1f);
 
-                batch.enableBlending();
-                batch.begin();
-                if (renderUpOne) pageupbutt.renderSprites(batch);
-                pageleftbutt.renderSprites(batch);
-                pagerightbutt.renderSprites(batch);
-                batch.setColor(1,1,1,1f);
-
-                for (int i=0; i< displayOptions.size(); i++)
-                {
-                    sixbutts[i].renderSprites(batch);
-                }
-
-                batch.end();
-            }
-        });
-
-
+        for (int i=0; i< displayOptions.size(); i++)
+        {
+            sixbutts[i].renderSprites(batch);
+        }
     }
 
 }

@@ -69,15 +69,6 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int DUCKLING_SELECT_W = 120;
     public static final int DUCKLING_SELECT_H = 120;
 
-    public static final int LEVEL_LOAD_X = 200;
-    public static final int LEVEL_LOAD_Y = 1920-550;
-    public static final int LEVEL_LOAD_W = 200;
-    public static final int LEVEL_LOAD_H = 200;
-    public static final int LEVEL_LOAD_XS = 400;
-    public static final int LEVEL_LOAD_YS = 300;
-    public static final int LEVEL_LOAD_R = 3;
-    public static final int LEVEL_LOAD_C = 2;
-
     public static final int LEVEL_TIME_BUTTON_X = 55;
     public static final int LEVEL_TIME_BUTTON_Y = 1920-UPPER_AREA_HEIGHT;
     public static final int LEVEL_TIME_BUTTON_W = 40;
@@ -116,11 +107,6 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int SAVE_CONFIRM_Y = 1920 - 500;
     public static final int SAVE_CONFIRM_W = 126;
     public static final int SAVE_CONFIRM_H = 126;
-    public static final int LOAD_PAGE_FLIP_X = 200;
-    public static final int LOAD_PAGE_FLIP_Y = 500;
-    public static final int LOAD_PAGE_LEFT_W = 86;
-    public static final int LOAD_PAGE_LEFT_H = 163;
-    public static final int LOAD_PAGE_LEFT_XS = 330;
 
     public static final Vector2 EDITOR_OFFSET = new Vector2(219, 1920-1442);
     public static final float VELOCITY_INPUT_SCALE = .7f;
@@ -148,9 +134,6 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle savecancelbutt;
     Rectangle loadcancelbutt;
     Rectangle saveconfirmbutt;
-    Rectangle loadpageleft;
-    Rectangle loadpageright;
-    int pagenumber;
 
     Button exitbutt;
     Button loadbutt;
@@ -179,7 +162,6 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle Tslider;
 
     Button[] ducklingNumber;
-    Rectangle[] loadlevelbuttons;
 
     Button ducks;
     Button sharks;
@@ -193,7 +175,6 @@ public class LevelScreen2 extends ScreenAdapter
     FileHandle customDIR;
     FileHandle currfile;
     String filename;
-    List<FileHandle> customfiles;
 
     int halfobj = (int) (.5f*DuckPondGame.objWandH);
     Rectangle   goodleft   ;
@@ -202,6 +183,10 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle   goodbottom ;
     Rectangle[] goodouts   ;
     Rectangle   goodin     ;
+
+    Browser browser;
+    BrowsableFolder browsableFolder;
+    BrowserCommunicator BC;
 
 
     private ShapeRenderer shapeRenderer;
@@ -220,7 +205,6 @@ public class LevelScreen2 extends ScreenAdapter
             customDIR = Gdx.files.local("CUSTOM");
             customDIR.mkdirs();
             if (customDIR.isDirectory()) Gdx.app.debug("we shoold be", "guut");
-            customfiles = Arrays.asList(customDIR.list());
         }
         
         spawnables = new Array<Spawnable>();
@@ -254,9 +238,6 @@ public class LevelScreen2 extends ScreenAdapter
         loadcancelbutt = new Rectangle(LOAD_CANCEL_X, LOAD_CANCEL_Y, LOAD_CANCEL_W, LOAD_CANCEL_H);
         savecancelbutt = new Rectangle(SAVE_CANCEL_X, SAVE_CANCEL_Y, SAVE_CANCEL_W, SAVE_CANCEL_H);
         saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
-        loadpageleft = new Rectangle(LOAD_PAGE_FLIP_X, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
-        loadpageright = new Rectangle(LOAD_PAGE_FLIP_X + LOAD_PAGE_LEFT_XS, LOAD_PAGE_FLIP_Y, LOAD_PAGE_LEFT_W, LOAD_PAGE_LEFT_H);
-        pagenumber =0;
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -271,13 +252,7 @@ public class LevelScreen2 extends ScreenAdapter
             ducklingNumber[i].setButttext(Integer.toString(i));
             ducklingNumber[i].hide();
         }
-        loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
-        for (int i=0; i<LEVEL_LOAD_C; i++) {
-            for (int j=0; j<LEVEL_LOAD_R;j++)
-            {
-                loadlevelbuttons[i*(LEVEL_LOAD_R) + j] = new Rectangle(LEVEL_LOAD_X + i*LEVEL_LOAD_XS, LEVEL_LOAD_Y - j*LEVEL_LOAD_YS, LEVEL_LOAD_W, LEVEL_LOAD_H);
-            }
-        }
+
         trashbutt   = new Button(TRASH_X,TRASH_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H, Assets.LevelEditRemoveItem);
         TtimeUp     = new Button(LEVEL_TIME_BUTTON_X + LEVEL_TIME_BUTTON_XS, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H, Assets.LevelEditFlechaDer);
         TtimeDown   = new Button(LEVEL_TIME_BUTTON_X, LEVEL_TIME_BUTTON_Y, LEVEL_TIME_BUTTON_W, LEVEL_TIME_BUTTON_H, Assets.LevelEditFlechaIzq);
@@ -348,13 +323,32 @@ public class LevelScreen2 extends ScreenAdapter
             }
             savebutt.pressHandled();
         }
+        if (loadbutt.isJustPressed())
+        {
+            browsableFolder = new BrowsableFolder(DuckPondGame.customfolder, false);
+            BC = new BrowserCommunicator();
+            browser = new Browser(browsableFolder, BC);
+            browser.start();
+            browser.renderUpOne = false;
+            defaultstate = false;
+            Gdx.app.debug("Load", "Goind to load");
+        }
         if (loadbutt.isWasPressed()) {
-            if (defaultstate ==true) {
-                loadfile = true;
-                defaultstate = false;
-                Gdx.app.debug("Load", "Goind to load");
+            BC.setTouchpoint(in.isTouched() ? touchpoint : new Vector2());
+            if (BC.isSelectionMade()) {
+                LoadFile(BC.getSelectionContents());
+                BC.setClose(true);
+                loadbutt.pressHandled();
+                defaultstate =true;
+                Tknob.setX(Tslider.x - Tknob.getWidth()*.5f);
+                updateTempt2s();
             }
-            loadbutt.pressHandled();
+            if (in.justTouched() && loadcancelbutt.contains(touchpoint))
+            {
+                BC.setClose(true);
+                defaultstate = true;
+                loadbutt.pressHandled();
+            }
         }
         if (sharebutt.isWasPressed()){
             Gdx.app.debug("screenstate", "sharescreen");
@@ -429,8 +423,6 @@ public class LevelScreen2 extends ScreenAdapter
         {adjustGlobalT();}
         if (savefile)
         {savefile();}
-        if (loadfile)
-        {LoadFile();}
     }
 
     @Override
@@ -497,70 +489,42 @@ public class LevelScreen2 extends ScreenAdapter
         }
     }
 
-    public void LoadFile()
+    public void LoadFile(String filecontents)
     {
-        customfiles = Arrays.asList(customDIR.list()); //reload... reload... reload...
+        //button pressed with file, load corresponidng file
 
-        if (in.justTouched() && loadpageleft.contains(touchpoint) && pagenumber>0) pagenumber--;
-        if (in.justTouched() && loadpageright.contains(touchpoint) && (customDIR.list().length / PAGE_SIZE > pagenumber)) pagenumber++;
-        customfiles = new ArrayList<FileHandle>(customfiles.subList(pagenumber * PAGE_SIZE, customfiles.size() < (pagenumber+1)*PAGE_SIZE ? customfiles.size() : (pagenumber+1)*PAGE_SIZE));
-        int buttpressed =-1;//no button pressed
-        touchpoint.set(in.getTouchpoint());
-        for (int i =0; i<loadlevelbuttons.length;i++)
-        {
-            if (loadlevelbuttons[i].contains(touchpoint) && in.justTouched()){
-                buttpressed = i;
+        spawnables = new Array<Spawnable>();//first clear current file
+
+            String levelstring = filecontents;
+
+            ArrayList<String> levelcodes = new ArrayList<String>(Arrays.asList(levelstring.split("\n")));
+            try
+            {
+                time = Integer.parseInt(levelcodes.get(0).split(" ")[0].trim());
+                lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
+                levelcodes.remove(0);
+                for (Iterator<String> iterator = levelcodes.iterator(); iterator.hasNext(); )
+                {
+                    String code = iterator.next();
+                    Gdx.app.debug("code:", code);
+                    String[] codelet = code.split(" ");
+
+                    float tempstime = Float.parseFloat(codelet[0]);
+                    Vector2 temppos = new Vector2();
+                    Vector2 tempvel = new Vector2();
+                    int tempducks = Integer.parseInt(codelet[4].trim());
+                    temppos.fromString(codelet[2]);
+                    tempvel.fromString(codelet[3]);
+
+                    spawnables.add(new Spawnable(tempstime, temppos.cpy(), tempvel.cpy(), tempducks, codelet[1]));
+
+                    iterator.remove();
+                }
             }
-        }
-
-
-        if (buttpressed >=0 && buttpressed <customfiles.size()) //custom files length must be less than or equal to loadlevelbuttons length
-        {
-            //button pressed with file, load corresponidng file
-
-            spawnables = new Array<Spawnable>();//first clear current file
-
-                String levelstring = customfiles.get(buttpressed).readString();
-
-                ArrayList<String> levelcodes = new ArrayList<String>(Arrays.asList(levelstring.split("\n")));
-                try
-                {
-                    time = Integer.parseInt(levelcodes.get(0).split(" ")[0].trim());
-                    lives = Integer.parseInt(levelcodes.get(0).split(" ")[1].trim());
-                    levelcodes.remove(0);
-                    for (Iterator<String> iterator = levelcodes.iterator(); iterator.hasNext(); )
-                    {
-                        String code = iterator.next();
-                        Gdx.app.debug("code:", code);
-                        String[] codelet = code.split(" ");
-
-                        float tempstime = Float.parseFloat(codelet[0]);
-                        Vector2 temppos = new Vector2();
-                        Vector2 tempvel = new Vector2();
-                        int tempducks = Integer.parseInt(codelet[4].trim());
-                        temppos.fromString(codelet[2]);
-                        tempvel.fromString(codelet[3]);
-
-                        spawnables.add(new Spawnable(tempstime, temppos.cpy(), tempvel.cpy(), tempducks, codelet[1]));
-
-                        iterator.remove();
-                    }
-                }
-                catch (ArrayIndexOutOfBoundsException e)
-                {
-                    Gdx.app.debug("Error","Level File appers corrupt");
-                }
-
-            loadfile = false;
-            defaultstate = true;
-            Gdx.app.debug("dont","show");
-        }
-        if (in.justTouched() && loadcancelbutt.contains(touchpoint))
-        {
-            in.hideKeyboard();
-            loadfile = false;
-            defaultstate = true;
-        }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                Gdx.app.debug("Error","Level File appers corrupt");
+            }
     }
 
     public void DestroyCurrent()
@@ -1073,14 +1037,7 @@ public class LevelScreen2 extends ScreenAdapter
         Assets.font.draw(game.batch, Message3, MESSAGE3_X, MESSAGE_Y);
         Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
         Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y);
-        if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
-            if (i<customfiles.size()) game.batch.draw(Assets.NavigationWorldButt, loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
-            if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY() + .6f*loadlevelbuttons[i].getHeight());
-        }
-        if (loadfile){
-            game.batch.draw(Assets.NavigationFlechaIzq, loadpageleft.getX(), loadpageleft.getY());
-            game.batch.draw(Assets.NavigationFlechaDer, loadpageright.getX(), loadpageright.getY());
-        }
+        if (loadbutt.isWasPressed()) browser.renderSprites(game.batch);
         game.batch.end();
 
 
@@ -1090,7 +1047,7 @@ public class LevelScreen2 extends ScreenAdapter
         for(Button butt: butts) butt.renderShapes(shapeRenderer);
         shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
         shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+        //if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
 
 //        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 //        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());

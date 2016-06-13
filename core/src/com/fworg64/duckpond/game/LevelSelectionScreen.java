@@ -289,19 +289,20 @@ public class LevelSelectionScreen extends ScreenAdapter
 
     public void draw()
     {
-//        GL20 gl = Gdx.gl;
-//        gl.glClearColor(.27451f, .70588f, .83922f, 1);
-//        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
-//        gcam.update();
-//        game.batch.setProjectionMatrix(gcam.combined);
+        GL20 gl = Gdx.gl;
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
+        gcam.update();
+        game.batch.setProjectionMatrix(gcam.combined);
 
         game.batch.enableBlending();
         game.batch.begin();
         for (Button butt : butts) butt.renderSprites(game.batch);
         textCycleButton.renderSprites(game.batch);
         Assets.font.draw(game.batch, message, MESSAGE_X, MESSAGE_Y);
+        browser.renderSprites(game.batch);
         game.batch.end();
-        browser.renderSprites(game.batch, gcam);
+
     }
 
     @Override

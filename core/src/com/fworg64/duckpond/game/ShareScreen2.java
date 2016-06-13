@@ -371,14 +371,13 @@ public class ShareScreen2 extends ScreenAdapter{
     
     public void draw()
     {
-        if (!showBrowser)
-        {
-            GL20 gl = Gdx.gl;
-            gl.glClearColor(.27451f, .70588f, .83922f, 1);
-            gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
-            gcam.update();
-            game.batch.setProjectionMatrix(gcam.combined);
-        }
+
+        GL20 gl = Gdx.gl;
+        gl.glClearColor(.27451f, .70588f, .83922f, 1);
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //neccesary
+        gcam.update();
+        game.batch.setProjectionMatrix(gcam.combined);
+
 
         game.batch.enableBlending();
         game.batch.begin();
@@ -386,8 +385,9 @@ public class ShareScreen2 extends ScreenAdapter{
         Assets.font.draw(game.batch, username, USERNAME_X, USERNAME_Y);
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
         if (showpinpad) pp2.renderSprites(game.batch);
+        if (showBrowser) browser.renderSprites(game.batch);
         game.batch.end();
-        if (showBrowser) browser.renderSprites(game.batch, gcam);
+
     }
     
     @Override
