@@ -135,7 +135,7 @@ public class LevelSelectionScreen extends ScreenAdapter
 
         //fileBrowser = new FileBrowser();
         browserCommunicator = new BrowserCommunicator();
-        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+        browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
         browser.start();
         downloadBrowsable = null;
         networkBrosableMaker = null;
@@ -194,21 +194,21 @@ public class LevelSelectionScreen extends ScreenAdapter
             {
                 case 0:
                     message = "";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator);
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
                     getmorebutt.hide();
                     leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 1:
                     message = "\nMake and share";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator);
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator, false);
                     leveleditbutt.show();
                     getmorebutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 2:
                     message = "\nGet more with";
-                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
+                    browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
                     getmorebutt.show();
                     leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
@@ -253,7 +253,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
                 browserCommunicator.setClose(true);
                 browserCommunicator = new BrowserCommunicator();
-                browser = new Browser(downloadBrowsable, browserCommunicator);
+                browser = new Browser(downloadBrowsable, browserCommunicator, false);
                 browser.start();
                 handleSelection = HandleSelection.DOWNLOAD;
                 getmorebutt.pressHandled();
@@ -267,7 +267,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             textCycleButton.setStateDirect(2);
             browserCommunicator.setClose(true);
             browserCommunicator = new BrowserCommunicator();
-            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator);
+            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
             browser.start();
             handleSelection = HandleSelection.PLAY;
             backtodlbutt.pressHandled();

@@ -60,10 +60,15 @@ public class Browser extends Thread
     private Browsable browsable;
     private BrowserCommunicator bc;
 
-    public Browser(Browsable browsable, BrowserCommunicator bc)
+    boolean emptyDir;
+    String emptyDirMessage;
+    int EMPTYDIR_X;
+    int EMPTYDIR_Y;
+
+    public Browser(Browsable browsable, BrowserCommunicator bc, boolean forceHighres)
     {
         super("Broswer");
-        if (Options.isHighres())
+        if (Options.isHighres() || forceHighres)
         {
             SIXBUTT_X = 210;
             SIXBUTT_Y = 1920-453;
@@ -87,6 +92,9 @@ public class Browser extends Thread
             LEVEL_LOAD_R = 3;
             LEVEL_LOAD_C = 2;
             PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
+
+            EMPTYDIR_X = 324;
+            EMPTYDIR_Y = 1920 - 800;
         }
         else
         {
@@ -112,7 +120,13 @@ public class Browser extends Thread
             LEVEL_LOAD_R = 2;
             LEVEL_LOAD_C = 3;
             PAGE_SIZE = LEVEL_LOAD_R * LEVEL_LOAD_C;
+
+            EMPTYDIR_X = 187;
+            EMPTYDIR_Y = 960 - 420;
         }//button dims and sizes
+        emptyDirMessage = "Nothing Here.";
+        emptyDir = false;
+
         this.bc = bc;
         sixbutts = new Button[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
@@ -172,7 +186,9 @@ public class Browser extends Thread
     private void updateAllOptions()
     {
         allOptions = this.browsable.getAllOptions();
-        numpages = allOptions.size()/PAGE_SIZE + 1;
+        if (allOptions.size() ==0) emptyDir = true;
+        else emptyDir = false;
+        numpages = (allOptions.size()-1)/PAGE_SIZE + 1;
         Gdx.app.debug("Browser", "allOptions updated " + allOptions.toString());
         pagenumber = 0;
         goToPage(pagenumber); //sets displayoptions
@@ -270,9 +286,14 @@ public class Browser extends Thread
         pagerightbutt.renderSprites(batch);
         batch.setColor(1,1,1,1f);
 
-        for (int i=0; i< displayOptions.size(); i++)
-        {
+        if (!emptyDir)
+            for (int i=0; i< displayOptions.size(); i++)
+            {
             sixbutts[i].renderSprites(batch);
+            }
+        else
+        {
+            Assets.font.draw(batch, emptyDirMessage, EMPTYDIR_X, EMPTYDIR_Y);
         }
     }
 

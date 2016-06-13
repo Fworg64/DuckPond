@@ -28,8 +28,6 @@ public class LevelScreen2 extends ScreenAdapter
 {
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
     public final static float SWYPE_ARROW_SCALE = 1.6f;
-    public final static int PAGE_SIZE = 6;
-
 
     public static final int TOPBUTTONS_X = 90;
     public static final int TOPBUTTONS_Y = 1920-136;
@@ -95,15 +93,15 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int C_TIME_DISPLAY_X = 800;
     public static final int C_TIME_DISPLAY_Y = 80;
 
-    public static final int LOAD_CANCEL_X = 300;
-    public static final int LOAD_CANCEL_Y = 1920 - 1500;
+    public static final int LOAD_CANCEL_X = 477;
+    public static final int LOAD_CANCEL_Y = 277;
     public static final int LOAD_CANCEL_W = 126;
     public static final int LOAD_CANCEL_H = 126;
-    public static final int SAVE_CANCEL_X = 300;
+    public static final int SAVE_CANCEL_X = 297;
     public static final int SAVE_CANCEL_Y = 1920 - 500;
     public static final int SAVE_CANCEL_W = 126;
     public static final int SAVE_CANCEL_H = 126;
-    public static final int SAVE_CONFIRM_X = 500;
+    public static final int SAVE_CONFIRM_X = 657;
     public static final int SAVE_CONFIRM_Y = 1920 - 500;
     public static final int SAVE_CONFIRM_W = 126;
     public static final int SAVE_CONFIRM_H = 126;
@@ -128,12 +126,10 @@ public class LevelScreen2 extends ScreenAdapter
     boolean choiceDestroy;
     boolean globalTAdjust;
     boolean ready2confirm;
-    boolean savefile;
-    boolean loadfile;
 
-    Rectangle savecancelbutt;
-    Rectangle loadcancelbutt;
-    Rectangle saveconfirmbutt;
+    Button savecancelbutt;
+    Button loadcancelbutt;
+    Button saveconfirmbutt;
 
     Button exitbutt;
     Button loadbutt;
@@ -235,9 +231,9 @@ public class LevelScreen2 extends ScreenAdapter
         savebutt  = new Button(TOPBUTTONS_X, TOPBUTTONS_Y, TOPBUTTONS_W, TOPBUTTONS_H, Assets.LevelEditSave);
         sharebutt = new Button(SHARE_X, SHARE_Y, SHARE_W, SHARE_H, Assets.LevelEditShare);
         Confirm   = new Button(CONFIRM_X, CONFIRM_Y, LOWER_AREA_BUTTON_W, LOWER_AREA_BUTTON_H, Assets.LevelEditConfirm);
-        loadcancelbutt = new Rectangle(LOAD_CANCEL_X, LOAD_CANCEL_Y, LOAD_CANCEL_W, LOAD_CANCEL_H);
-        savecancelbutt = new Rectangle(SAVE_CANCEL_X, SAVE_CANCEL_Y, SAVE_CANCEL_W, SAVE_CANCEL_H);
-        saveconfirmbutt = new Rectangle(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H);
+        loadcancelbutt  = new Button(LOAD_CANCEL_X, LOAD_CANCEL_Y, LOAD_CANCEL_W, LOAD_CANCEL_H, Assets.NavigationCancel);
+        savecancelbutt  = new Button(SAVE_CANCEL_X, SAVE_CANCEL_Y, SAVE_CANCEL_W, SAVE_CANCEL_H, Assets.NavigationCancel);
+        saveconfirmbutt = new Button(SAVE_CONFIRM_X, SAVE_CONFIRM_Y, SAVE_CONFIRM_W, SAVE_CONFIRM_H, Assets.NavigationConfirm);
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
@@ -259,7 +255,11 @@ public class LevelScreen2 extends ScreenAdapter
         LivesUp     = new Button(LEVEL_LIVES_BUTTON_X + LEVEL_LIVES_BUTTON_XS, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H, Assets.LevelEditFlechaDer);
         LivesDown   = new Button(LEVEL_LIVES_BUTTON_X, LEVEL_LIVES_BUTTON_Y, LEVEL_LIVES_BUTTON_W, LEVEL_LIVES_BUTTON_H, Assets.LevelEditFlechaIzq);
 
-        butts = new Button[] {exitbutt, loadbutt, savebutt, sharebutt, trashbutt, TtimeDown, TtimeUp, LivesUp, LivesDown, ducks, sharks, lillies, Confirm};
+        butts = new Button[] {exitbutt, loadbutt, savebutt, sharebutt, trashbutt, TtimeDown, TtimeUp, LivesUp, LivesDown, ducks, sharks, lillies, Confirm, loadcancelbutt, savecancelbutt, saveconfirmbutt};
+
+        saveconfirmbutt.hide();
+        loadcancelbutt.hide();
+        savecancelbutt.hide();
 
         defaultstate = true;
         getD = false;
@@ -270,7 +270,6 @@ public class LevelScreen2 extends ScreenAdapter
         choiceDestroy = false;
         globalTAdjust = false;
         ready2confirm = false;
-        savefile = false;
 
         filename ="";
 
@@ -315,19 +314,80 @@ public class LevelScreen2 extends ScreenAdapter
             this.dispose();
             exitbutt.pressHandled();
         }
+        if (savebutt.isJustPressed())
+        {
+            savecancelbutt.show();
+            saveconfirmbutt.show();
+        }
         if (savebutt.isWasPressed()) {
             if (defaultstate == true) {
-                savefile = true;
                 defaultstate = false;
                 Gdx.app.debug("Save", "Going to save file");
             }
-            savebutt.pressHandled();
+            //get a name
+            char tempChar;
+            if (Gdx.app.getType() != Application.ApplicationType.WebGL)
+            {
+                in.showKeyboard();
+                tempChar = in.pollChar();
+                if (tempChar != '\0') filename += tempChar;
+                else if (in.backspaceJustPressed() && filename.length() >0) filename = filename.substring(0, filename.length() -1);
+
+                Message = filename + "\n\n\n\n\n" + "Type a filename and press enter. (a-Z, 0-9)";
+
+                if ((in.enterJustPressed() || saveconfirmbutt.isWasPressed()) && !filename.equals("ATTRIBUTES"))
+                {
+                    if (!filename.isEmpty())
+                    {
+                        currfile = Gdx.files.local(customDIR.path() + '/' + filename);
+                        currfile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
+                        for (Spawnable s : spawnables) {
+                            currfile.writeString(s.toString() + '\n', true);
+                        }
+                    }
+                    else Gdx.app.debug("Savefile", "Skipped due to empty name");
+
+                    defaultstate = true;
+                    in.hideKeyboard();
+                    savebutt.pressHandled();
+                    saveconfirmbutt.pressHandled();
+                    savecancelbutt.hide();
+                    saveconfirmbutt.hide();
+                }
+
+                if (savecancelbutt.isWasPressed())
+                {
+                    in.hideKeyboard();
+                    defaultstate = true;
+                    savebutt.pressHandled();
+                    savecancelbutt.pressHandled();
+                    saveconfirmbutt.hide();
+                    savecancelbutt.hide();
+                }
+            }
+            else
+            {
+                String temp =Integer.toString(time) + " " + Integer.toString(lives) + "\n";
+                for (Spawnable s: spawnables)
+                {
+                    temp = temp + s.toString() + '\n';
+                }
+
+                Options.setCustom1(temp);
+                Options.save();
+                savebutt.pressHandled();
+                savecancelbutt.hide();
+                saveconfirmbutt.hide();
+                defaultstate = true;
+            }
+
         }
         if (loadbutt.isJustPressed())
         {
+            loadcancelbutt.show();
             browsableFolder = new BrowsableFolder(DuckPondGame.customfolder, false);
             BC = new BrowserCommunicator();
-            browser = new Browser(browsableFolder, BC);
+            browser = new Browser(browsableFolder, BC, true);
             browser.start();
             browser.renderUpOne = false;
             defaultstate = false;
@@ -342,12 +402,15 @@ public class LevelScreen2 extends ScreenAdapter
                 defaultstate =true;
                 Tknob.setX(Tslider.x - Tknob.getWidth()*.5f);
                 updateTempt2s();
+                loadcancelbutt.hide();
             }
-            if (in.justTouched() && loadcancelbutt.contains(touchpoint))
+            if (loadcancelbutt.isWasPressed())
             {
                 BC.setClose(true);
                 defaultstate = true;
                 loadbutt.pressHandled();
+                loadcancelbutt.pressHandled();
+                loadcancelbutt.hide();
             }
         }
         if (sharebutt.isWasPressed()){
@@ -421,8 +484,6 @@ public class LevelScreen2 extends ScreenAdapter
         {ChooseD();}
         if (globalTAdjust)
         {adjustGlobalT();}
-        if (savefile)
-        {savefile();}
     }
 
     @Override
@@ -430,63 +491,6 @@ public class LevelScreen2 extends ScreenAdapter
     {
         update();
         draw();
-    }
-
-    public void savefile()
-    {
-        //get a name
-        Gdx.app.debug("Savefile", "derrrpppp");
-        char tempChar;
-        if (Gdx.app.getType() != Application.ApplicationType.WebGL)
-        {
-            in.showKeyboard();
-            tempChar = in.pollChar();
-            if (tempChar != '\0') filename += tempChar;
-            else if (in.backspaceJustPressed() && filename.length() >0) filename = filename.substring(0, filename.length() -1);
-
-            Message = filename + "\n\n\n\n\n\n" + "Type a filename and press enter. (a-Z, 0-9)";
-
-            if ((in.enterJustPressed() || (in.justTouched() && saveconfirmbutt.contains(touchpoint))) && !filename.equals("ATTRIBUTES"))
-            {
-                if (!filename.isEmpty())
-                {
-                    currfile = Gdx.files.local(customDIR.path() + '/' + filename);
-                    //currfile.mkdirs(); this would make filename a dir
-                    Gdx.app.debug("Saving file as", currfile.path());
-                    Gdx.app.debug(currfile.parent().toString(), "is the parent");
-                    if (currfile.parent().exists()) Gdx.app.debug("it", "exists");
-                    if (currfile.parent().isDirectory()) Gdx.app.debug("and", "is a dir");
-                    currfile.writeString(Integer.toString(time) + " " + Integer.toString(lives) + "\n", false);
-                    for (Spawnable s : spawnables) {
-                        currfile.writeString(s.toString() + '\n', true);
-                    }
-                }
-                else Gdx.app.debug("Savefile", "Skipped due to empty name");
-
-                savefile = false;
-                defaultstate = true;
-                in.hideKeyboard();
-
-            }
-
-            if (in.justTouched() && savecancelbutt.contains(touchpoint))
-            {
-                in.hideKeyboard();
-                savefile = false;
-                defaultstate = true;
-            }
-        }
-        else
-        {
-            String temp =Integer.toString(time) + " " + Integer.toString(lives) + "\n";
-            for (Spawnable s: spawnables)
-            {
-                temp = temp + s.toString() + '\n';
-            }
-
-            Options.setCustom1(temp);
-            Options.save();
-        }
     }
 
     public void LoadFile(String filecontents)
@@ -628,6 +632,10 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChoosePos()
     {
+        TtimeDown.setAvailable(false);
+        TtimeUp.setAvailable(false);
+        LivesUp.setAvailable(false);
+        LivesDown.setAvailable(false);
         Message = "Drag to position";
         Message2 = "";
         touchpoint.set(in.getTouchpoint());
@@ -1013,10 +1021,6 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
 
-        if (savefile) game.batch.draw(Assets.NavigationCancel, savecancelbutt.getX(), savecancelbutt.getY());
-        if (loadfile) game.batch.draw(Assets.NavigationCancel, loadcancelbutt.getX(), loadcancelbutt.getY());
-        if (savefile) game.batch.draw(Assets.NavigationConfirm, saveconfirmbutt.getX(), saveconfirmbutt.getY());
-
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 2*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X + 1*LIVES_DISPLAY_S, LIVES_DISPLAY_Y);
         game.batch.draw(Assets.LevelEditUnlives, LIVES_DISPLAY_X, LIVES_DISPLAY_Y);
@@ -1041,21 +1045,21 @@ public class LevelScreen2 extends ScreenAdapter
         game.batch.end();
 
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
-        //draw detection bounds here for debugging
-        for(Button butt: butts) butt.renderShapes(shapeRenderer);
-        shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
-        shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        //if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-
-//        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-//        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());
-
-        //shapeRenderer.rect(placementarea.getX(), placementarea.getY(), placementarea.getWidth(), placementarea.getHeight());
-        //shapeRenderer.rect(playarea.getX(), playarea.getY(), playarea.getWidth(), playarea.getHeight());
-
-        shapeRenderer.end();
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        shapeRenderer.setColor(.5f, .2f, .2f, .5f);
+//        //draw detection bounds here for debugging
+//        for(Button butt: butts) butt.renderShapes(shapeRenderer);
+//        shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
+//        shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
+//        //if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+//
+////        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+////        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());
+//
+//        //shapeRenderer.rect(placementarea.getX(), placementarea.getY(), placementarea.getWidth(), placementarea.getHeight());
+//        //shapeRenderer.rect(playarea.getX(), playarea.getY(), playarea.getWidth(), playarea.getHeight());
+//
+//        shapeRenderer.end();
 
         if (getVel)
         {

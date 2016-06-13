@@ -163,7 +163,7 @@ public class ShareScreen2 extends ScreenAdapter{
 
         folder = new BrowsableFolder(DuckPondGame.customfolder, false);
         BC = new BrowserCommunicator();
-        browser = new Browser(folder, BC);
+        browser = new Browser(folder, BC, false);
         showBrowser = false;
         browser.start();
     }
