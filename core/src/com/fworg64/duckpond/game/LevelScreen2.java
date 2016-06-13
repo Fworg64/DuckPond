@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.FloatFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -91,7 +92,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public static final int MESSAGE_X = 20;
     public static final int MESSAGE_Y = 1920 - 175;
-    public static final int MESSAGE2_X =350;
+    public static final int MESSAGE2_X =375;
     public static final int MESSAGE3_X =700;
 
     public static final int LIVES_DISPLAY_X = 670;
@@ -172,6 +173,8 @@ public class LevelScreen2 extends ScreenAdapter
     int lives;
 
     String Message;
+    String Message2;
+    String Message3;
     Rectangle Tknob;
     Rectangle Tslider;
 
@@ -257,7 +260,9 @@ public class LevelScreen2 extends ScreenAdapter
 
         in = new InputListener((int)gcam.viewportWidth, (int)gcam.viewportHeight);
         touchpoint = new Vector2();
-        Message = "heerp";
+        Message = "";
+        Message2 = "";
+        Message3 = "";
         Tknob   = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
         ducklingNumber = new Button[MAX_DUCKLINGS];
@@ -660,6 +665,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void ChoosePos()
     {
         Message = "Drag to position";
+        Message2 = "";
         touchpoint.set(in.getTouchpoint());
         if (tempguy.getObjtype().equals("Invalid")) Gdx.app.debug("ChoosePos", "Given Invalid temp");
 
@@ -716,7 +722,8 @@ public class LevelScreen2 extends ScreenAdapter
                     }
                 }
             }
-            Message = tempguy.getPos().toString();
+            Message = "x: " + (int)tempguy.getPos().x;
+            Message2 = "y: "+ (int)tempguy.getPos().y;
         }
         else {
             ready2confirm = true;
@@ -738,13 +745,17 @@ public class LevelScreen2 extends ScreenAdapter
         temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
-            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 200));
-            Message = tempguy.getVel().toString().substring(0,4) + "  Speed:" + Float.toString(tempguy.getVel().len()).substring(0,4);
+            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 250));
+            Message = "x:"+(int)tempguy.getVel().x;
+            Message2 = "y:"+(int)tempguy.getVel().y;
+            Message3 = "Speed:" + (int)tempguy.getVel().len();
         }
         if (!in.isTouched() && !tempguy.getVel().isZero()) //vel was set
         {
             ready2confirm = true;
             Message = "Velocity: Press Confirm";
+            Message2 = "";
+            Message3 = "";
         }
         if (ready2confirm && Confirm.isWasPressed())
         {
@@ -758,7 +769,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void ChooseT()
     {
         updateTempt2s();
-        Message = "Spawntime: Drag Slider";
+        if (!ready2confirm) Message = "Spawntime: Drag Slider";
         touchpoint.set(in.getTouchpoint());
         if (!in.isTouched()) ready2confirm = true;
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
@@ -799,7 +810,7 @@ public class LevelScreen2 extends ScreenAdapter
     public void adjustGlobalT()
     {
         updateTempt2s();
-        Message = "Time:" + Float.toString(tempt2s);
+        Message = "Time:" + Float.toString(tempt2s) + " \\ " + Integer.toString(time);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && Tknob.contains(touchpoint)) gettingT = true;
         if (gettingT && in.isTouched())
@@ -1058,6 +1069,8 @@ public class LevelScreen2 extends ScreenAdapter
         }
 
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
+        Assets.font.draw(game.batch, Message2, MESSAGE2_X, MESSAGE_Y);
+        Assets.font.draw(game.batch, Message3, MESSAGE3_X, MESSAGE_Y);
         Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
         Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
