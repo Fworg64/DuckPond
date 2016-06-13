@@ -176,6 +176,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                     game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), tutorialtext));
                 else
                     game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), ""));
+                browserCommunicator.setClose(true);
                 Assets.dispose_navigation();
                 Assets.dispose_levelscreen();
             }
@@ -235,6 +236,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if (mainMenubutt.isWasPressed())
         {
+            browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_levelscreen();
             this.dispose();
@@ -242,6 +244,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         if (in.isBackPressed())
         {
             Assets.load_mainmenu();
+            browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
             Assets.dispose_levelscreen();
             this.dispose();
@@ -293,6 +296,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if (leveleditbutt.isWasPressed())
         {
+            browserCommunicator.setClose(true);
             game.setScreen(new LevelScreen2(game));
             Assets.dispose_levelscreen();
             this.dispose();

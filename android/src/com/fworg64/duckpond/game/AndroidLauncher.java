@@ -63,6 +63,7 @@ public class AndroidLauncher extends AndroidApplication {
                     {
                         public void run() {
                             //adView.loadAd(adRequestBuilder.build());
+                            adView.setVisibility(View.VISIBLE);
                             adView.bringToFront();
                         }
                     });
@@ -72,7 +73,7 @@ public class AndroidLauncher extends AndroidApplication {
                     {
                         public void run() {
                             adView.pause();
-                            adView.setVisibility(View.GONE);
+                            adView.setVisibility(View.INVISIBLE);
                             adLoaded = false;
                         }
                     });
@@ -93,8 +94,10 @@ public class AndroidLauncher extends AndroidApplication {
                 runOnUiThread(new Runnable() //run on ui thread
                 {
                     public void run() {
-                        if (!adView.isLoading() && !adLoaded) adView.loadAd(adRequestBuilder.build());
+                        //if (!adView.isLoading() && !adLoaded) adView.loadAd(adRequestBuilder.build());
+                        adView.setVisibility(View.VISIBLE);
                         adView.bringToFront();
+                        adView.resume();
                     }
                 });
                 showad = true;
@@ -107,7 +110,7 @@ public class AndroidLauncher extends AndroidApplication {
                 {
                     public void run() {
                         adView.pause();
-                        adView.setVisibility(View.GONE);
+                        adView.setVisibility(View.INVISIBLE);
                     }
                 });
                 showad = false;

@@ -176,6 +176,7 @@ public class Browser extends Thread
             if (bc.isClose())
             {
                 close();
+                Gdx.app.debug("Broswer", "Killing/Dying, but in a good way");
                 return;
             }
         }
