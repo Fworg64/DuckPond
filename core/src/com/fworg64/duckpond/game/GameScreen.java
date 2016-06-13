@@ -548,9 +548,9 @@ public class GameScreen extends ScreenAdapter
             }
 
             draw(0);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            playbutt.renderShapes(shapeRenderer);
-            shapeRenderer.end();
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//            playbutt.renderShapes(shapeRenderer);
+//            shapeRenderer.end();
             game.batch.enableBlending();
             game.batch.begin();
             Assets.font.draw(game.batch, starttext, STARTTEXT_X, STARTTEXT_Y);

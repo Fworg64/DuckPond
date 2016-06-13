@@ -1,5 +1,6 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -164,8 +165,15 @@ public class ShareScreen2 extends ScreenAdapter{
         folder = new BrowsableFolder(DuckPondGame.customfolder, false);
         BC = new BrowserCommunicator();
         browser = new Browser(folder, BC, false);
+        browser.renderUpOne = false;
         showBrowser = false;
         browser.start();
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        {
+            Gdx.app.debug("AD","ShareScreenShow");
+            this.game.adStateListener.ShowBannerAd();
+        }
     }
 
     public void update()
@@ -353,6 +361,7 @@ public class ShareScreen2 extends ScreenAdapter{
                 confirmnamechangebutt.pressHandled();
                 confirmnamechangebutt.hide();
                 cancelnamechangebutt.hide();
+                connectbutt.show();
                 Message = "";
             }
         }

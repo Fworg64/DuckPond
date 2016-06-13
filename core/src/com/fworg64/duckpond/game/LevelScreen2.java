@@ -27,7 +27,7 @@ import java.util.List;
 public class LevelScreen2 extends ScreenAdapter
 {
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
-    public final static float SWYPE_ARROW_SCALE = 1.6f;
+    public final static float SWYPE_ARROW_SCALE = 2.0f;//bigger fpr bigger?
 
     public static final int TOPBUTTONS_X = 90;
     public static final int TOPBUTTONS_Y = 1920-136;
@@ -200,7 +200,7 @@ public class LevelScreen2 extends ScreenAdapter
         {
             customDIR = Gdx.files.local("CUSTOM");
             customDIR.mkdirs();
-            if (customDIR.isDirectory()) Gdx.app.debug("we shoold be", "guut");
+            //if (customDIR.isDirectory()) Gdx.app.debug("we shoold be", "guut");
         }
         
         spawnables = new Array<Spawnable>();
@@ -717,7 +717,7 @@ public class LevelScreen2 extends ScreenAdapter
         temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
-            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 250));
+            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 300));
             Message = "x:"+(int)tempguy.getVel().x;
             Message2 = "y:"+(int)tempguy.getVel().y;
             Message3 = "Speed:" + (int)tempguy.getVel().len();
@@ -725,12 +725,15 @@ public class LevelScreen2 extends ScreenAdapter
         if (!in.isTouched() && !tempguy.getVel().isZero()) //vel was set
         {
             ready2confirm = true;
-            Message = "Velocity: Press Confirm";
-            Message2 = "";
-            Message3 = "";
+            Message = "x:"+(int)tempguy.getVel().x + "\n\n\nPress Confirm";
+            Message2 = "y:"+(int)tempguy.getVel().y;
+            Message3 = "Speed:" + (int)tempguy.getVel().len();
         }
         if (ready2confirm && Confirm.isWasPressed())
         {
+            Message = "";
+            Message2 = "";
+            Message3 = "";
             getVel = false;
             getT = true;
             ready2confirm = false;

@@ -50,10 +50,12 @@ public class LevelSelectionScreen extends ScreenAdapter
     volatile BrowsableDPGetmore downloadBrowsable;
     Thread networkBrosableMaker;
 
-    public enum HandleSelection {PLAY,DOWNLOAD, UPLOAD };
+    public enum HandleSelection {PLAY,DOWNLOAD, UPLOAD }
     HandleSelection handleSelection;
 
     String message;
+
+    FileHandle file;
 
     public LevelSelectionScreen (DuckPondGame game)
     {
@@ -179,7 +181,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             }
             else if (handleSelection == HandleSelection.DOWNLOAD)
             {
-                FileHandle file = Gdx.files.local(browserCommunicator.getSelectionName());
+                file = Gdx.files.local(browserCommunicator.getSelectionName());
                 file.parent().mkdirs();
                 file.writeString(browserCommunicator.getSelectionContents(), false);
                 message = browserCommunicator.getSelectionName().substring(2).replaceFirst("/", "\n").replaceAll("/", ": ");
@@ -203,21 +205,21 @@ public class LevelSelectionScreen extends ScreenAdapter
             switch (textCycleButton.getState())
             {
                 case 0:
-                    message = "";
+                    if (!message.equals("")) message = "";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
                     getmorebutt.hide();
                     leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 1:
-                    message = "\nMake and share";
+                    if (!message.equals("\nMake and share")) message = "\nMake and share";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator, false);
                     leveleditbutt.show();
                     getmorebutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 2:
-                    message = "\nGet more with";
+                    if (!message.equals("\nGet more with")) message = "\nGet more with";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
                     getmorebutt.show();
                     leveleditbutt.hide();
@@ -259,7 +261,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         }
         if ((getmorebutt.isWasPressed()))
         {
-            message = "GET MORE\nConnecting...";
+            if(!message.equals("GET MORE\nConnecting...")) message = "GET MORE\nConnecting...";
             if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
                 browserCommunicator.setClose(true);
                 browserCommunicator = new BrowserCommunicator();
@@ -267,7 +269,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                 browser.start();
                 handleSelection = HandleSelection.DOWNLOAD;
                 getmorebutt.pressHandled();
-                message = "GET MORE\nConnected!";
+                if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
                 getmorebutt.hide();
                 backtodlbutt.show();
             }
@@ -281,7 +283,7 @@ public class LevelSelectionScreen extends ScreenAdapter
             browser.start();
             handleSelection = HandleSelection.PLAY;
             backtodlbutt.pressHandled();
-            message = "\nGet more with";
+            if (!message.equals("\nGet more with")) message = "\nGet more with";
             backtodlbutt.hide();
             getmorebutt.show();
 

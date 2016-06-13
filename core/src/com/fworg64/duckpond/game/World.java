@@ -119,7 +119,7 @@ public class World
             String[] codelet = code.split(" ");
             if (Float.parseFloat(codelet[0]) <=clock)
             {
-                Gdx.app.debug("loaded", codelet[0]);
+                Gdx.app.debug("World: loaded", codelet[0]);
                 Vector2 temppos = new Vector2();
                 Vector2 tempvel = new Vector2();
                 int tempducks = Integer.parseInt(codelet[4].trim());
