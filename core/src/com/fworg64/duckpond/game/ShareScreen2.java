@@ -226,7 +226,7 @@ public class ShareScreen2 extends ScreenAdapter{
             if (pinstate == PINSTATE.NEEDPIN1)
             {
                 //Gdx.app.debug("Share", "NeedPin1");
-                Message = "Enter a PIN";
+                Message = "Make a new PIN";
                 if (pp2.isPinReady()) {
                     temppin1 = pp2.getPin();
                     Gdx.app.debug("Share, Pin1Got", temppin1);
@@ -265,7 +265,7 @@ public class ShareScreen2 extends ScreenAdapter{
             {
                 Gdx.app.debug("Share", "PinSent");
                 showpinpad = false;
-                Message = "herp";
+                //Message = "herp";
                 //do nothing?
             }
 
@@ -316,8 +316,8 @@ public class ShareScreen2 extends ScreenAdapter{
             if (BC.isSelectionMade())
             {
                 DPU.setFile(BC.getSelectionName(), BC.getSelectionContents());
-                BC.setResetSelection(true);
                 Message = BC.getSelectionName() + " Sent!";
+                BC.setResetSelection(true);
             }
         }
         if (DPU.getState() == DPUploadCommunicator.State.ERROR)

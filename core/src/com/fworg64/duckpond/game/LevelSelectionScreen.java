@@ -16,6 +16,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class LevelSelectionScreen extends ScreenAdapter
 {
+    public static final String tutorialtext = "Welcome to DuckPond!\n\n"
+                                             +"Swipe Ducks toward Lilies\n"
+                                             +"Avoid Sharks and Ducks\n"
+                                             +"Be Quick and Careful\n\n"
+                                             +"Good Luck and Have Fun.\n"
+            ;
+
     //button dims defs
     int WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H;
     int BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H;
@@ -162,10 +169,13 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             if (handleSelection == HandleSelection.PLAY)
             {
-                    Assets.load_gamescreen();
-                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName()));
-                    Assets.dispose_navigation();
-                    Assets.dispose_levelscreen();
+                Assets.load_gamescreen();
+                if (browserCommunicator.getSelectionName().equals("level1-1"))
+                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), tutorialtext));
+                else
+                    game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), ""));
+                Assets.dispose_navigation();
+                Assets.dispose_levelscreen();
             }
             else if (handleSelection == HandleSelection.DOWNLOAD)
             {

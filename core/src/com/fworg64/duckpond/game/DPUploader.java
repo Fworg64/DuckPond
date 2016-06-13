@@ -82,17 +82,22 @@ public class DPUploader extends Thread{
                     }
                 }
             }
-            else
+            else //pin got
             {
-                if (!DPU.getFilename().equals("")) //send the file
+                if (!DPU.getFilename().equals("")) //send the file for the first time
                 {
+                    DPU.setState(DPUploadCommunicator.State.BUSY);
                     sendString(DPU.getFilename());
                     sendString(DPU.getFilecontents());
                     sendString("\4");
                     DPU.resetFile();
+                    DPU.setState(DPUploadCommunicator.State.NEEDFILE);
                 }
             }
-            if (DPU.getState() == DPUploadCommunicator.State.CLOSE) return;
+            if (DPU.getState() == DPUploadCommunicator.State.CLOSE) {
+                sendString("\3"); //user left
+                return;
+            }
         }
     }
 
