@@ -37,6 +37,7 @@ public class Assets
     public static Texture LevelEditLives;
     public static Texture LevelEditUnlives;
     public static Texture LevelEditShare;
+    public static Texture LevelEditNumblock;
 
     public static Texture NavigationFlechaIzq;
     public static TextureRegion NavigationFlechaDer;
@@ -387,6 +388,7 @@ public class Assets
         LevelEditFlechaDer = new TextureRegion(LevelEditFlechaIzq);
         LevelEditFlechaDer.flip(true, false);
         LevelEditShare = new Texture(Gdx.files.internal("leveledit\\share.png"));
+        LevelEditNumblock = new Texture(Gdx.files.internal("leveledit\\numblock.png"));
 
         GameBackground = new Texture(Gdx.files.internal("leveledit\\gbkgnd.png"));
 
@@ -458,5 +460,6 @@ public class Assets
         shark.dispose();
         lily.dispose();
         LevelEditShare.dispose();
+        LevelEditNumblock.dispose();
     }
 }

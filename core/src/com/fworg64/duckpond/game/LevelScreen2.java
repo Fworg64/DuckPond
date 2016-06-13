@@ -62,11 +62,11 @@ public class LevelScreen2 extends ScreenAdapter
     public static final int TKNOB_W = 96;
     public static final int TKNOB_H = 96;
 
-    public static final int DUCKLING_SELECT_X = 918;
-    public static final int DUCKLING_SELECT_Y = 1920-500;
-    public static final int DUCKLING_SELECT_S = 110;
-    public static final int DUCKLING_SELECT_W = 96;
-    public static final int DUCKLING_SELECT_H = 96;
+    public static final int DUCKLING_SELECT_X = 900;
+    public static final int DUCKLING_SELECT_Y = 1920-485;
+    public static final int DUCKLING_SELECT_S = 130;
+    public static final int DUCKLING_SELECT_W = 120;
+    public static final int DUCKLING_SELECT_H = 120;
 
     public static final int LEVEL_LOAD_X = 200;
     public static final int LEVEL_LOAD_Y = 1920-550;
@@ -175,7 +175,7 @@ public class LevelScreen2 extends ScreenAdapter
     Rectangle Tknob;
     Rectangle Tslider;
 
-    Rectangle[] ducklingNumber;
+    Button[] ducklingNumber;
     Rectangle[] loadlevelbuttons;
 
     Button ducks;
@@ -224,7 +224,7 @@ public class LevelScreen2 extends ScreenAdapter
         tempguy = new Spawnable();
         temppos = new Vector2();
         tempt2s = 0;
-        tempducks =0;
+        tempducks =-1;
         lives = 3;
         time = 30;
 
@@ -260,8 +260,12 @@ public class LevelScreen2 extends ScreenAdapter
         Message = "heerp";
         Tknob   = new Rectangle(TSLIDER_X - TKNOB_W*.5f,TSLIDER_Y + TSLIDER_H *.5f - TKNOB_H *.5f, TKNOB_W, TKNOB_H);
         Tslider = new Rectangle(TSLIDER_X, TSLIDER_Y, TSLIDER_W, TSLIDER_H);
-        ducklingNumber = new Rectangle[MAX_DUCKLINGS];
-        for (int i =0; i<MAX_DUCKLINGS; i++){ ducklingNumber[i] = new Rectangle(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H );}
+        ducklingNumber = new Button[MAX_DUCKLINGS];
+        for (int i =0; i<MAX_DUCKLINGS; i++){
+            ducklingNumber[i] = new Button(DUCKLING_SELECT_X, DUCKLING_SELECT_Y - DUCKLING_SELECT_S*i,DUCKLING_SELECT_W, DUCKLING_SELECT_H , Assets.LevelEditNumblock);
+            ducklingNumber[i].setButttext(Integer.toString(i));
+            ducklingNumber[i].hide();
+        }
         loadlevelbuttons = new Rectangle[LEVEL_LOAD_C * LEVEL_LOAD_R];
         for (int i=0; i<LEVEL_LOAD_C; i++) {
             for (int j=0; j<LEVEL_LOAD_R;j++)
@@ -293,6 +297,7 @@ public class LevelScreen2 extends ScreenAdapter
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
+
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
     }
@@ -569,6 +574,7 @@ public class LevelScreen2 extends ScreenAdapter
         loadbutt.setAvailable(true);
         savebutt.setAvailable(true);
         sharebutt.setAvailable(true);
+        Confirm.setAvailable(false);
         //Gdx.app.debug("OH", "2");
     }
 
@@ -602,6 +608,7 @@ public class LevelScreen2 extends ScreenAdapter
             loadbutt.setAvailable(true);
             savebutt.setAvailable(true);
             sharebutt.setAvailable(true);
+            Confirm.setAvailable(false);
         }
     }
 
@@ -727,7 +734,7 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseVel()
     {
-        Message = "Drag arrow to set Velocity";
+        if (tempguy.getVel().isZero()) Message = "Drag arrow to set Velocity";
         temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
@@ -821,15 +828,18 @@ public class LevelScreen2 extends ScreenAdapter
 
     public void ChooseD()
     {
-        if (tempducks ==0) Message = "Select number of ducklings";
+        for (Button butt: ducklingNumber) butt.show();
+        if (tempducks ==-1) Message = "Select number of ducklings";
         else Message = Integer.toString(tempducks) + " ducklings, Press Confirm";
         touchpoint.set(in.getTouchpoint());
+        for (Button butt: ducklingNumber) butt.pollPress(in.isTouched()? touchpoint:new Vector2());
         for (int i=0; i<MAX_DUCKLINGS; i++)
         {
-            if (in.justTouched() && ducklingNumber[i].contains(touchpoint))
+            if (ducklingNumber[i].isWasPressed())
             {
                 tempducks = i;
                 ready2confirm = true;
+                ducklingNumber[i].pressHandled();
             }
         }
         if (ready2confirm && Confirm.isWasPressed())
@@ -841,7 +851,7 @@ public class LevelScreen2 extends ScreenAdapter
             temppos.setZero();
             getD = false;
             defaultstate = true;
-            tempducks =0;
+            tempducks =-1;
             Confirm.pressHandled();
             ducks.setAvailable(true);
             sharks.setAvailable(true);
@@ -849,6 +859,7 @@ public class LevelScreen2 extends ScreenAdapter
             loadbutt.setAvailable(true);
             savebutt.setAvailable(true);
             sharebutt.setAvailable(true);
+            for (Button butt: ducklingNumber) butt.hide();
         }
     }
 
@@ -866,43 +877,6 @@ public class LevelScreen2 extends ScreenAdapter
         //drawbackgroundimagehere
         game.batch.draw(Assets.GameBackground, EDITOR_OFFSET.x, EDITOR_OFFSET.y);
 
-        if (tempguy.getObjtype().equals("Shark"))
-        {
-            Animation currAnim;
-            float ang = tempguy.getVel().angle();
-            Sprite sprite;
-            Direction dir;
-            if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
-            else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
-            else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
-            else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
-            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
-            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-            sprite.setOriginCenter();
-            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
-            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
-            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
-            sprite.draw(game.batch);
-        }
-        else if (tempguy.getObjtype().equals("Duck"))
-        {
-            Animation currAnim;
-            float ang = tempguy.getVel().angle();
-            Sprite sprite;
-            Direction dir;
-            if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
-            else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
-            else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
-            else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
-            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
-            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
-            sprite.setOriginCenter();
-            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
-            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
-            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
-            sprite.draw(game.batch);
-        }
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s),tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
         for (Spawnable s: spawnables)
         {
             if (s.getTime2spawn() <= tempt2s)
@@ -1017,10 +991,49 @@ public class LevelScreen2 extends ScreenAdapter
                 }
             }
         }
+        if (tempguy.getObjtype().equals("Shark"))
+        {
+            Animation currAnim;
+            float ang = tempguy.getVel().angle();
+            Sprite sprite;
+            Direction dir;
+            if (ang >=45 && ang <135) {currAnim = Assets.sharkSwimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.sharkSwimLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.sharkSwimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.sharkSwimRightAnim; dir = Direction.RIGHT;}
+            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+            sprite.setOriginCenter();
+            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+            sprite.draw(game.batch);
+        }
+        else if (tempguy.getObjtype().equals("Duck"))
+        {
+            Animation currAnim;
+            float ang = tempguy.getVel().angle();
+            Sprite sprite;
+            Direction dir;
+            if (ang >=45 && ang <135) {currAnim = Assets.swimUpAnim; dir = Direction.UP;}
+            else if (ang >=135 &&  ang <225) {currAnim = Assets.swimSideLeftAnim; dir = Direction.LEFT;}
+            else if (ang >=225 && ang <315) {currAnim = Assets.swimDownAnim; dir = Direction.DOWN;}
+            else {currAnim = Assets.swimSideRightAnim; dir = Direction.RIGHT;}
+            sprite = new Sprite(currAnim.getKeyFrame(tempt2s));
+            sprite.setPosition(tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+            sprite.setOriginCenter();
+            if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
+            if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
+            sprite.draw(game.batch);
+        }
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s),tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+
 
         game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY(), lowerarea.getWidth(), lowerarea.getHeight());
         game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY(), upperarea.getWidth(), upperarea.getHeight());
         for (Button butt: butts) butt.renderSprites(game.batch);
+        for (Button butt: ducklingNumber) butt.renderSprites(game.batch);
 
         game.batch.draw(Assets.LevelEditTimeBar, Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
         game.batch.draw(Assets.LevelEditClock, Tknob.getX(), Tknob.getY());
@@ -1045,11 +1058,8 @@ public class LevelScreen2 extends ScreenAdapter
         }
 
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
-        //Assets.font.draw(game.batch, "Total Time: " + Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
         Assets.font.draw(game.batch, Integer.toString(time), T_TIME_DISPLAY_X, T_TIME_DISPLAY_Y);
-        //Assets.font.draw(game.batch, "curr Time: " + Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y - 60);
         Assets.font.draw(game.batch,Float.toString(tempt2s), C_TIME_DISPLAY_X, C_TIME_DISPLAY_Y);
-        if (getD) for (int i=0; i<MAX_DUCKLINGS; i++) Assets.font.draw(game.batch, Integer.toString(i), ducklingNumber[i].getX() + 36, ducklingNumber[i].getY() + 48);
         if (loadfile) for (int i=0; i<loadlevelbuttons.length; i++) {
             if (i<customfiles.size()) game.batch.draw(Assets.NavigationWorldButt, loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY());
             if (i<customfiles.size()) Assets.font.draw(game.batch, customfiles.get(i).name(), loadlevelbuttons[i].getX(), loadlevelbuttons[i].getY() + .6f*loadlevelbuttons[i].getHeight());
@@ -1067,11 +1077,10 @@ public class LevelScreen2 extends ScreenAdapter
         for(Button butt: butts) butt.renderShapes(shapeRenderer);
         shapeRenderer.rect(Tknob.getX(), Tknob.getY(), Tknob.getWidth(), Tknob.getHeight());
         shapeRenderer.rect(Tslider.getX(), Tslider.getY(), Tslider.getWidth(), Tslider.getHeight());
-        if (getD) for (Rectangle r: ducklingNumber) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
         if (loadfile) for (Rectangle r: loadlevelbuttons) shapeRenderer.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
 
-        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());
+//        for (Rectangle rect : goodouts) shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+//        shapeRenderer.rect(goodin.getX(), goodin.getY(), goodin.getWidth(), goodin.getHeight());
 
         //shapeRenderer.rect(placementarea.getX(), placementarea.getY(), placementarea.getWidth(), placementarea.getHeight());
         //shapeRenderer.rect(playarea.getX(), playarea.getY(), playarea.getWidth(), playarea.getHeight());
