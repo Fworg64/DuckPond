@@ -195,12 +195,12 @@ public class Assets
 
         duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
-        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
-        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
-        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0], duckframes[3][0], duckframes[4][0]};
+        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2], duckframes[3][2], duckframes[4][2]};
+        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1], duckframes[4][1]};
         //duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
-        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
-        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
+        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4]};
+        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3], duckframes[3][3]};
         duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
         duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
         duckSwimSideRightFrames = new Array<TextureRegion>(duckSwimSideRight);
@@ -217,8 +217,8 @@ public class Assets
         swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
-        padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
-        eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
+        padAnim = new Animation(.4f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
+        eatenAnim = new Animation(.3f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
 
         lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
         lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
