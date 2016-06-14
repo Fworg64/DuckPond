@@ -1,7 +1,10 @@
 package com.fworg64.duckpond.game;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+
+import java.util.Random;
 
 
 /**
@@ -15,11 +18,18 @@ public class Lily
 {
     Rectangle pos;
     Circle col; //for collisions
+    Sprite sprite;
+
+    Random random;
 
     public Lily(float x, float y)
     {
         pos = new Rectangle(x, y, DuckPondGame.objWandH,DuckPondGame.objWandH);
         col = new Circle(pos.getX() + .5f* pos.getWidth(), pos.getY() + .5f* pos.getHeight(), .5f* pos.getWidth());
+        sprite = new Sprite(Assets.lily);
+        random = new Random();
+        sprite.setOriginCenter();
+        sprite.setRotation(random.nextFloat()*360);
     }
     public  String toString(){
         String s = "x: " + pos.x + " y: " + pos.y + " velocity: " + " velocity x: " + "\n";

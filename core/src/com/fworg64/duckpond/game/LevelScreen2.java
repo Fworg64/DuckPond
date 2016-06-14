@@ -923,7 +923,7 @@ public class LevelScreen2 extends ScreenAdapter
                         }
                     }
                 }
-                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s), render_X, render_Y);
+                if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.lily, render_X, render_Y);
             }
             if (s.getTime2spawn() > tempt2s)
             {
@@ -970,7 +970,7 @@ public class LevelScreen2 extends ScreenAdapter
                 if (s.getObjtype().equals("Lily"))
                 {
                     Sprite sprite;
-                    sprite = new Sprite(Assets.padRot.getKeyFrame(tempt2s));
+                    sprite = new Sprite(Assets.lily);
                     sprite.setPosition(s.getPos().x + EDITOR_OFFSET.x, s.getPos().y + EDITOR_OFFSET.y);
                     sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
                     sprite.draw(game.batch);
@@ -1013,7 +1013,7 @@ public class LevelScreen2 extends ScreenAdapter
             if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
             sprite.draw(game.batch);
         }
-        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.padRot.getKeyFrame(tempt2s),tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
+        else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.lily,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
 
 
         game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY(), lowerarea.getWidth(), lowerarea.getHeight());

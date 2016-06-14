@@ -99,7 +99,6 @@ public class Assets
     public static Animation swimSideRightAnim;
     public static Animation swimSideLeftAnim;
     public static Animation swimDownAnim;
-    public static Animation padAnim;
     public static Animation eatenAnim;
 
     private static Texture shark;
@@ -120,11 +119,7 @@ public class Assets
     public static Animation sharkSwimUpAnim;
     public static Animation sharkSwimDownAnim;
 
-    private static Texture lily;
-    private static TextureRegion[][] lilyframes;
-    private static TextureRegion[] lilyRot;
-    public static Array<TextureRegion> lilyRotFrames;
-    public static Animation padRot;
+    public static Texture lily;
 
 
     static String res;
@@ -217,14 +212,9 @@ public class Assets
         swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
-        padAnim = new Animation(.4f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
         eatenAnim = new Animation(.3f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
 
         lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
-        lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
-        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
-        lilyRotFrames = new Array<TextureRegion>(lilyRot);
-        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
 
         shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
@@ -434,10 +424,6 @@ public class Assets
         sharkSwimDownAnim = new Animation(.2f, sharkSwimDownFrames, Animation.PlayMode.LOOP);
 
         lily = new Texture(Gdx.files.internal("stdres\\gamescreen\\lily.png"));
-        lilyframes = TextureRegion.split(lily, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
-        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
-        lilyRotFrames = new Array<TextureRegion>(lilyRot);
-        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
     }
     public static void dispose_leveledit()
     {
