@@ -333,7 +333,7 @@ public class LevelScreen2 extends ScreenAdapter
                 if (tempChar != '\0') filename += tempChar;
                 else if (in.backspaceJustPressed() && filename.length() >0) filename = filename.substring(0, filename.length() -1);
 
-                Message = filename + "\n\n\n\n\n" + "Type a filename and press enter. (a-Z, 0-9)";
+                Message = filename + "\n\n\n\n\n" + "Type a filename and \npress enter. (a-Z, 0-9)";
 
                 if ((in.enterJustPressed() || saveconfirmbutt.isWasPressed()) && !filename.equals("ATTRIBUTES"))
                 {

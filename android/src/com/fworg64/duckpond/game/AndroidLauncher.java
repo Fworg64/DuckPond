@@ -94,7 +94,7 @@ public class AndroidLauncher extends AndroidApplication {
                 runOnUiThread(new Runnable() //run on ui thread
                 {
                     public void run() {
-                        //if (!adView.isLoading() && !adLoaded) adView.loadAd(adRequestBuilder.build());
+                        if (!adView.isLoading() && !adLoaded) adView.loadAd(adRequestBuilder.build());
                         adView.setVisibility(View.VISIBLE);
                         adView.bringToFront();
                         adView.resume();
