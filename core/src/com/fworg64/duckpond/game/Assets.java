@@ -56,11 +56,8 @@ public class Assets
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
-    public static Texture MainMenuPlayPressed;
     public static Texture MainMenuOptions;
-    public static Texture MainMenuOptionsPressed;
     public static Texture MainMenuExit;
-    public static Texture MainMenuExitPressed;
 
     public static Texture OptionsMenu;
     public static Texture OptionsMenuSlider;
@@ -100,6 +97,7 @@ public class Assets
     public static Animation swimSideLeftAnim;
     public static Animation swimDownAnim;
     public static Animation eatenAnim;
+    public static Animation padAnim; //for the duck
 
     private static Texture shark;
     private static TextureRegion[][] sharkframes;
@@ -132,21 +130,15 @@ public class Assets
 
         MainMenuTitle = new Texture(Gdx.files.internal(res + "mainmenu\\title.png"));
         MainMenuPlay = new Texture(Gdx.files.internal(res + "mainmenu\\play.png"));
-        MainMenuPlayPressed = new Texture(Gdx.files.internal(res + "mainmenu\\playpressed.png"));
         MainMenuOptions = new Texture(Gdx.files.internal(res + "mainmenu\\options.png"));
-        MainMenuOptionsPressed = new Texture(Gdx.files.internal(res + "mainmenu\\optionspressed.png"));
         MainMenuExit = new Texture(Gdx.files.internal(res + "mainmenu\\exit.png"));
-        MainMenuExitPressed = new Texture(Gdx.files.internal(res + "mainmenu\\exitpressed.png"));
     }
     public static void dispose_mainmenu()
     {
         MainMenuTitle.dispose();
         MainMenuPlay.dispose();
-        MainMenuPlayPressed.dispose();
         MainMenuOptions.dispose();
-        MainMenuOptionsPressed.dispose();
         MainMenuExit.dispose();
-        MainMenuExitPressed.dispose();
     }
 
     public static void load_options()
@@ -213,6 +205,7 @@ public class Assets
         swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
         eatenAnim = new Animation(.3f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
+        padAnim = new Animation(.4f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
 
         lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
 

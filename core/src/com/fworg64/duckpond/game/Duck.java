@@ -68,7 +68,7 @@ public class Duck
         if (dtheta !=0)
         {
             vel.rotate(dtheta * rotConst * vel.len()); //velocity is constant-ish in magnitude
-            if (vel.dot(flickedinto) / (vel.len()*flickedinto.len()) > .9993) dtheta =0; //if the vectors are close enough in angle, no more turning
+            if (vel.dot(flickedinto) / (vel.len()*flickedinto.len()) > .996) dtheta =0; //if the vectors are close enough in angle, no more turning
             //A dot B = mag(A)*mag(B)*cos(T) : the .9997 gives us +/- 1.40 deg of indifference (cos^-1())
             //if the .999X is too close to 1, the duck gets confused...
         }

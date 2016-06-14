@@ -397,6 +397,7 @@ public class LevelScreen2 extends ScreenAdapter
             BC.setTouchpoint(in.isTouched() ? touchpoint : new Vector2());
             if (BC.isSelectionMade()) {
                 LoadFile(BC.getSelectionContents());
+                filename = BC.getSelectionName();
                 BC.setClose(true);
                 loadbutt.pressHandled();
                 defaultstate =true;
@@ -717,7 +718,7 @@ public class LevelScreen2 extends ScreenAdapter
         temppos.set(tempguy.getPos().x + DuckPondGame.objWandH *.5f, tempguy.getPos().y + DuckPondGame.objWandH *.5f);
         touchpoint.set(in.getTouchpoint());
         if (in.isTouched() && placementarea.contains(touchpoint)) {
-            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(40, 300));
+            tempguy.setVel(touchpoint.cpy().sub(EDITOR_OFFSET).sub(temppos).scl(VELOCITY_INPUT_SCALE).clamp(60, 300));
             Message = "x:"+(int)tempguy.getVel().x;
             Message2 = "y:"+(int)tempguy.getVel().y;
             Message3 = "Speed:" + (int)tempguy.getVel().len();

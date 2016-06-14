@@ -145,6 +145,7 @@ public class World
         if (more2load) checkAndLoadNotYetLoaded();
         updateDucks(delta, swipestart, swipeend);
         updateSharks(delta);
+        updatePads(delta);
         checkPadsAndDucks();
         checkDucksAndSharks();
         checkDucksAndLings();
@@ -182,6 +183,14 @@ public class World
             Shark s = iterator.next();
             s.update(delta);
             if (!worldBounds.contains(s.posv)) iterator.remove(); //byebye shark
+        }
+    }
+
+    private void updatePads(float delta)
+    {
+        for (Lily l: pads)
+        {
+            l.update(delta);
         }
     }
 
