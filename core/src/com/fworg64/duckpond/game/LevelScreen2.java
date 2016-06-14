@@ -28,6 +28,12 @@ public class LevelScreen2 extends ScreenAdapter
 {
     public enum Direction {RIGHT, UP, LEFT, DOWN}; //CCW for magic
     public final static float SWYPE_ARROW_SCALE = 2.0f;//bigger fpr bigger?
+    public final static int NUM_TIME_SHADOWS = 10;
+    public final static int TIME_ENTRE_UMBRAS = 2;
+    public final static float TIME_SHADOW_ALPHA = .55f;
+    public final static float TIME_SHADOW_dALPHA = .05f;
+    public final static float TIME_SHADOW_TEXTSCALE = .4f;
+
 
     public static final int TOPBUTTONS_X = 90;
     public static final int TOPBUTTONS_Y = 1920-136;
@@ -184,7 +190,6 @@ public class LevelScreen2 extends ScreenAdapter
     BrowsableFolder browsableFolder;
     BrowserCommunicator BC;
 
-
     private ShapeRenderer shapeRenderer;
 
     public LevelScreen2(DuckPondGame game)
@@ -276,7 +281,6 @@ public class LevelScreen2 extends ScreenAdapter
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
-
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
     }
@@ -535,6 +539,8 @@ public class LevelScreen2 extends ScreenAdapter
     public void DestroyCurrent()
     {
         Message = "Current temp\n destroyed.";
+        Message2 = "";
+        Message3 = "";
         tempguy = new Spawnable();
         temppos.setZero();
         getVel = false;
@@ -705,7 +711,20 @@ public class LevelScreen2 extends ScreenAdapter
         if (ready2confirm && Confirm.isWasPressed())
         {
             getVel = true;
-            if (tempguy.getObjtype().equals("Lily")) {getVel = false; getT = true;}
+            if (tempguy.getObjtype().equals("Lily")) {
+                getVel = false;
+                defaultstate = true;
+                tempguy.setTime2spawn(0);
+                spawnables.add(tempguy);
+                tempguy = new Spawnable();
+                temppos.setZero();
+                ducks.setAvailable(true);
+                sharks.setAvailable(true);
+                lillies.setAvailable(true);
+                loadbutt.setAvailable(true);
+                savebutt.setAvailable(true);
+                sharebutt.setAvailable(true);
+            }
             getPos = false;
             ready2confirm = false;
             Confirm.pressHandled();
@@ -866,7 +885,7 @@ public class LevelScreen2 extends ScreenAdapter
 
         for (Spawnable s: spawnables)
         {
-            if (s.getTime2spawn() <= tempt2s)
+            if (s.getTime2spawn() <= tempt2s) //if they would be spawned at this moment
             {
                 float render_X = s.getPos().x + EDITOR_OFFSET.x + s.getVel().x * (tempt2s-s.getTime2spawn());
                 float render_Y = s.getPos().y + EDITOR_OFFSET.y + s.getVel().y * (tempt2s-s.getTime2spawn());
@@ -886,7 +905,18 @@ public class LevelScreen2 extends ScreenAdapter
                     if (dir != Direction.RIGHT) sprite.setRotation((ang - 90 * dir.ordinal())*.3f);
                     if (dir == Direction.RIGHT && s.getVel().angle() <90) sprite.setRotation(ang*.3f);
                     if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
-                    sprite.draw(game.batch);                }
+                    sprite.draw(game.batch);
+                    for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                    {
+                        sprite.setPosition(sprite.getX() + TIME_ENTRE_UMBRAS*s.getVel().x, sprite.getY() + TIME_ENTRE_UMBRAS*s.getVel().y);
+                        sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                        sprite.draw(game.batch);
+                        Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                        Assets.font.draw(game.batch, Integer.toString((i+1)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                        Assets.font.getData().setScale(1);
+                    }
+
+                }
                 if (s.getObjtype().equals("Duck"))
                 {
                     Animation currAnim;
@@ -923,10 +953,18 @@ public class LevelScreen2 extends ScreenAdapter
                             ducklingsprite.draw(game.batch);
                         }
                     }
+                    for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                    {
+                        sprite.setPosition(sprite.getX() + TIME_ENTRE_UMBRAS*s.getVel().x, sprite.getY() + TIME_ENTRE_UMBRAS*s.getVel().y);
+                        sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                        sprite.draw(game.batch);
+                        Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                        Assets.font.draw(game.batch, Integer.toString((i+1)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                        Assets.font.getData().setScale(1);                    }
                 }
                 if (s.getObjtype().equals("Lily")) game.batch.draw(Assets.lily, render_X, render_Y);
             }
-            if (s.getTime2spawn() > tempt2s)
+            if (s.getTime2spawn() > tempt2s) //if they would not be spawned
             {
                 float render_X = s.getPos().x + EDITOR_OFFSET.x;
                 float render_Y = s.getPos().y + EDITOR_OFFSET.y;
@@ -948,6 +986,22 @@ public class LevelScreen2 extends ScreenAdapter
                     if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
                     sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
                     sprite.draw(game.batch);
+                    float first_X = sprite.getX();
+                    float first_Y = sprite.getY();
+                    float timeoffset;
+                    for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                    {
+                        if (s.getTime2spawn() - tempt2s<i*TIME_ENTRE_UMBRAS) {
+                            timeoffset = (i*TIME_ENTRE_UMBRAS - s.getTime2spawn() + tempt2s);
+                            sprite.setPosition(timeoffset * s.getVel().x + first_X, timeoffset * s.getVel().y + first_Y);
+                        }
+                        else continue;
+                        sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                        sprite.draw(game.batch);
+                        Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                        Assets.font.draw(game.batch, Integer.toString((i)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                        Assets.font.getData().setScale(1);
+                    }
                 }
                 if (s.getObjtype().equals("Duck"))
                 {
@@ -967,6 +1021,22 @@ public class LevelScreen2 extends ScreenAdapter
                     if (dir == Direction.RIGHT && s.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
                     sprite.setAlpha(SPRITE_ALPHA_BEFORE_SPAWN);
                     sprite.draw(game.batch);
+                    float first_X = sprite.getX();
+                    float first_Y = sprite.getY();
+                    float timeoffset;
+                    for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                    {
+                        if (s.getTime2spawn() - tempt2s<i*TIME_ENTRE_UMBRAS) {
+                            timeoffset = (i*TIME_ENTRE_UMBRAS - s.getTime2spawn() + tempt2s);
+                            sprite.setPosition(timeoffset * s.getVel().x + first_X, timeoffset * s.getVel().y + first_Y);
+                        }
+                        else continue;
+                        sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                        sprite.draw(game.batch);
+                        Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                        Assets.font.draw(game.batch, Integer.toString((i)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                        Assets.font.getData().setScale(1);
+                    }
                 }
                 if (s.getObjtype().equals("Lily"))
                 {
@@ -978,6 +1048,7 @@ public class LevelScreen2 extends ScreenAdapter
                 }
             }
         }
+        //draw the tempguys
         if (tempguy.getObjtype().equals("Shark"))
         {
             Animation currAnim;
@@ -995,6 +1066,17 @@ public class LevelScreen2 extends ScreenAdapter
             if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
             if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
             sprite.draw(game.batch);
+            if (!tempguy.getVel().isZero())
+            {
+                for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                {
+                    sprite.setPosition(sprite.getX() + TIME_ENTRE_UMBRAS*tempguy.getVel().x, sprite.getY() + TIME_ENTRE_UMBRAS*tempguy.getVel().y);
+                    sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                    sprite.draw(game.batch);
+                    Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                    Assets.font.draw(game.batch, Integer.toString((i+1)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                    Assets.font.getData().setScale(1);                }
+            }
         }
         else if (tempguy.getObjtype().equals("Duck"))
         {
@@ -1013,10 +1095,21 @@ public class LevelScreen2 extends ScreenAdapter
             if (dir == Direction.RIGHT && tempguy.getVel().angle() <90) sprite.setRotation(ang*.3f);
             if (dir == Direction.RIGHT && tempguy.getVel().angle() >270) sprite.setRotation((ang-360)*.3f +360);
             sprite.draw(game.batch);
+            if (!tempguy.getVel().isZero())
+            {
+                for (int i=0; i < NUM_TIME_SHADOWS; i++)
+                {
+                    sprite.setPosition(sprite.getX() + TIME_ENTRE_UMBRAS*tempguy.getVel().x, sprite.getY() + TIME_ENTRE_UMBRAS*tempguy.getVel().y);
+                    sprite.setAlpha(TIME_SHADOW_ALPHA - i*TIME_SHADOW_dALPHA);
+                    sprite.draw(game.batch);
+                    Assets.font.getData().setScale(TIME_SHADOW_TEXTSCALE);
+                    Assets.font.draw(game.batch, Integer.toString((i+1)*TIME_ENTRE_UMBRAS)+"s", sprite.getX(), sprite.getY());
+                    Assets.font.getData().setScale(1);                }
+            }
         }
         else if (tempguy.getObjtype().equals("Lily")) game.batch.draw(Assets.lily,tempguy.getPos().x + EDITOR_OFFSET.x, tempguy.getPos().y + EDITOR_OFFSET.y);
 
-
+        //draw the buttones
         game.batch.draw(Assets.LevelEditMapaAbajo, lowerarea.getX(), lowerarea.getY(), lowerarea.getWidth(), lowerarea.getHeight());
         game.batch.draw(Assets.LevelEditMapaAbajo, upperarea.getX(), upperarea.getY(), upperarea.getWidth(), upperarea.getHeight());
         for (Button butt: butts) butt.renderSprites(game.batch);
