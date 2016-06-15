@@ -281,6 +281,7 @@ public class LevelScreen2 extends ScreenAdapter
         gcam.update();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(gcam.combined);
+        BC = new BrowserCommunicator();
 
         if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
     }
@@ -297,6 +298,7 @@ public class LevelScreen2 extends ScreenAdapter
             Assets.load_levelscreen();
             Assets.load_navigation();
             Assets.load_font();
+            BC.setClose(true);
         }
         if (exitbutt.isWasPressed()) {
 
@@ -307,6 +309,7 @@ public class LevelScreen2 extends ScreenAdapter
         }
         if (in.isBackPressed())
         {
+            BC.setClose(true);
             Gdx.app.debug("screenstate", "exit");
             Options.loadOptions();
             in.hideKeyboard();
