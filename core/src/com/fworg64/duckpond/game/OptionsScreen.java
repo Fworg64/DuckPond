@@ -241,6 +241,7 @@ public class OptionsScreen extends ScreenAdapter
         }
         else {
             Assets.font.draw(game.batch, credits, CREDITS_X, CREDITS_Y);
+            Assets.font.draw(game.batch, DuckPondGame.version, 0, 100);
         }
 
         game.batch.end();
