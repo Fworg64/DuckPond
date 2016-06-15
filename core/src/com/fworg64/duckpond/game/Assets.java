@@ -211,10 +211,10 @@ public class Assets
 
         shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
-        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
-        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3]};
-        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2]};
-        sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
+        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0], sharkframes[2][0], sharkframes[3][0], sharkframes[4][0]};
+        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3], sharkframes[2][3], sharkframes[3][3], sharkframes[4][3]};
+        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2], sharkframes[2][2], sharkframes[3][2], sharkframes[4][2]};
+        sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1], sharkframes[3][1], sharkframes[4][1]};
         sharkSwimLeftFrames = new Array<TextureRegion>(sharkSwimLeft);
         sharkSwimRightFrames = new Array<TextureRegion>();
         for (TextureRegion t:sharkSwimLeftFrames)
