@@ -391,6 +391,7 @@ public class GameScreen extends ScreenAdapter
                     {
                         game.setScreen(new LevelSelectionScreen(game));
                         Assets.dispose_gamescreen();
+                        GOLLevelSelection.pressHandled();
                         this.dispose();
                     }
                     if (GOLrestart.isWasPressed())
@@ -402,6 +403,7 @@ public class GameScreen extends ScreenAdapter
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
                         game.mas.playGameMusic();
+                        GOLrestart.pressHandled();
                         isPaused = false;
                         GAMEOVERMUSICFLAG = true;
                     }
@@ -433,6 +435,7 @@ public class GameScreen extends ScreenAdapter
                     {
                         game.setScreen(new LevelSelectionScreen(game));
                         Assets.dispose_gamescreen();
+                        GOVLevelSelection.pressHandled();
                         this.dispose();
                     }
                     break;

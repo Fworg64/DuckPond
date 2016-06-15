@@ -56,11 +56,8 @@ public class Assets
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
-    public static Texture MainMenuPlayPressed;
     public static Texture MainMenuOptions;
-    public static Texture MainMenuOptionsPressed;
     public static Texture MainMenuExit;
-    public static Texture MainMenuExitPressed;
 
     public static Texture OptionsMenu;
     public static Texture OptionsMenuSlider;
@@ -99,8 +96,8 @@ public class Assets
     public static Animation swimSideRightAnim;
     public static Animation swimSideLeftAnim;
     public static Animation swimDownAnim;
-    public static Animation padAnim;
     public static Animation eatenAnim;
+    public static Animation padAnim; //for the duck
 
     private static Texture shark;
     private static TextureRegion[][] sharkframes;
@@ -120,11 +117,7 @@ public class Assets
     public static Animation sharkSwimUpAnim;
     public static Animation sharkSwimDownAnim;
 
-    private static Texture lily;
-    private static TextureRegion[][] lilyframes;
-    private static TextureRegion[] lilyRot;
-    public static Array<TextureRegion> lilyRotFrames;
-    public static Animation padRot;
+    public static Texture lily;
 
 
     static String res;
@@ -137,21 +130,15 @@ public class Assets
 
         MainMenuTitle = new Texture(Gdx.files.internal(res + "mainmenu\\title.png"));
         MainMenuPlay = new Texture(Gdx.files.internal(res + "mainmenu\\play.png"));
-        MainMenuPlayPressed = new Texture(Gdx.files.internal(res + "mainmenu\\playpressed.png"));
         MainMenuOptions = new Texture(Gdx.files.internal(res + "mainmenu\\options.png"));
-        MainMenuOptionsPressed = new Texture(Gdx.files.internal(res + "mainmenu\\optionspressed.png"));
         MainMenuExit = new Texture(Gdx.files.internal(res + "mainmenu\\exit.png"));
-        MainMenuExitPressed = new Texture(Gdx.files.internal(res + "mainmenu\\exitpressed.png"));
     }
     public static void dispose_mainmenu()
     {
         MainMenuTitle.dispose();
         MainMenuPlay.dispose();
-        MainMenuPlayPressed.dispose();
         MainMenuOptions.dispose();
-        MainMenuOptionsPressed.dispose();
         MainMenuExit.dispose();
-        MainMenuExitPressed.dispose();
     }
 
     public static void load_options()
@@ -195,12 +182,12 @@ public class Assets
 
         duck = new Texture(Gdx.files.internal(res + "gamescreen\\duck.png"));
         duckframes = TextureRegion.split(duck, Options.spriteWidth,Options.spriteHeight);
-        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0]};
-        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2]};
-        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
+        duckSwimUp = new TextureRegion[] {duckframes[0][0], duckframes[1][0], duckframes[2][0], duckframes[3][0], duckframes[4][0]};
+        duckSwimDown = new TextureRegion[] {duckframes[0][2], duckframes[1][2], duckframes[2][2], duckframes[3][2], duckframes[4][2]};
+        duckSwimSideRight = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1], duckframes[3][1], duckframes[4][1]};
         //duckSwimSideLeft = new TextureRegion[] {duckframes[0][1], duckframes[1][1], duckframes[2][1]};
-        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4], duckframes[2][4]};
-        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3]};
+        duckPad =  new TextureRegion[] {duckframes[0][4], duckframes[1][4]};
+        duckEaten = new TextureRegion[] {duckframes[0][3], duckframes[1][3], duckframes[2][3], duckframes[3][3]};
         duckSwimUpFrames = new Array<TextureRegion>(duckSwimUp);
         duckSwimDownFrames = new Array<TextureRegion>(duckSwimDown);
         duckSwimSideRightFrames = new Array<TextureRegion>(duckSwimSideRight);
@@ -217,21 +204,17 @@ public class Assets
         swimDownAnim = new Animation(.2f, Assets.duckSwimDownFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideRightAnim = new Animation(.2f, Assets.duckSwimSideRightFrames, Animation.PlayMode.LOOP_PINGPONG);
         swimSideLeftAnim = new Animation(.2f, Assets.duckSwimSideLeftFrames, Animation.PlayMode.LOOP_PINGPONG);
-        padAnim = new Animation(.2f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
-        eatenAnim = new Animation(.2f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
+        eatenAnim = new Animation(.3f, Assets.duckEatenFrames, Animation.PlayMode.NORMAL);
+        padAnim = new Animation(.4f, Assets.duckPadFrames, Animation.PlayMode.LOOP);
 
         lily = new Texture(Gdx.files.internal(res + "gamescreen\\lily.png"));
-        lilyframes = TextureRegion.split(lily, Options.spriteWidth,Options.spriteHeight);
-        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
-        lilyRotFrames = new Array<TextureRegion>(lilyRot);
-        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
 
         shark = new Texture(Gdx.files.internal(res + "gamescreen\\shark.png"));
         sharkframes = TextureRegion.split(shark, Options.spriteWidth,Options.spriteHeight);
-        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0]};
-        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3]};
-        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2]};
-        sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1]};
+        sharkSwimLeft = new TextureRegion[] {sharkframes[0][0], sharkframes[1][0], sharkframes[2][0], sharkframes[3][0], sharkframes[4][0]};
+        sharkSwimUp = new TextureRegion[] {sharkframes[0][3], sharkframes[1][3], sharkframes[2][3], sharkframes[3][3], sharkframes[4][3]};
+        sharkSwimDown = new TextureRegion[] {sharkframes[0][2], sharkframes[1][2], sharkframes[2][2], sharkframes[3][2], sharkframes[4][2]};
+        sharkEat = new TextureRegion[] {sharkframes[0][1], sharkframes[1][1], sharkframes[2][1], sharkframes[3][1], sharkframes[4][1]};
         sharkSwimLeftFrames = new Array<TextureRegion>(sharkSwimLeft);
         sharkSwimRightFrames = new Array<TextureRegion>();
         for (TextureRegion t:sharkSwimLeftFrames)
@@ -434,10 +417,6 @@ public class Assets
         sharkSwimDownAnim = new Animation(.2f, sharkSwimDownFrames, Animation.PlayMode.LOOP);
 
         lily = new Texture(Gdx.files.internal("stdres\\gamescreen\\lily.png"));
-        lilyframes = TextureRegion.split(lily, DuckPondGame.stdspriteW,DuckPondGame.stdspriteH);
-        lilyRot = new TextureRegion[] {lilyframes[0][0], lilyframes[1][0], lilyframes[2][0]};
-        lilyRotFrames = new Array<TextureRegion>(lilyRot);
-        padRot = new Animation(.2f, Assets.lilyRotFrames, Animation.PlayMode.LOOP_PINGPONG);
     }
     public static void dispose_leveledit()
     {

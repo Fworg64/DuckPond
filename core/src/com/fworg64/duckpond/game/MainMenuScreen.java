@@ -163,7 +163,7 @@ public class MainMenuScreen extends ScreenAdapter
         //game.batch.begin();
         game.batch.setColor(1,1,1,1);
 
-        Assets.font.draw(game.batch, DuckPondGame.version, 250, 100);
+        //Assets.font.draw(game.batch, DuckPondGame.version, 250, 100);
         game.batch.end();
 
     }
