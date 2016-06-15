@@ -36,7 +36,7 @@ public class WorldRenderer
 
         renderBackground();
         renderObjects(clock);
-        renderCollisionBox(); //disable this line for release (duh)
+        //renderCollisionBox(); //disable this line for release (duh)
     }
 
     private void renderBackground() {
