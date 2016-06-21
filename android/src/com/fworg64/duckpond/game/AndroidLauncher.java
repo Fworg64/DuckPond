@@ -13,6 +13,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -41,6 +42,8 @@ public class AndroidLauncher extends AndroidApplication {
 
         showad = false;
         adLoaded = false;
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5210248608431416~9230669880");
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.SMART_BANNER);
