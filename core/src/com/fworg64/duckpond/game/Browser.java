@@ -246,6 +246,7 @@ public class Browser extends Thread
             pagerightbutt.pressHandled();
         }
         if (pageupbutt.isWasPressed() && browsable.canPageUp()) {
+            Gdx.app.debug("Browser", "PageUp Pressed");
             browsable.pageUp();
             updateAllOptions();
             setButtNames();

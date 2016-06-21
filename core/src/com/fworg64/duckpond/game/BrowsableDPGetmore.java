@@ -71,16 +71,21 @@ public class BrowsableDPGetmore implements Browsable{
 
     @Override
     public void pageInto(String option) {
-        if (!option.equals("")) out.println(option);//send option to server
+        if (!option.equals("")) {
+            out.println(option);//send option to server
+            Gdx.app.debug("DPGM sent", option);
+        }
         allOptions = getBlockFromServer();
         if (allOptions.size() >0)
         {
             String temp = allOptions.get(0);
             if (temp.equals("toplevel")) {
+                isFinalSelection = false;
                 canPageUp = false;
                 allOptions.remove(0);
             }
             if (temp.equals("choices")) {
+                isFinalSelection = false;
                 canPageUp = true;
                 allOptions.remove(0);
             }
@@ -118,6 +123,7 @@ public class BrowsableDPGetmore implements Browsable{
         if (temp.equals("toplevel")) canPageUp = false;
         if (temp.equals("choices")) canPageUp = true;
         allOptions.remove(0);
+        Gdx.app.debug("DPGM", "Paged Up");
 
     }
 
