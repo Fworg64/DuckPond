@@ -18,6 +18,7 @@ public class ShareScreen2 extends ScreenAdapter{
     int BACKBUTT_X, BACKBUTT_Y, BACKBUTT_W, BACKBUTT_H;
     int MESSAGE_X, MESSAGE_Y;
     int USERNAME_X, USERNAME_Y;
+    int WELCOME_X, WELCOME_Y;
     int CONFIRMNAMECHANGE_X, CONFIRMNAMECHANGE_Y, CONFIRMNAMECHANGE_W, CONFIRMNAMECHANGE_H;
     int CANCELNAMECHANGE_X, CANCELNAMECHANGE_Y, CANCELNAMECHANGE_W, CANCELNAMECHANGE_H;
     int CHANGEUSERNAME_X, CHANGEUSERNAME_Y, CHANGEUSERNAME_W, CHANGEUSERNAME_H;
@@ -26,6 +27,9 @@ public class ShareScreen2 extends ScreenAdapter{
     String username;
     String pin;
     String Message;
+
+    String welcomeNameChange = "Welcome to Share, make a\n" +
+                               "username to upload levels";
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
@@ -55,6 +59,7 @@ public class ShareScreen2 extends ScreenAdapter{
     boolean showBrowser;
 
     boolean needUsername;
+    boolean firsttime;
     boolean showpinpad;
 
     public ShareScreen2(DuckPondGame game)
@@ -82,6 +87,8 @@ public class ShareScreen2 extends ScreenAdapter{
             MESSAGE_Y = 1920 - 365;
             USERNAME_X = 420;
             USERNAME_Y = 1920 - 255;
+            WELCOME_X = 20;
+            WELCOME_Y = 1920 - 465;
 
             CONFIRMNAMECHANGE_X = 300;
             CONFIRMNAMECHANGE_Y = 1920 - 800;
@@ -114,6 +121,8 @@ public class ShareScreen2 extends ScreenAdapter{
             MESSAGE_Y = 960 - 200;
             USERNAME_X = 230;
             USERNAME_Y = 960 - 150;
+            WELCOME_X = 10;
+            WELCOME_Y = 960 - 280;
 
             CONFIRMNAMECHANGE_X = 400;
             CONFIRMNAMECHANGE_Y = 960-400;
@@ -152,8 +161,12 @@ public class ShareScreen2 extends ScreenAdapter{
         Message = "";
         username = Options.getUsername();
         pin = Options.getSavedPin();
-        
-        if (username.equals("")) needUsername = true;
+
+        firsttime = false;
+        if (username.equals("")) {
+            needUsername = true;
+            firsttime = true;
+        }
         else connectbutt.show();
 
         DPU = new DPUploadCommunicator();
@@ -183,12 +196,14 @@ public class ShareScreen2 extends ScreenAdapter{
         if (backbutt.isJustPressed())
         {
             //loadleveledit
+            in.hideKeyboard();
             DPU.setState(DPUploadCommunicator.State.CLOSE);
             Assets.load_leveledit();
         }
         if (backbutt.isWasPressed())
         {
             //go leveledit
+            in.hideKeyboard();
             game.setScreen(new LevelScreen2(game));
             Assets.dispose_share(); //just the bigast
             this.dispose();
@@ -348,6 +363,8 @@ public class ShareScreen2 extends ScreenAdapter{
     {
         Message = "Enter a username";
         cancelnamechangebutt.show();
+        confirmnamechangebutt.show();
+        confirmnamechangebutt.setAvailable(false);
         char tempChar;
         in.showKeyboard();
         tempChar = in.pollChar();
@@ -359,7 +376,7 @@ public class ShareScreen2 extends ScreenAdapter{
 
         //Gdx.app.debug("Type a filename and press enter. (a-Z, 0-9)", "");
 
-        if (username.length() >3) confirmnamechangebutt.show();
+        if (username.length() >3) confirmnamechangebutt.setAvailable(true);
         if (in.enterJustPressed() || confirmnamechangebutt.isWasPressed())
         {
             if (username.length() >3)
@@ -370,9 +387,11 @@ public class ShareScreen2 extends ScreenAdapter{
                 in.hideKeyboard();
                 confirmnamechangebutt.pressHandled();
                 confirmnamechangebutt.hide();
+                confirmnamechangebutt.setAvailable(false);
                 cancelnamechangebutt.hide();
                 connectbutt.show();
                 Message = "";
+                firsttime =false;
             }
         }
 
@@ -405,6 +424,7 @@ public class ShareScreen2 extends ScreenAdapter{
         Assets.font.draw(game.batch, Message, MESSAGE_X, MESSAGE_Y);
         if (showpinpad) pp2.renderSprites(game.batch);
         if (showBrowser) browser.renderSprites(game.batch);
+        if (firsttime) Assets.font.draw(game.batch, welcomeNameChange, WELCOME_X, WELCOME_Y);
         game.batch.end();
 
     }

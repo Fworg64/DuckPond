@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
