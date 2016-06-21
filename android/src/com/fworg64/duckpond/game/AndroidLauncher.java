@@ -44,7 +44,7 @@ public class AndroidLauncher extends AndroidApplication {
 
         adView = new AdView(this);
         adView.setAdSize(AdSize.SMART_BANNER);
-        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        adView.setAdUnitId("ca-app-pub-5210248608431416/1707403086");
 
         RelativeLayout.LayoutParams adParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
