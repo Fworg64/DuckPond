@@ -26,7 +26,6 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        Gdx.app.setLogLevel(LOG_NONE);
         game = new DuckPondGame();
 
 		RelativeLayout layout = new RelativeLayout(this);
