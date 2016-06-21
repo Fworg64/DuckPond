@@ -19,6 +19,7 @@ public class DuckPondGame extends Game {
 	public static int worldW = 640;
 	public static int objWandH = 96;
 	public static float highresworldscaler = 1.6875f;
+	public static float highresworldinverse = .59259f;
 
 	public static int stdspriteW = 96;
 	public static int stdspriteH = 96;
@@ -38,7 +39,7 @@ public class DuckPondGame extends Game {
 	public static final String downloadsfolder = "DOWNLOADED";
 	public static final String levelsfolder = "LEVELS";
 
-	public static final String version = "v1.2.2rc";
+	public static final String version = "v1.3.3";
 
 	public SpriteBatch batch;
     public MusicAndSounds mas;
@@ -60,7 +61,7 @@ public class DuckPondGame extends Game {
 
 	@Override
 	public void create () {
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_NONE);
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load_mainmenu();

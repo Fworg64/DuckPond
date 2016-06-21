@@ -299,9 +299,22 @@ public class World
         {
             for (Duck d: ducks)
             {
-                if (d.state == Duck.State.SWIMMING) {d.getEaten(); lives--;}
+                if (d.state != Duck.State.PAD && d.state != Duck.State.PADDING) { //if any duck is not padded/padding after t=0
+                    Gdx.app.debug("Defeat status", "Unpadded duck found");
+                    for (Duck derk: ducks) {
+                        if (derk.state == Duck.State.SWIMMING)
+                        {
+                            Gdx.app.debug("Defeat status", "Swimming duck eaten");
+                            derk.getEaten(); //eat all the non eaten, non padding/padded ducks
+                            listener.duckDeathNoise();
+                        }
+                    }
+                    lives =0; //set lives to 0;
+                    Gdx.app.debug("Defeat status", "time expired, game over");
+                    return true; //you have been defeated
+                }
             }
-            return false;
+            // if the last ducks are padding at t=0, a grace period is given until padding stops
         }
         if (lives <=0) return true;
         return false;

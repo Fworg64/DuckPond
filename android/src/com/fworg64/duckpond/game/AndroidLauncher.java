@@ -1,7 +1,6 @@
 package com.fworg64.duckpond.game;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,6 +13,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -43,9 +43,11 @@ public class AndroidLauncher extends AndroidApplication {
         showad = false;
         adLoaded = false;
 
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5210248608431416~9230669880");
+
         adView = new AdView(this);
         adView.setAdSize(AdSize.SMART_BANNER);
-        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        adView.setAdUnitId("ca-app-pub-5210248608431416/1707403086");
 
         RelativeLayout.LayoutParams adParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,

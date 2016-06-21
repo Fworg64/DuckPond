@@ -47,11 +47,15 @@ public class DPUploader extends Thread{
             Gdx.app.debug("Couldn't get I/O for the connection to", HOSTNAME);
             DPU.setState(DPUploadCommunicator.State.ERROR);
         }
-        sendString(username);
-        String temp = recieveString();
-        if (temp.equals("EXIST")) DPU.setState(DPUploadCommunicator.State.NEEDCURRPIN);
-        else if (temp.equals("NONEXIST")) DPU.setState(DPUploadCommunicator.State.NEEDNEWPIN);
-        else DPU.setState(DPUploadCommunicator.State.ERROR);
+        if (DPU.getState() != DPUploadCommunicator.State.ERROR)
+        {
+            sendString(username);
+            String temp = recieveString();
+            if (temp.equals("EXIST")) DPU.setState(DPUploadCommunicator.State.NEEDCURRPIN);
+            else if (temp.equals("NONEXIST")) DPU.setState(DPUploadCommunicator.State.NEEDNEWPIN);
+            else DPU.setState(DPUploadCommunicator.State.ERROR);
+        }
+
     }
 
     @Override
