@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /**
  * this is the actual gamescreen, no ads should go here
@@ -261,9 +262,13 @@ public class GameScreen extends ScreenAdapter
                     //touched the world
                     touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
                                         touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
-                    //Gdx.app.debug("ToCUH", touchpointWorld.toString());
-
+                    Gdx.app.debug("ToCUH", touchpointWorld.toString());
                 }
+//                else if (touchpointScreen.y > Options.screenHeight - Options.GUIHeight)
+//                {
+//                    touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
+//                            touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
+//                }
             }
 
             if (screenIn.justTouched() && beingswiped ==false) //swipe is starting
