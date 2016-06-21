@@ -33,7 +33,7 @@ public class BrowsableDPGetmore implements Browsable{
     String selectionName;
     String selectionContents;
 
-    public boolean connectedSucessfully;
+    public volatile boolean connectedSucessfully;
 
     public BrowsableDPGetmore() //should be run in a seperate thread
     {
@@ -56,7 +56,12 @@ public class BrowsableDPGetmore implements Browsable{
             Gdx.app.debug("Couldn't get I/O for the connection to", HOSTNAME);
             connectedSucessfully = false;
         }
-        pageInto("");
+        if (DPSocket == null)
+        {
+            Gdx.app.debug("Couldnt make PORT for GETMORE", "not able to connect");
+            connectedSucessfully = false;
+        }
+        if (connectedSucessfully) pageInto("");
     }
 
     @Override
@@ -159,6 +164,10 @@ public class BrowsableDPGetmore implements Browsable{
         {
             Gdx.app.debug("Unable to set SOCKET TIMEOUT", "We're in Trouble");
             return options;
+        }
+        catch (NullPointerException e)
+        {
+            Gdx.app.debug("Unable to set SocketTimeout", "Maybe no network");
         }
         try
         {

@@ -267,14 +267,25 @@ public class LevelSelectionScreen extends ScreenAdapter
             if(!message.equals("GET MORE\nConnecting...")) message = "GET MORE\nConnecting...";
             if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
                 browserCommunicator.setClose(true);
-                browserCommunicator = new BrowserCommunicator();
-                browser = new Browser(downloadBrowsable, browserCommunicator, false);
-                browser.start();
-                handleSelection = HandleSelection.DOWNLOAD;
-                getmorebutt.pressHandled();
-                if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
-                getmorebutt.hide();
-                backtodlbutt.show();
+                if (downloadBrowsable.connectedSucessfully)
+                {
+                    browserCommunicator = new BrowserCommunicator();
+                    browser = new Browser(downloadBrowsable, browserCommunicator, false);
+                    browser.start();
+                    handleSelection = HandleSelection.DOWNLOAD;
+                    getmorebutt.pressHandled();
+                    if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
+                    getmorebutt.hide();
+                    backtodlbutt.show();
+                }
+                else //did not connect succcessing
+                {
+                    if (!message.equals("ERROR:\nNo Connection")) message = "ERROR:\nNo Connection";
+                    getmorebutt.pressHandled();
+                    getmorebutt.hide();
+                    backtodlbutt.show();
+                }
+
             }
         }
         if (backtodlbutt.isWasPressed())

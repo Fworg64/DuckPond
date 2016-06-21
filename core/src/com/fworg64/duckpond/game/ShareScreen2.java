@@ -219,11 +219,21 @@ public class ShareScreen2 extends ScreenAdapter{
             //say connecting until connected
             Message = "Connecting...";
             if(networkMaker.getState()==Thread.State.TERMINATED){
-                Message = "Connected!";
-                connectbutt.hide();
-                changeusername.hide();
-                connectbutt.pressHandled();
-                dpUploader.start();
+                if (DPU.getState() != DPUploadCommunicator.State.ERROR)
+                {
+                    Message = "Connected!";
+                    connectbutt.hide();
+                    changeusername.hide();
+                    connectbutt.pressHandled();
+                    dpUploader.start();
+                }
+                else
+                {
+                    Message = "Network Error";
+                    connectbutt.pressHandled();
+
+                }
+
             }
         }
         if (DPU.getState() == DPUploadCommunicator.State.NEEDNEWPIN)
@@ -330,7 +340,7 @@ public class ShareScreen2 extends ScreenAdapter{
         }
         if (DPU.getState() == DPUploadCommunicator.State.ERROR)
         {
-            Message = "Network Error";
+            if (Message != "Network Error") Message = "Network Error";
         }
     }
 
