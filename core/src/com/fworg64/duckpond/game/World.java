@@ -75,6 +75,10 @@ public class World
                 String code = iterator.next();
                 Gdx.app.debug("code:", code);
                 String[] codelet = code.split(" ");
+                if (codelet.length!=5) {
+                    iterator.remove();
+                    continue;
+                }
                 if (Float.parseFloat(codelet[0]) ==0)
                 {
                     Vector2 temppos = new Vector2();
