@@ -19,6 +19,7 @@ public class DuckPondGame extends Game {
 	public static int worldW = 640;
 	public static int objWandH = 96;
 	public static float highresworldscaler = 1.6875f;
+	public static float highresworldinverse = .59259f;
 
 	public static int stdspriteW = 96;
 	public static int stdspriteH = 96;

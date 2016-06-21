@@ -27,7 +27,7 @@ public class GameScreen extends ScreenAdapter
 {
     public final static float TIME_TO_RUN_AFTER_GAMEOVER_LOSE = 3.0f;
     public final static float SWYPE_FADE_TIME = .5f;
-    public final static float SWYPE_ARROW_SCALE = 1.6f;
+    public final static float SWYPE_ARROW_SCALE = 1.6875f; //must be the same as DuckPondGameHighresScaler... not sure whyyyy
     enum Menus {PAUSEMENU, GMVICTORY, GMLOSE, PLAYING};
 
     public static int PAUSETITLE_X;
@@ -260,15 +260,18 @@ public class GameScreen extends ScreenAdapter
                 if (touchpointScreen.y < Options.screenHeight - Options.GUIHeight)
                 {
                     //touched the world
-                    touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
-                                        touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
-                    Gdx.app.debug("ToCUH", touchpointWorld.toString());
+                    Gdx.app.debug("ScreenTouch", touchpointScreen.toString());
+                    touchpointWorld.set(touchpointScreen.cpy());
+                    if (Options.highres) touchpointWorld.scl(DuckPondGame.highresworldinverse);
+                    Gdx.app.debug("WorldTouch", touchpointWorld.toString());
+
+
                 }
-//                else if (touchpointScreen.y > Options.screenHeight - Options.GUIHeight)
-//                {
-//                    touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
-//                            touchpointScreen.y * ((float)DuckPondGame.worldH/((float)Options.screenHeight -(float)Options.GUIHeight)));
-//                }
+                else if (touchpointScreen.y > Options.screenHeight - Options.GUIHeight)
+                {
+                    touchpointWorld.set(touchpointScreen.x * ((float)DuckPondGame.worldW/(float)Options.screenWidth),
+                            Options.highres ? (Options.screenHeight - Options.GUIHeight)* DuckPondGame.highresworldinverse :(float)Options.screenHeight -(float)Options.GUIHeight);
+                }
             }
 
             if (screenIn.justTouched() && beingswiped ==false) //swipe is starting
