@@ -1,7 +1,6 @@
 package com.fworg64.duckpond.game;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,6 +26,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        Gdx.app.setLogLevel(LOG_NONE);
         game = new DuckPondGame();
 
 		RelativeLayout layout = new RelativeLayout(this);
