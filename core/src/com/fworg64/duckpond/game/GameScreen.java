@@ -235,7 +235,10 @@ public class GameScreen extends ScreenAdapter
         GOLrestart.setButttext              ("Try Again");
 
         gameoverRunTime = TIME_TO_RUN_AFTER_GAMEOVER_LOSE;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
+        {
+            this.game.adStateListener.HideBannerAd();
+        }
 
         this.levelname = levelname;
         this.starttext = starttext;

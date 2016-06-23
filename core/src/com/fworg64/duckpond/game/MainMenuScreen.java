@@ -100,7 +100,7 @@ public class MainMenuScreen extends ScreenAdapter
         if (in.isBackPressed()) catchOtherBack = true;
         else catchOtherBack = false;
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
         {
             Gdx.app.debug("Ad","SHOW, MAINMENU");
             this.game.adStateListener.ShowBannerAd();

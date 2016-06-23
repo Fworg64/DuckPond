@@ -182,7 +182,7 @@ public class ShareScreen2 extends ScreenAdapter{
         showBrowser = false;
         browser.start();
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
         {
             Gdx.app.debug("AD","ShareScreenShow");
             this.game.adStateListener.ShowBannerAd();

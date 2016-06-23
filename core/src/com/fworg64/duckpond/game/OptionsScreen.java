@@ -135,7 +135,9 @@ public class OptionsScreen extends ScreenAdapter
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.ShowBannerAd();
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS) {
+            this.game.adStateListener.ShowBannerAd();
+        }
     }
 
     public void update()

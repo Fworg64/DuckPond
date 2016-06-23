@@ -281,7 +281,10 @@ public class LevelScreen2 extends ScreenAdapter
         shapeRenderer.setProjectionMatrix(gcam.combined);
         BC = new BrowserCommunicator();
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) this.game.adStateListener.HideBannerAd();
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
+        {
+            this.game.adStateListener.HideBannerAd();
+        }
     }
 
     public void update()

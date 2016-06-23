@@ -149,7 +149,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         networkBrosableMaker = null;
         handleSelection = HandleSelection.PLAY;
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
         {
             Gdx.app.debug("AD","LEVELSELETCSHOW");
             this.game.adStateListener.ShowBannerAd();
