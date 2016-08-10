@@ -56,6 +56,7 @@ public class Assets
 
     public static Texture MainMenuTitle;
     public static Texture MainMenuPlay;
+    public static Texture MainMenuMakeShare;
     public static Texture MainMenuOptions;
     public static Texture MainMenuExit;
 
@@ -130,6 +131,7 @@ public class Assets
 
         MainMenuTitle = new Texture(Gdx.files.internal(res + "mainmenu\\title.png"));
         MainMenuPlay = new Texture(Gdx.files.internal(res + "mainmenu\\play.png"));
+        MainMenuMakeShare = new Texture(Gdx.files.internal(res + "mainmenu\\makeandshare.png"));
         MainMenuOptions = new Texture(Gdx.files.internal(res + "mainmenu\\options.png"));
         MainMenuExit = new Texture(Gdx.files.internal(res + "mainmenu\\exit.png"));
     }

@@ -61,7 +61,7 @@ public class DuckPondGame extends Game {
 
 	@Override
 	public void create () {
-		Gdx.app.setLogLevel(Application.LOG_NONE);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG); //LOG_NONE for release
 		batch = new SpriteBatch();
 		Options.loadOptions();
 		Assets.load_mainmenu();

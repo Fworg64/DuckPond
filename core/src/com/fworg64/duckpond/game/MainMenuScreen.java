@@ -47,6 +47,7 @@ public class MainMenuScreen extends ScreenAdapter
     boolean catchOtherBack;
 
     Button playbutt, optionbutt, exitbutt;
+    Button makenShare;
     Button butts[];
 
     public MainMenuScreen (DuckPondGame game)
@@ -61,6 +62,7 @@ public class MainMenuScreen extends ScreenAdapter
             EXIT_Y = (int)((1- 1692f/1920f)* Options.screenHeight);
             TITTLE_X = (int)(60f/1080f * Options.screenWidth);
             TITTLE_Y = (int)((1- 882f/1920f) * Options.screenHeight);
+            makenShare = new Button(372,442, 365, 290, Assets.MainMenuMakeShare );
         }
         else
         {
@@ -72,6 +74,7 @@ public class MainMenuScreen extends ScreenAdapter
             EXIT_Y = (int)((1-888f/960f)* Options.screenHeight);
             TITTLE_X = (int)(60f/640f * Options.screenWidth);
             TITTLE_Y = (int)((1- 500f/960f) * Options.screenHeight);
+            makenShare = new Button(210, 140, 217, 172, Assets.MainMenuMakeShare);
         }
 
         PLAY_W = (int)(380f/640f * Options.screenWidth);
@@ -93,7 +96,7 @@ public class MainMenuScreen extends ScreenAdapter
         playbutt = new Button(PLAY_X, PLAY_Y, PLAY_W, PLAY_H, Assets.MainMenuPlay);
         optionbutt = new Button(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H, Assets.MainMenuOptions);
         exitbutt = new Button(EXIT_X, EXIT_Y, EXIT_W, EXIT_H, Assets.MainMenuExit);
-        butts = new Button[] {playbutt, optionbutt, exitbutt};
+        butts = new Button[] {playbutt, makenShare, optionbutt, exitbutt};
 
         in = new InputListener(Options.screenWidth, Options.screenHeight);
         touchpoint = new Vector2();
@@ -121,6 +124,15 @@ public class MainMenuScreen extends ScreenAdapter
         {
             game.setScreen(new LevelSelectionScreen(game));
             Assets.dispose_mainmenu();
+            this.dispose();
+        }
+        if (makenShare.isJustPressed())
+        {
+            Assets.load_leveledit();
+        }
+        if (makenShare.isWasPressed())
+        {
+            game.setScreen(new LevelScreen2(game));
             this.dispose();
         }
         if (optionbutt.isJustPressed()) {

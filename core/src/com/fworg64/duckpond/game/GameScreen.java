@@ -455,6 +455,7 @@ public class GameScreen extends ScreenAdapter
 
     public void draw(float delta)
     {
+        //if (delta!=0) Gdx.app.debug("draw", "nonzero delta called");
         GL20 gl = Gdx.gl;
         gl.glClearColor(1, 0, 0, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -509,8 +510,13 @@ public class GameScreen extends ScreenAdapter
 
         if (drawswipe)
         {
+            Gdx.app.debug("Swype", "Starting to draw");
             Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.app.debug("Swype", "Enabled GL");
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            Gdx.app.debug("Swype", "Started shaperenderer");
+            shapeRenderer.setProjectionMatrix(gcam.combined);
+            Gdx.app.debug("Swype", "Set Projection matrix");
             shapeRenderer.setColor(.2f, .5f, .5f, (1f - (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME) * (timeswipedrawn / SWYPE_FADE_TIME)));
             shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[1].x, swipedraw[1].y, swipedraw[3].x, swipedraw[3].y);
             shapeRenderer.triangle(swipedraw[0].x, swipedraw[0].y, swipedraw[2].x, swipedraw[2].y, swipedraw[3].x, swipedraw[3].y);
@@ -558,6 +564,7 @@ public class GameScreen extends ScreenAdapter
             if (playbutt.isWasPressed())
             {
                 ready2go = true;
+                Gdx.app.debug("PlayPressed", "playpressed");
             }
 
             draw(0);
