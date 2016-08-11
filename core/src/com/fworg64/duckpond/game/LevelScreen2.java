@@ -296,7 +296,7 @@ public class LevelScreen2 extends ScreenAdapter
             Gdx.app.debug("screenstate", "exit");
             Options.loadOptions();
             in.hideKeyboard();
-            Assets.load_levelscreen();
+            Assets.load_mainmenubutt();
             Assets.load_navigation();
             Assets.load_font();
             BC.setClose(true);
@@ -314,7 +314,7 @@ public class LevelScreen2 extends ScreenAdapter
             Gdx.app.debug("screenstate", "exit");
             Options.loadOptions();
             in.hideKeyboard();
-            Assets.load_levelscreen();
+            Assets.load_mainmenubutt();
             Assets.load_navigation();
             Assets.load_font();
             game.setScreen(new LevelSelectionScreen(game));

@@ -60,6 +60,10 @@ public class Assets
     public static Texture MainMenuOptions;
     public static Texture MainMenuExit;
 
+    public static Texture MakeNShareGetMore;
+    public static Texture MakeNShareShareLevels;
+    public static Texture MakeNShareWorldMaker;
+
     public static Texture OptionsMenu;
     public static Texture OptionsMenuSlider;
     public static Texture OptionsMenuSliderPressed;
@@ -165,6 +169,24 @@ public class Assets
         OptionsMenuCreditsPressed.dispose();
     }
 
+    public static void load_makenshare()
+    {
+        Gdx.app.debug("Assets: ", "Makenshare Loading");
+        if (Options.highres) res = "highres\\";
+        else res = "stdres\\";
+
+        MakeNShareGetMore = new Texture(Gdx.files.internal(res + "makenshare\\getmore.png"));
+        MakeNShareShareLevels = new Texture(Gdx.files.internal(res + "makenshare\\sharelevels.png"));
+        MakeNShareWorldMaker = new Texture(Gdx.files.internal(res + "makenshare\\worldmaker.png"));
+    }
+
+    public static void dispose_makenshare()
+    {
+        MakeNShareGetMore.dispose();
+        MakeNShareShareLevels.dispose();
+        MakeNShareWorldMaker.dispose();
+    }
+
     public static void load_gamescreen()
     {
         if (Options.highres) res = "highres\\";
@@ -254,21 +276,15 @@ public class Assets
         //not sure what happens to the texture regions... dont touch them after this.
     }
 
-    public static void load_levelscreen()
+    public static void load_mainmenubutt()
     {
         if (Options.highres) res = "highres\\";
         else res = "stdres\\";
 
-        LevelSelectionWorldMaker = new Texture(Gdx.files.internal(res + "levelselection\\worldmakergreen.png"));
-        LevelSelectionGetMore = new Texture(Gdx.files.internal(res + "levelselection\\download.png"));
         LevelSelectionMainMenu = new Texture(Gdx.files.internal(res + "levelselection\\mainbuttgreen.png"));
-
-
     }
-    public static void dispose_levelscreen()
+    public static void dispose_mainmenubutt()
     {
-        LevelSelectionWorldMaker.dispose();
-        LevelSelectionGetMore.dispose();
         LevelSelectionMainMenu.dispose();
     }
 

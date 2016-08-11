@@ -40,7 +40,7 @@ public class MainMenuScreen extends ScreenAdapter
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
-    ShapeRenderer shapeRenderer;
+    //ShapeRenderer shapeRenderer;
 
     InputListener in;
     Vector2 touchpoint;
@@ -90,8 +90,8 @@ public class MainMenuScreen extends ScreenAdapter
         gcam = new OrthographicCamera(Options.screenWidth, Options.screenHeight);
         gcam.position.set(Options.screenWidth / 2, Options.screenHeight / 2, 0); //give ourselves a nice little camera
         gcam.update();
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(gcam.combined);
+        //shapeRenderer = new ShapeRenderer();
+        //shapeRenderer.setProjectionMatrix(gcam.combined);
 
         playbutt = new Button(PLAY_X, PLAY_Y, PLAY_W, PLAY_H, Assets.MainMenuPlay);
         optionbutt = new Button(OPTIONS_X, OPTIONS_Y, OPTIONS_W, OPTIONS_H, Assets.MainMenuOptions);
@@ -117,22 +117,22 @@ public class MainMenuScreen extends ScreenAdapter
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
 
         if (playbutt.isJustPressed()) {
-            Assets.load_levelscreen();
+            Assets.load_mainmenubutt();
             Assets.load_navigation();
         }
         if (playbutt.isWasPressed())
         {
             game.setScreen(new LevelSelectionScreen(game));
-            Assets.dispose_mainmenu();
             this.dispose();
         }
         if (makenShare.isJustPressed())
         {
-            Assets.load_leveledit();
+            //Assets.load_leveledit();
+            Assets.load_makenshare();
         }
         if (makenShare.isWasPressed())
         {
-            game.setScreen(new LevelScreen2(game));
+            game.setScreen(new MakeNShare(game));
             this.dispose();
         }
         if (optionbutt.isJustPressed()) {
@@ -184,5 +184,11 @@ public class MainMenuScreen extends ScreenAdapter
     {
         update();
         draw();
+    }
+
+    @Override
+    public void dispose()
+    {
+        Assets.dispose_mainmenu();
     }
 }

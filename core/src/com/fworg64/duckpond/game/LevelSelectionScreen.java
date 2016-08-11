@@ -38,10 +38,10 @@ public class LevelSelectionScreen extends ScreenAdapter
     Vector2 touchpoint;
 
     TextCycleButton textCycleButton;
-    Button leveleditbutt;
+    //Button leveleditbutt;
     Button mainMenubutt;
-    Button getmorebutt;
-    Button backtodlbutt;
+    //Button getmorebutt;
+    //Button backtodlbutt;
     Button[] butts;
 
     Browser browser;
@@ -133,12 +133,12 @@ public class LevelSelectionScreen extends ScreenAdapter
         game.mas.playMainMenu();
 
         mainMenubutt =      new Button(MAINBUTT_X, MAINBUTT_Y, MAINBUTT_W, MAINBUTT_H, Assets.LevelSelectionMainMenu);
-        leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
-        getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
-        backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.NavigationFolder);
-        backtodlbutt.setButttext("Back\nto DL'd");
+        //leveleditbutt =     new Button(WORLDMAKER_X, WORLDMAKER_Y, WORLDMAKER_W, WORLDMAKER_H, Assets.LevelSelectionWorldMaker);
+        //getmorebutt =       new Button(GETMORE_X, GETMORE_Y, GETMORE_W, GETMORE_H, Assets.LevelSelectionGetMore);
+        //backtodlbutt =    new Button(BACKTODL_X, BACKTODL_Y, BACKTODL_W, BACKTODL_H, Assets.NavigationFolder);
+        //backtodlbutt.setButttext("Back\nto DL'd");
 
-        butts = new Button[] {mainMenubutt, leveleditbutt, getmorebutt, backtodlbutt};
+        butts = new Button[] {mainMenubutt};//, leveleditbutt, getmorebutt, backtodlbutt};
         textCycleButton = new TextCycleButton(new String[] {"Stock", "Custom", "Downloaded"}, TEXTBUTT_X, TEXTBUTT_Y, TEXTBUTT_W, TEXTBUTT_H);
 
         //fileBrowser = new FileBrowser();
@@ -155,9 +155,9 @@ public class LevelSelectionScreen extends ScreenAdapter
             this.game.adStateListener.ShowBannerAd();
         }
 
-        getmorebutt.hide();
-        leveleditbutt.hide();
-        backtodlbutt.hide();
+        //getmorebutt.hide();
+        //leveleditbutt.hide();
+        //backtodlbutt.hide();
 
         message = "\nPress the >cycler< for more";
     }
@@ -177,7 +177,7 @@ public class LevelSelectionScreen extends ScreenAdapter
                     game.setScreen(new GameScreen(game, browserCommunicator.getSelectionContents(), browserCommunicator.getSelectionName(), ""));
                 browserCommunicator.setClose(true);
                 Assets.dispose_navigation();
-                Assets.dispose_levelscreen();
+                this.dispose();
             }
             else if (handleSelection == HandleSelection.DOWNLOAD)
             {
@@ -199,7 +199,7 @@ public class LevelSelectionScreen extends ScreenAdapter
         textCycleButton.pollPress(in.isTouched() ? touchpoint: new Vector2());
         if (textCycleButton.isWasPressed())
         {
-            backtodlbutt.hide();
+           //backtodlbutt.hide();
             browserCommunicator.setClose(true);
             browserCommunicator = new BrowserCommunicator(); //ditch the old shit
             switch (textCycleButton.getState())
@@ -207,22 +207,22 @@ public class LevelSelectionScreen extends ScreenAdapter
                 case 0:
                     if (!message.equals("")) message = "";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
-                    getmorebutt.hide();
-                    leveleditbutt.hide();
+                    //getmorebutt.hide();
+                    //leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 1:
                     if (!message.equals("\nMake and share")) message = "\nMake and share";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.customfolder, false), browserCommunicator, false);
-                    leveleditbutt.show();
-                    getmorebutt.hide();
+                    //leveleditbutt.show();
+                    //getmorebutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
                 case 2:
                     if (!message.equals("\nGet more with")) message = "\nGet more with";
                     browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
-                    getmorebutt.show();
-                    leveleditbutt.hide();
+                    //getmorebutt.show();
+                    //leveleditbutt.hide();
                     handleSelection = HandleSelection.PLAY;
                     break;
             }
@@ -237,7 +237,6 @@ public class LevelSelectionScreen extends ScreenAdapter
         {
             browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
-            Assets.dispose_levelscreen();
             this.dispose();
         }
         if (in.isBackPressed())
@@ -245,72 +244,70 @@ public class LevelSelectionScreen extends ScreenAdapter
             Assets.load_mainmenu();
             browserCommunicator.setClose(true);
             game.setScreen(new MainMenuScreen(game));
-            Assets.dispose_levelscreen();
             this.dispose();
         }
-        if (getmorebutt.isJustPressed())
-        {
-            textCycleButton.goNoState();
-            networkBrosableMaker = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Gdx.app.debug("networkBrowsableMaker", "Starting");
-                    downloadBrowsable = new BrowsableDPGetmore();
-                    Gdx.app.debug("networkBrowsableMaker", "Finished");
-                }
-            });
-            networkBrosableMaker.start();
-        }
-        if ((getmorebutt.isWasPressed()))
-        {
-            if(!message.equals("GET MORE\nConnecting...")) message = "GET MORE\nConnecting...";
-            if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
-                browserCommunicator.setClose(true);
-                if (downloadBrowsable.connectedSucessfully)
-                {
-                    browserCommunicator = new BrowserCommunicator();
-                    browser = new Browser(downloadBrowsable, browserCommunicator, false);
-                    browser.start();
-                    handleSelection = HandleSelection.DOWNLOAD;
-                    getmorebutt.pressHandled();
-                    if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
-                    getmorebutt.hide();
-                    backtodlbutt.show();
-                }
-                else //did not connect succcessing
-                {
-                    if (!message.equals("ERROR:\nNo Connection")) message = "ERROR:\nNo Connection";
-                    getmorebutt.pressHandled();
-                    getmorebutt.hide();
-                    backtodlbutt.show();
-                }
-
-            }
-        }
-        if (backtodlbutt.isWasPressed())
-        {
-            textCycleButton.setStateDirect(2);
-            browserCommunicator.setClose(true);
-            browserCommunicator = new BrowserCommunicator();
-            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
-            browser.start();
-            handleSelection = HandleSelection.PLAY;
-            backtodlbutt.pressHandled();
-            if (!message.equals("\nGet more with")) message = "\nGet more with";
-            backtodlbutt.hide();
-            getmorebutt.show();
-
-        }
-        if (leveleditbutt.isJustPressed()) {
-            Assets.load_leveledit();
-        }
-        if (leveleditbutt.isWasPressed())
-        {
-            browserCommunicator.setClose(true);
-            game.setScreen(new LevelScreen2(game));
-            Assets.dispose_levelscreen();
-            this.dispose();
-        }
+//        if (getmorebutt.isJustPressed())
+//        {
+//            textCycleButton.goNoState();
+//            networkBrosableMaker = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Gdx.app.debug("networkBrowsableMaker", "Starting");
+//                    downloadBrowsable = new BrowsableDPGetmore();
+//                    Gdx.app.debug("networkBrowsableMaker", "Finished");
+//                }
+//            });
+//            networkBrosableMaker.start();
+//        }
+//        if ((getmorebutt.isWasPressed()))
+//        {
+//            if(!message.equals("GET MORE\nConnecting...")) message = "GET MORE\nConnecting...";
+//            if(networkBrosableMaker.getState()==Thread.State.TERMINATED){
+//                browserCommunicator.setClose(true);
+//                if (downloadBrowsable.connectedSucessfully)
+//                {
+//                    browserCommunicator = new BrowserCommunicator();
+//                    browser = new Browser(downloadBrowsable, browserCommunicator, false);
+//                    browser.start();
+//                    handleSelection = HandleSelection.DOWNLOAD;
+//                    getmorebutt.pressHandled();
+//                    if (!message.equals("GET MORE\nConnected!")) message = "GET MORE\nConnected!";
+//                    getmorebutt.hide();
+//                    backtodlbutt.show();
+//                }
+//                else //did not connect succcessing
+//                {
+//                    if (!message.equals("ERROR:\nNo Connection")) message = "ERROR:\nNo Connection";
+//                    getmorebutt.pressHandled();
+//                    getmorebutt.hide();
+//                    backtodlbutt.show();
+//                }
+//
+//            }
+//        }
+//        if (backtodlbutt.isWasPressed())
+//        {
+//            textCycleButton.setStateDirect(2);
+//            browserCommunicator.setClose(true);
+//            browserCommunicator = new BrowserCommunicator();
+//            browser = new Browser(new BrowsableFolder(DuckPondGame.downloadsfolder, false), browserCommunicator, false);
+//            browser.start();
+//            handleSelection = HandleSelection.PLAY;
+//            backtodlbutt.pressHandled();
+//            if (!message.equals("\nGet more with")) message = "\nGet more with";
+//            backtodlbutt.hide();
+//            getmorebutt.show();
+//
+//        }
+//        if (leveleditbutt.isJustPressed()) {
+//            Assets.load_leveledit();
+//        }
+//        if (leveleditbutt.isWasPressed())
+//        {
+//            browserCommunicator.setClose(true);
+//            game.setScreen(new LevelScreen2(game));
+//            this.dispose();
+//        }
     }
 
     public void draw()
@@ -336,5 +333,11 @@ public class LevelSelectionScreen extends ScreenAdapter
     {
         update();
         draw();
+    }
+
+    @Override
+    public void dispose()
+    {
+        Assets.dispose_mainmenubutt();
     }
 }

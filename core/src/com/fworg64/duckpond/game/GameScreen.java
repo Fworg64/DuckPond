@@ -356,7 +356,7 @@ public class GameScreen extends ScreenAdapter
                     {
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
-                        Assets.load_levelscreen();
+                        Assets.load_mainmenubutt();
                         Assets.load_navigation();
                     }
                     if (PAUSELevelSelectionButt.isWasPressed())
@@ -393,7 +393,7 @@ public class GameScreen extends ScreenAdapter
                     {
                         mas.stopCurrMusic();
                         mas.stopSfx();
-                        Assets.load_levelscreen();
+                        Assets.load_mainmenubutt();
                         Assets.load_navigation();
 
                     }
@@ -437,7 +437,7 @@ public class GameScreen extends ScreenAdapter
                     if (GOVLevelSelection.isJustPressed()) {
                         game.mas.stopCurrMusic();
                         game.mas.stopSfx();
-                        Assets.load_levelscreen();
+                        Assets.load_mainmenubutt();
                         Assets.load_navigation();
 
                     }
