@@ -15,7 +15,7 @@ public class MakeNShare extends ScreenAdapter {
 
     DuckPondGame game; //from example
     OrthographicCamera gcam; //camera
-    ShapeRenderer shapeRenderer;
+    //ShapeRenderer shapeRenderer;
 
     InputListener in;
     Vector2 touchpoint;
@@ -26,7 +26,7 @@ public class MakeNShare extends ScreenAdapter {
 
     public MakeNShare(DuckPondGame game)
     {
-        if (Options.highres)
+        if (Options.isHighres())
         {
             mainMenubutt = new Button(62, 1920-385-160, 281, 160, Assets.LevelSelectionMainMenu);
             worldMakerbutt =  new Button(258, 1920 - 483-285, 565, 285, Assets.MakeNShareWorldMaker);
