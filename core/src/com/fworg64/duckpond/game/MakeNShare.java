@@ -89,6 +89,7 @@ public class MakeNShare extends ScreenAdapter {
         if (shareLevelsbutt.isJustPressed())
         {
             Assets.load_share();
+            Assets.load_navigation();
         }
         if (shareLevelsbutt.isWasPressed())
         {

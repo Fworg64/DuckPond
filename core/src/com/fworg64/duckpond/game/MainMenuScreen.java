@@ -127,7 +127,7 @@ public class MainMenuScreen extends ScreenAdapter
         }
         if (makenShare.isJustPressed())
         {
-            //Assets.load_leveledit();
+            Assets.load_mainmenubutt();
             Assets.load_makenshare();
         }
         if (makenShare.isWasPressed())

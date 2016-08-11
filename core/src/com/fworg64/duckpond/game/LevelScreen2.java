@@ -297,13 +297,14 @@ public class LevelScreen2 extends ScreenAdapter
             Options.loadOptions();
             in.hideKeyboard();
             Assets.load_mainmenubutt();
-            Assets.load_navigation();
-            Assets.load_font();
+            //Assets.load_navigation();
+            //Assets.load_font();
+            Assets.load_makenshare();
             BC.setClose(true);
         }
         if (exitbutt.isWasPressed()) {
 
-            game.setScreen(new LevelSelectionScreen(game));
+            game.setScreen(new MakeNShare(game));
             Assets.dispose_leveledit();
             this.dispose();
             exitbutt.pressHandled();
@@ -315,9 +316,10 @@ public class LevelScreen2 extends ScreenAdapter
             Options.loadOptions();
             in.hideKeyboard();
             Assets.load_mainmenubutt();
-            Assets.load_navigation();
-            Assets.load_font();
-            game.setScreen(new LevelSelectionScreen(game));
+            //Assets.load_navigation();
+            //Assets.load_font();
+            Assets.load_makenshare();
+            game.setScreen(new MakeNShare(game));
             Assets.dispose_leveledit();
             this.dispose();
             exitbutt.pressHandled();

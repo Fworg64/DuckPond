@@ -198,14 +198,26 @@ public class ShareScreen2 extends ScreenAdapter{
             //loadleveledit
             in.hideKeyboard();
             DPU.setState(DPUploadCommunicator.State.CLOSE);
-            Assets.load_leveledit();
+            Assets.load_makenshare();
+            Assets.load_mainmenubutt();
         }
         if (backbutt.isWasPressed())
         {
             //go leveledit
             in.hideKeyboard();
-            game.setScreen(new LevelScreen2(game));
+            game.setScreen(new MakeNShare(game));
             Assets.dispose_share(); //just the bigast
+            this.dispose();
+        }
+        if (in.isBackPressed())
+        {
+            in.hideKeyboard();
+            DPU.setState(DPUploadCommunicator.State.CLOSE);
+            Assets.load_makenshare();
+            Assets.load_mainmenubutt();
+            in.hideKeyboard();
+            game.setScreen(new MakeNShare(game));
+            Assets.dispose_share();
             this.dispose();
         }
         if (changeusername.isWasPressed()) {
