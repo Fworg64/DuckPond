@@ -92,7 +92,7 @@ public class BrowsableDPGetmore implements Browsable{
             if (temp.equals("level"))
             {
                 isFinalSelection = true;
-                selectionName = allOptions.get(1).replace("SERVERFILES", DuckPondGame.downloadsfolder);
+                selectionName = allOptions.get(1).replace("SERVERFILES", DuckPondGame.customfolder);
                 selectionContents = "";
                 for(int i =0; i<allOptions.size(); i++)
                 {

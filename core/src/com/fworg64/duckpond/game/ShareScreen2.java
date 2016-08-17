@@ -175,7 +175,7 @@ public class ShareScreen2 extends ScreenAdapter{
         showpinpad = false;
         pp2 = new PinPad2();
 
-        folder = new BrowsableFolder(DuckPondGame.customfolder, false);
+        folder = new BrowsableFolder(DuckPondGame.customfolder + username, false);
         BC = new BrowserCommunicator();
         browser = new Browser(folder, BC, false);
         browser.renderUpOne = false;
