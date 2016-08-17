@@ -103,7 +103,8 @@ public class MakeNShare extends ScreenAdapter {
         }
         if (getLevelsbutt.isWasPressed())
         {
-            //hmm
+            game.setScreen(new GetMoreScreen(game));
+            this.dispose();
         }
     }
 
