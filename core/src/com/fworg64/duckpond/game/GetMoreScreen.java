@@ -3,6 +3,7 @@ package com.fworg64.duckpond.game;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -21,6 +22,12 @@ public class GetMoreScreen extends ScreenAdapter {
 
     Button backbutt;
     Button[] butts;
+
+    Browser browser;
+    BrowserCommunicator browserCommunicator;
+
+    FileHandle file;
+    String message;
 
     public GetMoreScreen(DuckPondGame game)
     {
@@ -48,22 +55,38 @@ public class GetMoreScreen extends ScreenAdapter {
             Gdx.app.debug("Ad","SHOW, MAINMENU");
             this.game.adStateListener.ShowBannerAd();
         }
+
+        browserCommunicator = new BrowserCommunicator();
+        browser = new Browser(new BrowsableDPGetmore(), browserCommunicator, false);
+        browser.start();
     }
 
     public void update()
     {
         touchpoint.set(in.getTouchpoint());
+        browserCommunicator.setTouchpoint(in.isTouched() ? touchpoint : new Vector2());
+        if (browserCommunicator.isSelectionMade())
+        {
+            file = Gdx.files.local(browserCommunicator.getSelectionName());
+            file.parent().mkdirs();
+            file.writeString(browserCommunicator.getSelectionContents(), false);
+            message = browserCommunicator.getSelectionName().substring(2).replaceFirst("/", "\n").replaceAll("/", ": ");
+            Gdx.app.debug("LevelSelection", browserCommunicator.getSelectionName());
+            browserCommunicator.setResetSelection(true);
+        }
         for (Button butt : butts) butt.pollPress(in.isTouched() ? touchpoint : new Vector2());
 
         if (backbutt.isJustPressed()) {
             Assets.load_makenshare();
+            Assets.load_mainmenubutt();
         }
         if (backbutt.isWasPressed()) {
             game.setScreen(new MakeNShare(game));
         }
         if (in.isBackPressed()) {
-            Assets.load_mainmenu();
-            game.setScreen(new MainMenuScreen(game));
+            Assets.load_mainmenubutt();
+            Assets.load_makenshare();
+            game.setScreen(new MakeNShare(game));
             this.dispose();
         }
     }
@@ -79,6 +102,7 @@ public class GetMoreScreen extends ScreenAdapter {
         game.batch.enableBlending();
         game.batch.begin();
         for (Button butt : butts) butt.renderSprites(game.batch);
+        browser.renderSprites(game.batch);
         game.batch.end();
     }
     @Override
@@ -91,6 +115,7 @@ public class GetMoreScreen extends ScreenAdapter {
     @Override
     public void dispose()
     {
+        browserCommunicator.setClose(true);
         Assets.dispose_mainmenubutt();
         Assets.dispose_makenshare();
     }

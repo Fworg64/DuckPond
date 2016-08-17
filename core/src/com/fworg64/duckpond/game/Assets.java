@@ -321,6 +321,7 @@ public class Assets
     }
     public static void dispose_navigation()
     {
+        Gdx.app.debug("Assets", "Navigation disposing");
         NavigationFlechaIzq.dispose();
         NavigationCancel.dispose();
         NavigationConfirm.dispose();

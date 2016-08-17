@@ -46,8 +46,6 @@ public class LevelSelectionScreen extends ScreenAdapter
 
     Browser browser;
     BrowserCommunicator browserCommunicator;
-    volatile BrowsableDPGetmore downloadBrowsable;
-    Thread networkBrosableMaker;
 
     public enum HandleSelection {PLAY,DOWNLOAD, UPLOAD }
     HandleSelection handleSelection;
@@ -145,8 +143,6 @@ public class LevelSelectionScreen extends ScreenAdapter
         browserCommunicator = new BrowserCommunicator();
         browser = new Browser(new BrowsableFolder(DuckPondGame.levelsfolder, true), browserCommunicator, false);
         browser.start();
-        downloadBrowsable = null;
-        networkBrosableMaker = null;
         handleSelection = HandleSelection.PLAY;
 
         if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS)
